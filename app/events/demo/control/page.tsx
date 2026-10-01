@@ -24,6 +24,7 @@ export default function EventControlPage() {
 
   const [scanMessage, setScanMessage] = useState("");
   const [scanError, setScanError] = useState("");
+  const [lastScannedValue, setLastScannedValue] = useState("");
 
   const eventName = event.name || "Mon événement";
 
@@ -45,11 +46,6 @@ export default function EventControlPage() {
     (guest) => guest.checkedIn,
   ).length;
 
-  const confirmationRate =
-    totalGuests === 0
-      ? 0
-      : Math.round((confirmedGuests / totalGuests) * 100);
-
   const checkInRate =
     totalGuests === 0
       ? 0
@@ -58,22 +54,64 @@ export default function EventControlPage() {
   const handleScanSuccess = (decodedText: string) => {
     const scannedValue = decodedText.trim();
 
+    console.log("🔥 QR DÉTECTÉ DANS EVENT CONTROL :", scannedValue);
+
+    setLastScannedValue(scannedValue);
     setScanError("");
     setScanMessage("");
 
+    let guestIdentifier = scannedValue;
+
+    try {
+      const parsedUrl = new URL(scannedValue);
+
+      const pathParts = parsedUrl.pathname
+        .split("/")
+        .filter(Boolean);
+
+      const invitationIndex = pathParts.indexOf("i");
+
+      if (
+        invitationIndex !== -1 &&
+        pathParts[invitationIndex + 1]
+      ) {
+        guestIdentifier = decodeURIComponent(
+          pathParts[invitationIndex + 1],
+        );
+      }
+    } catch {
+      // Le QR peut contenir directement un slug ou un ID.
+    }
+
+    guestIdentifier = guestIdentifier.trim();
+
+    console.log(
+      "🔎 IDENTIFIANT INVITÉ EXTRAIT :",
+      guestIdentifier,
+    );
+
     const guest = guests.find(
       (currentGuest) =>
-        currentGuest.slug === scannedValue ||
-        String(currentGuest.id) === scannedValue,
+        currentGuest.slug === guestIdentifier ||
+        String(currentGuest.id) === guestIdentifier,
     );
 
     if (!guest) {
-      setScannedGuest(null);
-      setScanError(
-        "Aucun invité correspondant à ce QR code n'a été trouvé.",
+      console.log(
+        "❌ INVITÉ INTROUVABLE. INVITÉS DISPONIBLES :",
+        guests,
       );
+
+      setScannedGuest(null);
+
+      setScanError(
+        "QR détecté, mais invité introuvable.",
+      );
+
       return;
     }
+
+    console.log("✅ INVITÉ TROUVÉ :", guest);
 
     setScannedGuest(guest);
 
@@ -96,6 +134,9 @@ export default function EventControlPage() {
     }
 
     checkInGuest(scannedGuest.id);
+
+    const checkedInAt = new Date().toISOString();
+
     setScanMessage(
       "Entrée confirmée avec succès. Bienvenue à l'événement !",
     );
@@ -103,21 +144,28 @@ export default function EventControlPage() {
     setScannedGuest({
       ...scannedGuest,
       checkedIn: true,
-      checkedInAt: new Date().toISOString(),
+      checkedInAt,
     });
   };
 
   const handleScanError = () => {
-    // Les erreurs normales de lecture QR sont fréquentes pendant
-    // l'utilisation de la caméra. Nous n'affichons donc rien ici.
+    // Les erreurs normales de lecture QR sont ignorées.
   };
 
   const getGuestName = (guest: Guest) => {
     if (guest.type === "couple") {
-      return `${guest.firstName1} ${guest.lastName1} & ${guest.firstName2} ${guest.lastName2}`;
+      return (
+        guest.firstName1 +
+        " " +
+        guest.lastName1 +
+        " & " +
+        guest.firstName2 +
+        " " +
+        guest.lastName2
+      );
     }
 
-    return `${guest.firstName1} ${guest.lastName1}`;
+    return guest.firstName1 + " " + guest.lastName1;
   };
 
   return (
@@ -143,7 +191,6 @@ export default function EventControlPage() {
           </p>
         </header>
 
-        {/* SCANNER QR */}
         <section className="mt-10 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
           <div className="mb-6">
             <p className="text-sm font-semibold text-emerald-600">
@@ -183,22 +230,46 @@ export default function EventControlPage() {
                       Scannez une invitation pour afficher les
                       informations de l'invité.
                     </p>
+
+                    {lastScannedValue && (
+                      <div className="mt-5 rounded-xl bg-white p-4 text-left">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                          Dernière valeur détectée
+                        </p>
+
+                        <p className="mt-2 break-all text-sm font-medium text-zinc-700">
+                          {lastScannedValue}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
 
               {scanError && (
                 <div className="flex min-h-64 items-center justify-center text-center">
-                  <div>
+                  <div className="w-full">
                     <div className="text-5xl">❌</div>
 
                     <h3 className="mt-4 text-lg font-semibold text-red-700">
-                      QR code non reconnu
+                      QR détecté mais invité non trouvé
                     </h3>
 
                     <p className="mt-2 text-sm leading-6 text-zinc-600">
                       {scanError}
                     </p>
+
+                    {lastScannedValue && (
+                      <div className="mt-5 rounded-xl border border-red-100 bg-white p-4 text-left">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                          Valeur du QR détectée
+                        </p>
+
+                        <p className="mt-2 break-all text-sm font-medium text-zinc-700">
+                          {lastScannedValue}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -303,7 +374,6 @@ export default function EventControlPage() {
           </div>
         </section>
 
-        {/* STATISTIQUES */}
         <section className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-6">
           <Stat
             title="Total invités"
@@ -337,7 +407,7 @@ export default function EventControlPage() {
 
           <Stat
             title="Présence"
-            value={`${checkInRate}%`}
+            value={checkInRate + "%"}
             icon="📈"
           />
         </section>
@@ -481,7 +551,7 @@ function ControlSummary({
       <div className="mt-5 h-2 overflow-hidden rounded-full bg-zinc-100">
         <div
           className="h-full rounded-full bg-indigo-600 transition-all"
-          style={{ width: `${percentage}%` }}
+          style={{ width: percentage + "%" }}
         />
       </div>
 
@@ -502,10 +572,18 @@ function GuestControlRow({
     status: GuestStatus,
   ) => void;
 }) {
-  const guestName =
-    guest.type === "couple"
-      ? `${guest.firstName1} ${guest.lastName1} & ${guest.firstName2} ${guest.lastName2}`
-      : `${guest.firstName1} ${guest.lastName1}`;
+  let guestName = guest.firstName1 + " " + guest.lastName1;
+
+  if (guest.type === "couple") {
+    guestName =
+      guest.firstName1 +
+      " " +
+      guest.lastName1 +
+      " & " +
+      guest.firstName2 +
+      " " +
+      guest.lastName2;
+  }
 
   return (
     <div className="p-6 transition hover:bg-zinc-50">
@@ -601,9 +679,10 @@ function StatusButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
-        active ? activeClassName : className
-      }`}
+      className={
+        "rounded-full border px-4 py-2 text-xs font-semibold transition " +
+        (active ? activeClassName : className)
+      }
     >
       {label}
     </button>
