@@ -5,6 +5,8 @@ import { Guest, useEvent } from "../../../context/EventContext";
 import EventNavigation from "../../../components/EventNavigation";
 import QRScanner from "../../../../components/QRScanner";
 
+type GuestFilter = "all" | "pending" | "checkedIn";
+
 export default function EventControlPage() {
   const {
     event,
@@ -13,11 +15,14 @@ export default function EventControlPage() {
     resetGuestCheckIn,
   } = useEvent();
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [tableSearch, setTableSearch] = useState("");
+  const [guestFilter, setGuestFilter] =
+    useState<GuestFilter>("all");
+
   const [scannedValue, setScannedValue] = useState("");
-  const [scannedGuest, setScannedGuest] = useState<Guest | null>(null);
-  const [searchSelectedGuest, setSearchSelectedGuest] =
+  const [scannedGuest, setScannedGuest] =
     useState<Guest | null>(null);
+
   const [message, setMessage] = useState("");
 
   const totalGuests = guests.length;
@@ -29,35 +34,6 @@ export default function EventControlPage() {
   const pendingGuests = guests.filter(
     (guest) => !guest.checkedIn,
   ).length;
-
-  const searchResults = useMemo(() => {
-    const value = searchTerm.trim().toLowerCase();
-
-    if (!value) {
-      return [];
-    }
-
-    return guests.filter((guest) => {
-      const fullName1 =
-        guest.firstName1 + " " + guest.lastName1;
-
-      const fullName2 =
-        guest.firstName2 + " " + guest.lastName2;
-
-      const coupleName =
-        guest.type === "couple"
-          ? fullName1 + " " + fullName2
-          : fullName1;
-
-      return (
-        fullName1.toLowerCase().includes(value) ||
-        fullName2.toLowerCase().includes(value) ||
-        coupleName.toLowerCase().includes(value) ||
-        guest.whatsapp.toLowerCase().includes(value) ||
-        guest.slug.toLowerCase().includes(value)
-      );
-    });
-  }, [guests, searchTerm]);
 
   const getGuestName = (guest: Guest) => {
     const firstPerson =
@@ -73,6 +49,48 @@ export default function EventControlPage() {
     return firstPerson;
   };
 
+  /*
+   * TABLEAU DES INVITÉS
+   */
+  const filteredGuests = useMemo(() => {
+    const value = tableSearch.trim().toLowerCase();
+
+    return guests.filter((guest) => {
+      if (
+        guestFilter === "pending" &&
+        guest.checkedIn
+      ) {
+        return false;
+      }
+
+      if (
+        guestFilter === "checkedIn" &&
+        !guest.checkedIn
+      ) {
+        return false;
+      }
+
+      if (!value) {
+        return true;
+      }
+
+      const guestName = getGuestName(guest);
+
+      return (
+        guestName.toLowerCase().includes(value) ||
+        guest.firstName1.toLowerCase().includes(value) ||
+        guest.lastName1.toLowerCase().includes(value) ||
+        guest.firstName2.toLowerCase().includes(value) ||
+        guest.lastName2.toLowerCase().includes(value) ||
+        guest.whatsapp.toLowerCase().includes(value) ||
+        guest.slug.toLowerCase().includes(value)
+      );
+    });
+  }, [guests, tableSearch, guestFilter]);
+
+  /*
+   * SCANNER QR
+   */
   const handleScanSuccess = (decodedText: string) => {
     console.log("🔥 QR DÉTECTÉ :", decodedText);
 
@@ -88,7 +106,8 @@ export default function EventControlPage() {
         .split("/")
         .filter(Boolean);
 
-      const invitationIndex = pathParts.indexOf("i");
+      const invitationIndex =
+        pathParts.indexOf("i");
 
       if (
         invitationIndex !== -1 &&
@@ -109,17 +128,21 @@ export default function EventControlPage() {
 
     if (!foundGuest) {
       setScannedGuest(null);
+
       setMessage(
         "QR détecté, mais aucun invité correspondant n'a été trouvé.",
       );
+
       return;
     }
 
     setScannedGuest(foundGuest);
-    setSearchSelectedGuest(null);
     setMessage("");
   };
 
+  /*
+   * CONFIRMER L'ENTRÉE
+   */
   const handleConfirmEntry = (guest: Guest) => {
     checkInGuest(guest.id);
 
@@ -133,10 +156,6 @@ export default function EventControlPage() {
       setScannedGuest(updatedGuest);
     }
 
-    if (searchSelectedGuest?.id === guest.id) {
-      setSearchSelectedGuest(updatedGuest);
-    }
-
     setMessage(
       "Entrée confirmée pour " +
         getGuestName(guest) +
@@ -144,6 +163,9 @@ export default function EventControlPage() {
     );
   };
 
+  /*
+   * ANNULER L'ENTRÉE
+   */
   const handleResetEntry = (guest: Guest) => {
     resetGuestCheckIn(guest.id);
 
@@ -157,10 +179,6 @@ export default function EventControlPage() {
       setScannedGuest(updatedGuest);
     }
 
-    if (searchSelectedGuest?.id === guest.id) {
-      setSearchSelectedGuest(updatedGuest);
-    }
-
     setMessage(
       "Entrée annulée pour " +
         getGuestName(guest) +
@@ -168,11 +186,35 @@ export default function EventControlPage() {
     );
   };
 
+  /*
+   * FORMAT HEURE
+   */
+  const formatCheckInTime = (
+    date: string | null,
+  ) => {
+    if (!date) {
+      return "—";
+    }
+
+    try {
+      return new Date(date).toLocaleTimeString(
+        "fr-FR",
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+        },
+      );
+    } catch {
+      return "—";
+    }
+  };
+
   return (
     <main className="min-h-screen bg-zinc-50">
       <EventNavigation />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
         {/* HEADER */}
         <div className="mb-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -204,6 +246,7 @@ export default function EventControlPage() {
 
         {/* STATISTIQUES */}
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
+
           <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-zinc-500">
               Total invités
@@ -233,155 +276,367 @@ export default function EventControlPage() {
               {pendingGuests}
             </p>
           </div>
+
         </div>
 
-        {/* RECHERCHE MANUELLE */}
-        <section className="mb-8 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <div className="mb-5">
-            <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
-              Contrôle manuel
-            </p>
+        {/* TABLEAU DES INVITÉS */}
+        <section className="mb-8 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
 
-            <h2 className="mt-1 text-2xl font-bold text-zinc-900">
-              🔎 Rechercher un invité
-            </h2>
+          <div className="border-b border-zinc-200 p-6">
 
-            <p className="mt-1 text-sm text-zinc-500">
-              Recherchez par nom, prénom, WhatsApp ou identifiant.
-            </p>
-          </div>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
 
-          <div className="relative">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(event) => {
-                setSearchTerm(event.target.value);
-                setSearchSelectedGuest(null);
-                setMessage("");
-              }}
-              placeholder="Nom, prénom ou numéro WhatsApp..."
-              className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-4 text-base text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
-            />
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
+                  Gestion des invités
+                </p>
 
-            {searchTerm.trim() && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchTerm("");
-                  setSearchSelectedGuest(null);
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-sm text-zinc-500 hover:bg-zinc-200"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+                <h2 className="mt-1 text-2xl font-bold text-zinc-900">
+                  📋 Liste des invités
+                </h2>
 
-          {searchTerm.trim() && (
-            <div className="mt-4">
-              {searchResults.length === 0 ? (
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-center">
-                  <p className="font-semibold text-amber-800">
-                    Aucun invité trouvé
-                  </p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Recherchez et contrôlez les entrées depuis une seule interface.
+                </p>
+              </div>
 
-                  <p className="mt-1 text-sm text-amber-700">
-                    Vérifiez l'orthographe ou le numéro WhatsApp.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-zinc-500">
-                    {searchResults.length} résultat
-                    {searchResults.length > 1 ? "s" : ""} trouvé
-                    {searchResults.length > 1 ? "s" : ""}
-                  </p>
+              <div className="text-sm text-zinc-500">
+                <span className="font-semibold text-zinc-900">
+                  {filteredGuests.length}
+                </span>{" "}
+                invité
+                {filteredGuests.length > 1
+                  ? "s"
+                  : ""}{" "}
+                affiché
+                {filteredGuests.length > 1
+                  ? "s"
+                  : ""}
+              </div>
 
-                  {searchResults.map((guest) => (
-                    <button
-                      key={guest.id}
-                      type="button"
-                      onClick={() => {
-                        setSearchSelectedGuest(guest);
-                        setMessage("");
-                      }}
-                      className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-left transition hover:border-green-400 hover:bg-green-50"
-                    >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                          <p className="font-bold text-zinc-900">
-                            {getGuestName(guest)}
-                          </p>
-
-                          <p className="mt-1 text-sm text-zinc-500">
-                            WhatsApp : {guest.whatsapp}
-                          </p>
-                        </div>
-
-                        <div>
-                          {guest.checkedIn ? (
-                            <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
-                              ✓ Entré
-                            </span>
-                          ) : (
-                            <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
-                              En attente
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
-          )}
 
-          {searchSelectedGuest && (
-            <div className="mt-5 rounded-2xl border border-green-200 bg-green-50 p-5">
-              <p className="text-xs font-bold uppercase tracking-wide text-green-700">
-                Invité sélectionné
-              </p>
+            {/* RECHERCHE UNIQUE + FILTRES */}
+            <div className="mt-6 flex flex-col gap-3 lg:flex-row">
 
-              <h3 className="mt-2 text-xl font-bold text-zinc-900">
-                {getGuestName(searchSelectedGuest)}
-              </h3>
+              <div className="relative flex-1">
 
-              <p className="mt-1 text-sm text-zinc-600">
-                WhatsApp : {searchSelectedGuest.whatsapp}
-              </p>
+                <input
+                  type="text"
+                  value={tableSearch}
+                  onChange={(event) =>
+                    setTableSearch(event.target.value)
+                  }
+                  placeholder="🔎 Rechercher par nom, WhatsApp ou identifiant..."
+                  className="w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 py-3 pr-10 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-100"
+                />
 
-              <div className="mt-4 flex flex-wrap gap-3">
-                {!searchSelectedGuest.checkedIn ? (
+                {tableSearch && (
                   <button
                     type="button"
                     onClick={() =>
-                      handleConfirmEntry(searchSelectedGuest)
+                      setTableSearch("")
                     }
-                    className="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-sm text-zinc-500 hover:bg-zinc-200"
+                    aria-label="Effacer la recherche"
                   >
-                    ✓ Confirmer l'entrée
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleResetEntry(searchSelectedGuest)
-                    }
-                    className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
-                  >
-                    ↩ Annuler l'entrée
+                    ✕
                   </button>
                 )}
+
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setGuestFilter("all")
+                  }
+                  className={
+                    guestFilter === "all"
+                      ? "rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white"
+                      : "rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-600 hover:bg-zinc-50"
+                  }
+                >
+                  Tous
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setGuestFilter("pending")
+                  }
+                  className={
+                    guestFilter === "pending"
+                      ? "rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-white"
+                      : "rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-600 hover:bg-zinc-50"
+                  }
+                >
+                  En attente
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setGuestFilter("checkedIn")
+                  }
+                  className={
+                    guestFilter === "checkedIn"
+                      ? "rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white"
+                      : "rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-600 hover:bg-zinc-50"
+                  }
+                >
+                  Entrés
+                </button>
+
               </div>
             </div>
-          )}
+
+          </div>
+
+          {/* VERSION MOBILE */}
+          <div className="divide-y divide-zinc-200 md:hidden">
+
+            {filteredGuests.length === 0 ? (
+              <div className="p-8 text-center text-sm text-zinc-500">
+                Aucun invité ne correspond à votre recherche.
+              </div>
+            ) : (
+              filteredGuests.map((guest) => (
+                <div
+                  key={guest.id}
+                  className="p-5"
+                >
+
+                  <div className="flex items-start justify-between gap-4">
+
+                    <div>
+                      <p className="font-bold text-zinc-900">
+                        {getGuestName(guest)}
+                      </p>
+
+                      <p className="mt-1 text-sm text-zinc-500">
+                        {guest.whatsapp}
+                      </p>
+                    </div>
+
+                    {guest.checkedIn ? (
+                      <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+                        ✓ Entré
+                      </span>
+                    ) : (
+                      <span className="shrink-0 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
+                        En attente
+                      </span>
+                    )}
+
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+
+                    <div>
+                      <p className="text-xs text-zinc-400">
+                        Type
+                      </p>
+
+                      <p className="mt-1 font-medium text-zinc-700">
+                        {guest.type === "couple"
+                          ? "Couple"
+                          : "Individuel"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-zinc-400">
+                        Heure
+                      </p>
+
+                      <p className="mt-1 font-medium text-zinc-700">
+                        {formatCheckInTime(
+                          guest.checkedInAt,
+                        )}
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <div className="mt-4">
+
+                    {!guest.checkedIn ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleConfirmEntry(guest)
+                        }
+                        className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-700"
+                      >
+                        ✓ Confirmer l'entrée
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleResetEntry(guest)
+                        }
+                        className="w-full rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-100"
+                      >
+                        ↩ Annuler l'entrée
+                      </button>
+                    )}
+
+                  </div>
+
+                </div>
+              ))
+            )}
+
+          </div>
+
+          {/* VERSION DESKTOP */}
+          <div className="hidden overflow-x-auto md:block">
+
+            <table className="w-full min-w-[760px]">
+
+              <thead className="bg-zinc-50">
+
+                <tr className="border-b border-zinc-200 text-left">
+
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wide text-zinc-500">
+                    Invité
+                  </th>
+
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wide text-zinc-500">
+                    WhatsApp
+                  </th>
+
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wide text-zinc-500">
+                    Type
+                  </th>
+
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wide text-zinc-500">
+                    Statut
+                  </th>
+
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-wide text-zinc-500">
+                    Heure d'entrée
+                  </th>
+
+                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-zinc-500">
+                    Action
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody className="divide-y divide-zinc-100">
+
+                {filteredGuests.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="px-6 py-12 text-center text-sm text-zinc-500"
+                    >
+                      Aucun invité ne correspond à votre recherche.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredGuests.map((guest) => (
+                    <tr
+                      key={guest.id}
+                      className="transition hover:bg-zinc-50"
+                    >
+
+                      <td className="px-6 py-5">
+
+                        <p className="font-semibold text-zinc-900">
+                          {getGuestName(guest)}
+                        </p>
+
+                        <p className="mt-1 text-xs text-zinc-400">
+                          #{guest.id}
+                        </p>
+
+                      </td>
+
+                      <td className="px-6 py-5 text-sm text-zinc-600">
+                        {guest.whatsapp}
+                      </td>
+
+                      <td className="px-6 py-5">
+
+                        <span className="rounded-lg bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-700">
+                          {guest.type === "couple"
+                            ? "Couple"
+                            : "Individuel"}
+                        </span>
+
+                      </td>
+
+                      <td className="px-6 py-5">
+
+                        {guest.checkedIn ? (
+                          <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+                            ✓ Entré
+                          </span>
+                        ) : (
+                          <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
+                            En attente
+                          </span>
+                        )}
+
+                      </td>
+
+                      <td className="px-6 py-5 text-sm text-zinc-600">
+                        {formatCheckInTime(
+                          guest.checkedInAt,
+                        )}
+                      </td>
+
+                      <td className="px-6 py-5 text-right">
+
+                        {!guest.checkedIn ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleConfirmEntry(guest)
+                            }
+                            className="rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-green-700"
+                          >
+                            ✓ Confirmer
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleResetEntry(guest)
+                            }
+                            className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100"
+                          >
+                            Annuler
+                          </button>
+                        )}
+
+                      </td>
+
+                    </tr>
+                  ))
+                )}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
         </section>
 
-        {/* SCANNER */}
+        {/* SCANNER QR */}
         <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
+
           <div className="mb-6">
+
             <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
               Contrôle QR
             </p>
@@ -393,6 +648,7 @@ export default function EventControlPage() {
             <p className="mt-1 text-sm text-zinc-500">
               Scannez le QR code présent sur l'invitation de l'invité.
             </p>
+
           </div>
 
           <QRScanner
@@ -402,6 +658,7 @@ export default function EventControlPage() {
 
           {scannedValue && (
             <div className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+
               <p className="text-xs font-bold uppercase tracking-wide text-zinc-500">
                 Dernier QR scanné
               </p>
@@ -409,13 +666,17 @@ export default function EventControlPage() {
               <p className="mt-2 break-all text-sm text-zinc-700">
                 {scannedValue}
               </p>
+
             </div>
           )}
 
           {scannedGuest && (
             <div className="mt-6 rounded-3xl border border-green-200 bg-green-50 p-6">
+
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
                 <div>
+
                   <p className="text-xs font-bold uppercase tracking-wide text-green-700">
                     Invité identifié
                   </p>
@@ -437,9 +698,11 @@ export default function EventControlPage() {
                       En attente d'entrée
                     </span>
                   )}
+
                 </div>
 
                 <div>
+
                   {!scannedGuest.checkedIn ? (
                     <button
                       type="button"
@@ -461,8 +724,11 @@ export default function EventControlPage() {
                       ↩ Annuler l'entrée
                     </button>
                   )}
+
                 </div>
+
               </div>
+
             </div>
           )}
 
@@ -472,12 +738,16 @@ export default function EventControlPage() {
             </div>
           )}
 
-          {!scannedGuest && scannedValue && !message && (
-            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
-              QR détecté, mais l'invité correspondant n'a pas été trouvé.
-            </div>
-          )}
+          {!scannedGuest &&
+            scannedValue &&
+            !message && (
+              <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
+                QR détecté, mais l'invité correspondant n'a pas été trouvé.
+              </div>
+            )}
+
         </section>
+
       </div>
     </main>
   );
