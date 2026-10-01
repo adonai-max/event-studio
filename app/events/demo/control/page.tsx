@@ -1,6 +1,10 @@
 "use client";
 
+import { useState } from "react";
+
 import EventNavigation from "../../../components/EventNavigation";
+import QRScanner from "../../../../components/QRScanner";
+
 import {
   Guest,
   GuestStatus,
@@ -8,7 +12,18 @@ import {
 } from "../../../context/EventContext";
 
 export default function EventControlPage() {
-  const { event, guests, updateGuestStatus } = useEvent();
+  const {
+    event,
+    guests,
+    updateGuestStatus,
+    checkInGuest,
+  } = useEvent();
+
+  const [scannedGuest, setScannedGuest] =
+    useState<Guest | null>(null);
+
+  const [scanMessage, setScanMessage] = useState("");
+  const [scanError, setScanError] = useState("");
 
   const eventName = event.name || "Mon événement";
 
@@ -26,10 +41,84 @@ export default function EventControlPage() {
     (guest) => guest.status === "declined",
   ).length;
 
+  const checkedInGuests = guests.filter(
+    (guest) => guest.checkedIn,
+  ).length;
+
   const confirmationRate =
     totalGuests === 0
       ? 0
       : Math.round((confirmedGuests / totalGuests) * 100);
+
+  const checkInRate =
+    totalGuests === 0
+      ? 0
+      : Math.round((checkedInGuests / totalGuests) * 100);
+
+  const handleScanSuccess = (decodedText: string) => {
+    const scannedValue = decodedText.trim();
+
+    setScanError("");
+    setScanMessage("");
+
+    const guest = guests.find(
+      (currentGuest) =>
+        currentGuest.slug === scannedValue ||
+        String(currentGuest.id) === scannedValue,
+    );
+
+    if (!guest) {
+      setScannedGuest(null);
+      setScanError(
+        "Aucun invité correspondant à ce QR code n'a été trouvé.",
+      );
+      return;
+    }
+
+    setScannedGuest(guest);
+
+    if (guest.checkedIn) {
+      setScanMessage(
+        "Cette invitation a déjà été enregistrée à l'entrée.",
+      );
+    } else {
+      setScanMessage(
+        "Invité identifié. Vous pouvez maintenant confirmer son entrée.",
+      );
+    }
+  };
+
+  const handleConfirmEntry = () => {
+    if (!scannedGuest) return;
+
+    if (scannedGuest.checkedIn) {
+      return;
+    }
+
+    checkInGuest(scannedGuest.id);
+    setScanMessage(
+      "Entrée confirmée avec succès. Bienvenue à l'événement !",
+    );
+
+    setScannedGuest({
+      ...scannedGuest,
+      checkedIn: true,
+      checkedInAt: new Date().toISOString(),
+    });
+  };
+
+  const handleScanError = () => {
+    // Les erreurs normales de lecture QR sont fréquentes pendant
+    // l'utilisation de la caméra. Nous n'affichons donc rien ici.
+  };
+
+  const getGuestName = (guest: Guest) => {
+    if (guest.type === "couple") {
+      return `${guest.firstName1} ${guest.lastName1} & ${guest.firstName2} ${guest.lastName2}`;
+    }
+
+    return `${guest.firstName1} ${guest.lastName1}`;
+  };
 
   return (
     <main className="min-h-screen bg-zinc-50">
@@ -54,7 +143,168 @@ export default function EventControlPage() {
           </p>
         </header>
 
-        <section className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        {/* SCANNER QR */}
+        <section className="mt-10 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="mb-6">
+            <p className="text-sm font-semibold text-emerald-600">
+              CONTRÔLE D'ACCÈS
+            </p>
+
+            <h2 className="mt-1 text-2xl font-bold text-zinc-900">
+              Scanner une invitation
+            </h2>
+
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
+              Scannez le QR code présent sur l'invitation afin
+              d'identifier automatiquement l'invité et d'enregistrer
+              son entrée.
+            </p>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+            <div>
+              <QRScanner
+                onScanSuccess={handleScanSuccess}
+                onScanError={handleScanError}
+              />
+            </div>
+
+            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+              {!scannedGuest && !scanError && (
+                <div className="flex min-h-64 items-center justify-center text-center">
+                  <div>
+                    <div className="text-5xl">🎟️</div>
+
+                    <h3 className="mt-4 text-lg font-semibold text-zinc-900">
+                      En attente d'un scan
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-zinc-500">
+                      Scannez une invitation pour afficher les
+                      informations de l'invité.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {scanError && (
+                <div className="flex min-h-64 items-center justify-center text-center">
+                  <div>
+                    <div className="text-5xl">❌</div>
+
+                    <h3 className="mt-4 text-lg font-semibold text-red-700">
+                      QR code non reconnu
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-zinc-600">
+                      {scanError}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {scannedGuest && (
+                <div>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                        Invité identifié
+                      </p>
+
+                      <h3 className="mt-2 text-2xl font-bold text-zinc-900">
+                        {getGuestName(scannedGuest)}
+                      </h3>
+                    </div>
+
+                    {scannedGuest.checkedIn ? (
+                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                        Entré
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                        Non entré
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-6 space-y-3 text-sm">
+                    <div className="flex justify-between gap-4">
+                      <span className="text-zinc-500">
+                        Type d'invitation
+                      </span>
+
+                      <span className="font-medium text-zinc-900">
+                        {scannedGuest.type === "couple"
+                          ? "Couple"
+                          : "Individuelle"}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                      <span className="text-zinc-500">
+                        WhatsApp
+                      </span>
+
+                      <span className="font-medium text-zinc-900">
+                        {scannedGuest.whatsapp}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                      <span className="text-zinc-500">
+                        Confirmation
+                      </span>
+
+                      <StatusBadge status={scannedGuest.status} />
+                    </div>
+
+                    {scannedGuest.checkedInAt && (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-zinc-500">
+                          Entrée enregistrée
+                        </span>
+
+                        <span className="font-medium text-zinc-900">
+                          {new Date(
+                            scannedGuest.checkedInAt,
+                          ).toLocaleTimeString("fr-FR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-6">
+                    {scannedGuest.checkedIn ? (
+                      <div className="rounded-xl bg-emerald-50 p-4 text-sm font-medium text-emerald-700">
+                        ✓ Cette invitation a déjà été enregistrée.
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleConfirmEntry}
+                        className="w-full rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700"
+                      >
+                        ✓ Confirmer l'entrée
+                      </button>
+                    )}
+                  </div>
+
+                  {scanMessage && (
+                    <div className="mt-4 rounded-xl bg-indigo-50 p-4 text-sm font-medium text-indigo-700">
+                      {scanMessage}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* STATISTIQUES */}
+        <section className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-6">
           <Stat
             title="Total invités"
             value={String(totalGuests)}
@@ -80,8 +330,14 @@ export default function EventControlPage() {
           />
 
           <Stat
-            title="Confirmation"
-            value={`${confirmationRate}%`}
+            title="Entrés"
+            value={String(checkedInGuests)}
+            icon="🚪"
+          />
+
+          <Stat
+            title="Présence"
+            value={`${checkInRate}%`}
             icon="📈"
           />
         </section>
@@ -118,8 +374,8 @@ export default function EventControlPage() {
                 </h2>
 
                 <p className="mt-1 text-sm text-zinc-500">
-                  Modifiez le statut d'un invité directement depuis Event
-                  Control.
+                  Modifiez le statut d'un invité directement depuis
+                  Event Control.
                 </p>
               </div>
 
@@ -176,7 +432,9 @@ function Stat({
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-zinc-500">{title}</p>
+        <p className="text-sm font-medium text-zinc-500">
+          {title}
+        </p>
 
         <span className="text-xl">{icon}</span>
       </div>
@@ -259,6 +517,12 @@ function GuestControlRow({
             </h3>
 
             <StatusBadge status={guest.status} />
+
+            {guest.checkedIn && (
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Entré
+              </span>
+            )}
           </div>
 
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500">
@@ -269,6 +533,18 @@ function GuestControlRow({
             </span>
 
             <span>WhatsApp : {guest.whatsapp}</span>
+
+            {guest.checkedInAt && (
+              <span>
+                Entrée :{" "}
+                {new Date(
+                  guest.checkedInAt,
+                ).toLocaleTimeString("fr-FR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            )}
           </div>
         </div>
 
@@ -280,7 +556,7 @@ function GuestControlRow({
               onStatusChange(guest.id, "confirmed")
             }
             className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-            activeClassName="bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
+            activeClassName="border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
           />
 
           <StatusButton
@@ -290,7 +566,7 @@ function GuestControlRow({
               onStatusChange(guest.id, "pending")
             }
             className="border-amber-200 text-amber-700 hover:bg-amber-50"
-            activeClassName="bg-amber-500 text-white border-amber-500 hover:bg-amber-600"
+            activeClassName="border-amber-500 bg-amber-500 text-white hover:bg-amber-600"
           />
 
           <StatusButton
@@ -300,7 +576,7 @@ function GuestControlRow({
               onStatusChange(guest.id, "declined")
             }
             className="border-red-200 text-red-700 hover:bg-red-50"
-            activeClassName="bg-red-600 text-white border-red-600 hover:bg-red-700"
+            activeClassName="border-red-600 bg-red-600 text-white hover:bg-red-700"
           />
         </div>
       </div>
