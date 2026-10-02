@@ -146,19 +146,7 @@ export default function DashboardPage() {
 
             
 
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-medium text-zinc-500">
-                Données
-              </p>
-
-              <p className="mt-2 text-lg font-bold text-green-600">
-                Séparées
-              </p>
-
-              <p className="mt-2 text-xs text-zinc-400">
-                Les invités ne sont jamais mélangés entre événements.
-              </p>
-            </div>
+            
 
           </div>
         </section>
