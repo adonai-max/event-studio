@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import EventNavigation from "../../../components/EventNavigation";
-import { useEvent } from "../../../context/EventContext";
+import { supabase } from "../../../../lib/supabase";
 
 const colorPalettes = [
   { name: "Élégant", color: "#4f46e5" },
@@ -20,6 +21,16 @@ const invitationStyles = [
   { name: "Luxe", value: "luxury" },
   { name: "Moderne", value: "modern" },
 ];
+
+type EventData = {
+  id: string;
+  name: string;
+  type: string | null;
+  date: string | null;
+  time: string | null;
+  location: string | null;
+  description: string | null;
+};
 
 function getStyleClasses(style: string) {
   switch (style) {
@@ -70,15 +81,144 @@ function getMessageClasses(style: string) {
 }
 
 export default function InvitationBuilderPage() {
-  const { event } = useEvent();
+  const params = useParams();
+  const eventId = String(params.eventId);
 
-  const [message, setMessage] = useState(
-    event.description ||
-      "Nous avons le plaisir de vous inviter à partager avec nous ce moment exceptionnel.",
-  );
-
+  const [event, setEvent] = useState<EventData | null>(null);
+  const [message, setMessage] = useState("");
   const [accentColor, setAccentColor] = useState("#4f46e5");
   const [invitationStyle, setInvitationStyle] = useState("elegant");
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [messageStatus, setMessageStatus] = useState("");
+
+  useEffect(() => {
+    const loadEvent = async () => {
+      try {
+        setLoading(true);
+
+        const {
+          data: {
+            user,
+          },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setEvent(null);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("events")
+          .select(
+            "id, name, type, date, time, location, description",
+          )
+          .eq("id", eventId)
+          .eq("owner_id", user.id)
+          .single();
+
+        if (error || !data) {
+          setEvent(null);
+          return;
+        }
+
+        setEvent(data);
+
+        setMessage(
+          data.description ||
+            "Nous avons le plaisir de vous inviter à partager avec nous ce moment exceptionnel.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadEvent();
+  }, [eventId]);
+
+  const handleSave = async () => {
+    if (!event) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setMessageStatus("");
+
+      const { data, error } = await supabase
+        .from("events")
+        .update({
+          description: message,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", event.id)
+        .select(
+          "id, name, type, date, time, location, description",
+        )
+        .single();
+
+      if (error) {
+        setMessageStatus(
+          "Impossible d'enregistrer les modifications.",
+        );
+        return;
+      }
+
+      setEvent(data);
+      setMessageStatus("✓ Invitation enregistrée dans Supabase.");
+
+      setTimeout(() => {
+        setMessageStatus("");
+      }, 3000);
+    } catch {
+      setMessageStatus(
+        "Une erreur est survenue pendant l'enregistrement.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-zinc-100 px-6">
+        <section className="w-full max-w-lg rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+          <div className="text-5xl">⏳</div>
+
+          <h1 className="mt-5 text-2xl font-bold text-zinc-900">
+            Chargement de l'invitation...
+          </h1>
+
+          <p className="mt-3 text-zinc-500">
+            Récupération de l'événement depuis Supabase.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (!event) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-zinc-100 px-6">
+        <section className="w-full max-w-lg rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+          <div className="text-5xl">📨</div>
+
+          <h1 className="mt-5 text-2xl font-bold text-zinc-900">
+            Événement introuvable
+          </h1>
+
+          <p className="mt-3 leading-7 text-zinc-500">
+            Cet événement n'existe pas ou ne vous appartient pas.
+          </p>
+
+          <p className="mt-6 text-xs font-semibold tracking-wide text-zinc-400">
+            Event Studio
+          </p>
+        </section>
+      </main>
+    );
+  }
 
   const eventName = event.name || "Mon événement";
   const eventDate = event.date || "";
@@ -88,7 +228,7 @@ export default function InvitationBuilderPage() {
   return (
     <main className="min-h-screen bg-zinc-100">
       <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-        <EventNavigation eventId="demo" />
+        <EventNavigation eventId={eventId} />
 
         <header className="mb-8">
           <p className="text-sm font-semibold text-indigo-600">
@@ -100,7 +240,11 @@ export default function InvitationBuilderPage() {
           </h1>
 
           <p className="mt-3 text-zinc-600">
-            Créez et personnalisez votre invitation avec un aperçu en temps réel.
+            Créez et personnalisez l'invitation de{" "}
+            <span className="font-semibold text-zinc-900">
+              {eventName}
+            </span>
+            .
           </p>
         </header>
 
@@ -207,11 +351,11 @@ export default function InvitationBuilderPage() {
                       key={style.value}
                       type="button"
                       onClick={() => setInvitationStyle(style.value)}
-                      className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
+                      className={"rounded-lg border px-3 py-2 text-sm font-medium transition " + (
                         invitationStyle === style.value
                           ? "border-indigo-500 bg-indigo-50 text-indigo-700"
                           : "border-zinc-200 text-zinc-700 hover:bg-zinc-50"
-                      }`}
+                      )}
                     >
                       {style.name}
                     </button>
@@ -268,11 +412,21 @@ export default function InvitationBuilderPage() {
 
               <button
                 type="button"
-                className="w-full rounded-xl px-5 py-3 font-semibold text-white transition hover:opacity-90"
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full rounded-xl px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 style={{ backgroundColor: accentColor }}
               >
-                Personnaliser le design
+                {saving
+                  ? "Enregistrement..."
+                  : "💾 Enregistrer l'invitation"}
               </button>
+
+              {messageStatus && (
+                <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+                  {messageStatus}
+                </p>
+              )}
             </div>
           </section>
 
@@ -295,9 +449,9 @@ export default function InvitationBuilderPage() {
 
             <div className="mt-6 flex min-h-[600px] items-center justify-center rounded-2xl bg-zinc-100 p-6">
               <div
-                className={`w-full max-w-md p-10 text-center ${getStyleClasses(
+                className={"w-full max-w-md p-10 text-center " + getStyleClasses(
                   invitationStyle,
-                )}`}
+                )}
               >
                 <p
                   className="text-sm font-medium uppercase tracking-[0.25em]"
@@ -320,13 +474,13 @@ export default function InvitationBuilderPage() {
                 </p>
 
                 <div
-                  className={`mt-8 space-y-2 text-sm ${
+                  className={"mt-8 space-y-2 text-sm " + (
                     invitationStyle === "luxury"
                       ? "text-zinc-300"
                       : invitationStyle === "romantic"
                         ? "text-pink-800"
                         : "text-zinc-700"
-                  }`}
+                  )}
                 >
                   <p>📅 {eventDate || "Date à définir"}</p>
                   <p>🕐 {eventTime || "Heure à définir"}</p>

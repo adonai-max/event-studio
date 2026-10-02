@@ -33,7 +33,7 @@ export default function EventPage() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-        <EventNavigation />
+        <EventNavigation eventId="demo" />
 
         <header className="flex flex-col gap-6 border-b border-zinc-200 pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>

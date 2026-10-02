@@ -4,24 +4,118 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useParams } from "next/navigation";
 import EventNavigation from "../../../../components/EventNavigation";
-import { useEvent } from "../../../../context/EventContext";
+import { supabase } from "../../../../../lib/supabase";
+
+type GuestType = "individual" | "couple";
+type GuestStatus = "pending" | "confirmed" | "declined";
+
+type Guest = {
+  id: string;
+  eventId: string;
+  type: GuestType;
+  firstName1: string;
+  lastName1: string;
+  firstName2: string;
+  lastName2: string;
+  whatsapp: string;
+  status: GuestStatus;
+  slug: string;
+  checkedIn: boolean;
+  checkedInAt: string | null;
+};
+
+type EventInfo = {
+  id: string;
+  name: string;
+};
+
+function mapGuest(row: any): Guest {
+  return {
+    id: row.id,
+    eventId: row.event_id,
+    type: row.type,
+    firstName1: row.first_name_1,
+    lastName1: row.last_name_1,
+    firstName2: row.first_name_2 ?? "",
+    lastName2: row.last_name_2 ?? "",
+    whatsapp: row.whatsapp ?? "",
+    status: row.status,
+    slug: row.slug,
+    checkedIn: row.checked_in ?? false,
+    checkedInAt: row.checked_in_at ?? null,
+  };
+}
 
 export default function GuestDetailPage() {
   const params = useParams();
-  const { guests } = useEvent();
 
+  const eventId = String(params.eventId);
+  const guestId = String(params.id);
+
+  const [event, setEvent] = useState<EventInfo | null>(null);
+  const [guest, setGuest] = useState<Guest | null>(null);
+
+  const [loading, setLoading] = useState(true);
   const [qrCode, setQrCode] = useState("");
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const guestId = String(params.id);
+  useEffect(() => {
+    const loadGuest = async () => {
+      try {
+        setLoading(true);
 
-  const guest = guests.find(
-    (item) => item.id === guestId,
-  );
+        const {
+          data: {
+            user,
+          },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setEvent(null);
+          setGuest(null);
+          return;
+        }
+
+        const { data: eventData, error: eventError } = await supabase
+          .from("events")
+          .select("id, name")
+          .eq("id", eventId)
+          .eq("owner_id", user.id)
+          .single();
+
+        if (eventError || !eventData) {
+          setEvent(null);
+          setGuest(null);
+          return;
+        }
+
+        const { data: guestData, error: guestError } = await supabase
+          .from("guests")
+          .select("*")
+          .eq("id", guestId)
+          .eq("event_id", eventId)
+          .single();
+
+        if (guestError || !guestData) {
+          setEvent(eventData);
+          setGuest(null);
+          return;
+        }
+
+        setEvent(eventData);
+        setGuest(mapGuest(guestData));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGuest();
+  }, [eventId, guestId]);
 
   useEffect(() => {
     if (!guest) {
+      setQrCode("");
       return;
     }
 
@@ -29,7 +123,8 @@ export default function GuestDetailPage() {
       try {
         setQrError(false);
 
-        const invitationUrl = `${window.location.origin}/i/${guest.slug}`;
+        const invitationUrl =
+          window.location.origin + "/i/" + guest.slug;
 
         const qr = await QRCode.toDataURL(invitationUrl, {
           width: 500,
@@ -47,7 +142,25 @@ export default function GuestDetailPage() {
     generateQR();
   }, [guest]);
 
-  if (!guest) {
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-6">
+        <section className="w-full max-w-lg rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+          <div className="text-5xl">⏳</div>
+
+          <h1 className="mt-5 text-2xl font-bold text-zinc-900">
+            Chargement...
+          </h1>
+
+          <p className="mt-3 text-zinc-500">
+            Récupération des informations de l'invité.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (!event || !guest) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-6">
         <section className="w-full max-w-lg rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
@@ -58,7 +171,7 @@ export default function GuestDetailPage() {
           </h1>
 
           <p className="mt-3 leading-7 text-zinc-500">
-            Aucun invité ne correspond à cet identifiant.
+            Aucun invité ne correspond à cet identifiant ou cet événement.
           </p>
 
           <p className="mt-6 text-xs font-semibold tracking-wide text-zinc-400">
@@ -71,13 +184,19 @@ export default function GuestDetailPage() {
 
   const guestName =
     guest.type === "couple"
-      ? `${guest.firstName1} ${guest.lastName1} & ${guest.firstName2} ${guest.lastName2}`
-      : `${guest.firstName1} ${guest.lastName1}`;
+      ? guest.firstName1 +
+        " " +
+        guest.lastName1 +
+        " & " +
+        guest.firstName2 +
+        " " +
+        guest.lastName2
+      : guest.firstName1 + " " + guest.lastName1;
 
   const invitationUrl =
     typeof window !== "undefined"
-      ? `${window.location.origin}/i/${guest.slug}`
-      : `/i/${guest.slug}`;
+      ? window.location.origin + "/i/" + guest.slug
+      : "/i/" + guest.slug;
 
   const handleDownloadQr = () => {
     if (!qrCode) {
@@ -87,7 +206,7 @@ export default function GuestDetailPage() {
     const link = document.createElement("a");
 
     link.href = qrCode;
-    link.download = `event-studio-qr-${guest.slug}.png`;
+    link.download = "event-studio-qr-" + guest.slug + ".png";
 
     document.body.appendChild(link);
     link.click();
@@ -95,9 +214,16 @@ export default function GuestDetailPage() {
   };
 
   const handleWhatsAppShare = () => {
-    const message = `Bonjour ${guest.firstName1},%0A%0AVous êtes cordialement invité(e) à notre événement.%0A%0AVotre invitation personnelle :%0A${encodeURIComponent(invitationUrl)}%0A%0AMerci de confirmer votre présence.`;
+    const message =
+      "Bonjour " +
+      guest.firstName1 +
+      ",%0A%0AVous êtes cordialement invité(e) à notre événement " +
+      event.name +
+      ".%0A%0AVotre invitation personnelle :%0A" +
+      encodeURIComponent(invitationUrl) +
+      "%0A%0AMerci de confirmer votre présence.";
 
-    const whatsappUrl = `https://wa.me/?text=${message}`;
+    const whatsappUrl = "https://wa.me/?text=" + message;
 
     window.open(whatsappUrl, "_blank");
   };
@@ -119,7 +245,7 @@ export default function GuestDetailPage() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto max-w-5xl px-6 py-10 lg:px-8">
-        <EventNavigation eventId="demo" />
+        <EventNavigation eventId={eventId} />
 
         <header className="border-b border-zinc-200 pb-8">
           <p className="text-sm font-semibold text-indigo-600">
@@ -131,6 +257,10 @@ export default function GuestDetailPage() {
           </h1>
 
           <p className="mt-3 text-zinc-600">
+            {event.name}
+          </p>
+
+          <p className="mt-2 text-sm text-zinc-500">
             Gérez le QR Code personnel associé à cette invitation.
           </p>
         </header>
@@ -157,7 +287,7 @@ export default function GuestDetailPage() {
 
               <GuestInfo
                 label="WhatsApp"
-                value={guest.whatsapp}
+                value={guest.whatsapp || "Non renseigné"}
               />
 
               <GuestInfo
@@ -168,6 +298,15 @@ export default function GuestDetailPage() {
                     : guest.status === "declined"
                       ? "Refusé"
                       : "En attente"
+                }
+              />
+
+              <GuestInfo
+                label="Entrée"
+                value={
+                  guest.checkedIn
+                    ? "✓ Entrée enregistrée"
+                    : "Non enregistrée"
                 }
               />
 
@@ -220,7 +359,7 @@ export default function GuestDetailPage() {
                 <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
                   <img
                     src={qrCode}
-                    alt={`QR Code de ${guestName}`}
+                    alt={"QR Code de " + guestName}
                     width={500}
                     height={500}
                     className="h-80 w-80 max-w-full rounded-xl"

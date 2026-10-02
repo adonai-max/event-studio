@@ -1,26 +1,121 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Guest, useEvent } from "../../../context/EventContext";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import EventNavigation from "../../../components/EventNavigation";
 import QRScanner from "../../../../components/QRScanner";
+import { supabase } from "../../../../lib/supabase";
+
+type GuestType = "individual" | "couple";
+type GuestStatus = "pending" | "confirmed" | "declined";
+
+type Guest = {
+  id: string;
+  eventId: string;
+  type: GuestType;
+  firstName1: string;
+  lastName1: string;
+  firstName2: string;
+  lastName2: string;
+  whatsapp: string;
+  status: GuestStatus;
+  slug: string;
+  checkedIn: boolean;
+  checkedInAt: string | null;
+};
+
+type EventData = {
+  id: string;
+  name: string;
+};
+
+function mapGuest(row: any): Guest {
+  return {
+    id: row.id,
+    eventId: row.event_id,
+    type: row.type,
+    firstName1: row.first_name_1,
+    lastName1: row.last_name_1,
+    firstName2: row.first_name_2 ?? "",
+    lastName2: row.last_name_2 ?? "",
+    whatsapp: row.whatsapp ?? "",
+    status: row.status,
+    slug: row.slug,
+    checkedIn: row.checked_in ?? false,
+    checkedInAt: row.checked_in_at ?? null,
+  };
+}
 
 export default function EventControlPage() {
-  const {
-    event,
-    guests,
-    checkInGuest,
-    resetGuestCheckIn,
-  } = useEvent();
+  const params = useParams();
+  const eventId = String(params.eventId);
+
+  const [event, setEvent] = useState<EventData | null>(null);
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [pageError, setPageError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [scannedValue, setScannedValue] = useState("");
-  const [scannedGuest, setScannedGuest] =
-    useState<Guest | null>(null);
+  const [scannedGuest, setScannedGuest] = useState<Guest | null>(null);
   const [searchSelectedGuest, setSearchSelectedGuest] =
     useState<Guest | null>(null);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const loadData = async () => {
+    setLoading(true);
+    setPageError("");
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      setPageError("Vous devez être connecté pour accéder à Event Control.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: eventData, error: eventError } = await supabase
+      .from("events")
+      .select("id, name")
+      .eq("id", eventId)
+      .eq("owner_id", user.id)
+      .single();
+
+    if (eventError || !eventData) {
+      setPageError("Événement introuvable ou accès non autorisé.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: guestsData, error: guestsError } = await supabase
+      .from("guests")
+      .select("*")
+      .eq("event_id", eventId)
+      .order("created_at", { ascending: true });
+
+    if (guestsError) {
+      setPageError(
+        "Impossible de charger la liste des invités : " +
+          guestsError.message,
+      );
+      setLoading(false);
+      return;
+    }
+
+    setEvent(eventData);
+    setGuests((guestsData ?? []).map(mapGuest));
+    setLoading(false);
+  };
+
+  // Chargement initial
+  useEffect(() => {
+    void loadData();
+  }, [eventId]);
 
   const totalGuests = guests.length;
 
@@ -40,25 +135,15 @@ export default function EventControlPage() {
     (guest) => guest.status === "declined",
   ).length;
 
-  const pendingEntryGuests = guests.filter(
-    (guest) =>
-      guest.status === "confirmed" &&
-      !guest.checkedIn,
-  ).length;
-
   const confirmationRate =
     totalGuests === 0
       ? 0
-      : Math.round(
-          (confirmedGuests / totalGuests) * 100,
-        );
+      : Math.round((confirmedGuests / totalGuests) * 100);
 
   const checkInRate =
     totalGuests === 0
       ? 0
-      : Math.round(
-          (checkedInGuests / totalGuests) * 100,
-        );
+      : Math.round((checkedInGuests / totalGuests) * 100);
 
   const searchResults = useMemo(() => {
     const value = searchTerm.trim().toLowerCase();
@@ -107,6 +192,30 @@ export default function EventControlPage() {
   const clearMessages = () => {
     setMessage("");
     setErrorMessage("");
+  };
+
+  const updateGuestLocally = (
+    updatedGuest: Guest,
+  ) => {
+    setGuests((current) =>
+      current.map((guest) =>
+        guest.id === updatedGuest.id
+          ? updatedGuest
+          : guest,
+      ),
+    );
+
+    setScannedGuest((current) =>
+      current?.id === updatedGuest.id
+        ? updatedGuest
+        : current,
+    );
+
+    setSearchSelectedGuest((current) =>
+      current?.id === updatedGuest.id
+        ? updatedGuest
+        : current,
+    );
   };
 
   const findGuestFromQr = (decodedText: string) => {
@@ -199,62 +308,84 @@ export default function EventControlPage() {
       return;
     }
 
-    await checkInGuest(guest.id);
+    setLoadingAction(true);
 
     const checkedInAt = new Date().toISOString();
 
-    setScannedGuest((current) =>
-      current?.id === guest.id
-        ? {
-            ...current,
-            checkedIn: true,
-            checkedInAt,
-          }
-        : current,
-    );
+    const { data, error } = await supabase
+      .from("guests")
+      .update({
+        checked_in: true,
+        checked_in_at: checkedInAt,
+        updated_at: checkedInAt,
+      })
+      .eq("id", guest.id)
+      .eq("event_id", eventId)
+      .select("*")
+      .single();
 
-    setSearchSelectedGuest((current) =>
-      current?.id === guest.id
-        ? {
-            ...current,
-            checkedIn: true,
-            checkedInAt,
-          }
-        : current,
-    );
+    if (error || !data) {
+      setLoadingAction(false);
+      setErrorMessage(
+        error?.message ||
+          "Impossible d'enregistrer l'entrée.",
+      );
+      return;
+    }
+
+    const updatedGuest = mapGuest(data);
+
+    updateGuestLocally(updatedGuest);
+    setLoadingAction(false);
 
     setMessage(
-      `Entrée confirmée pour ${getGuestName(guest)}.`,
+      `Entrée confirmée pour ${getGuestName(updatedGuest)}.`,
     );
   };
 
   const handleResetEntry = async (guest: Guest) => {
     clearMessages();
+    setLoadingAction(true);
 
-    await resetGuestCheckIn(guest.id);
+    const { data, error } = await supabase
+      .from("guests")
+      .update({
+        checked_in: false,
+        checked_in_at: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", guest.id)
+      .eq("event_id", eventId)
+      .select("*")
+      .single();
 
-    setScannedGuest((current) =>
-      current?.id === guest.id
-        ? {
-            ...current,
-            checkedIn: false,
-            checkedInAt: null,
-          }
-        : current,
-    );
+    if (error || !data) {
+      setLoadingAction(false);
+      setErrorMessage(
+        error?.message ||
+          "Impossible d'annuler l'entrée.",
+      );
+      return;
+    }
 
-    setSearchSelectedGuest((current) =>
-      current?.id === guest.id
-        ? {
-            ...current,
-            checkedIn: false,
-            checkedInAt: null,
-          }
-        : current,
-    );
+    const updatedGuest = mapGuest(data);
+
+    if (
+      updatedGuest.checkedIn !== false ||
+      updatedGuest.checkedInAt !== null
+    ) {
+      setLoadingAction(false);
+      setErrorMessage(
+        "L'annulation n'a pas été correctement enregistrée.",
+      );
+      return;
+    }
+
+    updateGuestLocally(updatedGuest);
+    setLoadingAction(false);
 
     setMessage(
-      `Entrée annulée pour ${getGuestName(guest)}.`,
+      `Entrée annulée pour ${getGuestName(updatedGuest)}.`,
     );
   };
 
@@ -290,12 +421,53 @@ export default function EventControlPage() {
     );
   };
 
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-zinc-50">
+        <EventNavigation eventId={eventId} />
+
+        <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-zinc-200 bg-white p-10 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
+              Event Control
+            </p>
+
+            <h1 className="mt-2 text-2xl font-bold text-zinc-900">
+              Chargement du contrôle...
+            </h1>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (pageError || !event) {
+    return (
+      <main className="min-h-screen bg-zinc-50">
+        <EventNavigation eventId={eventId} />
+
+        <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+          <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
+            <p className="text-3xl">⚠️</p>
+
+            <h1 className="mt-4 text-2xl font-bold text-red-900">
+              Event Control inaccessible
+            </h1>
+
+            <p className="mt-2 text-red-700">
+              {pageError}
+            </p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-zinc-50">
-      <EventNavigation eventId="demo" />
+      <EventNavigation eventId={eventId} />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* HEADER */}
         <div className="mb-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
@@ -308,7 +480,7 @@ export default function EventControlPage() {
               </h1>
 
               <p className="mt-2 text-zinc-600">
-                {event.name || "Mon événement"}
+                {event.name}
               </p>
             </div>
 
@@ -324,64 +496,50 @@ export default function EventControlPage() {
           </div>
         </div>
 
-        {/* STATISTIQUES */}
         <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-zinc-500">
-              Total
-            </p>
+            <p className="text-sm text-zinc-500">Total</p>
             <p className="mt-2 text-3xl font-bold text-zinc-900">
               {totalGuests}
             </p>
           </div>
 
           <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5">
-            <p className="text-sm text-blue-700">
-              Confirmés
-            </p>
+            <p className="text-sm text-blue-700">Confirmés</p>
             <p className="mt-2 text-3xl font-bold text-blue-700">
               {confirmedGuests}
             </p>
           </div>
 
           <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-            <p className="text-sm text-amber-700">
-              En attente
-            </p>
+            <p className="text-sm text-amber-700">En attente</p>
             <p className="mt-2 text-3xl font-bold text-amber-700">
               {pendingGuests}
             </p>
           </div>
 
           <div className="rounded-2xl border border-red-200 bg-red-50 p-5">
-            <p className="text-sm text-red-700">
-              Refusés
-            </p>
+            <p className="text-sm text-red-700">Refusés</p>
             <p className="mt-2 text-3xl font-bold text-red-700">
               {declinedGuests}
             </p>
           </div>
 
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-            <p className="text-sm text-emerald-700">
-              Entrés
-            </p>
+            <p className="text-sm text-emerald-700">Entrés</p>
             <p className="mt-2 text-3xl font-bold text-emerald-700">
               {checkedInGuests}
             </p>
           </div>
 
           <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5">
-            <p className="text-sm text-indigo-700">
-              Check-in
-            </p>
+            <p className="text-sm text-indigo-700">Check-in</p>
             <p className="mt-2 text-3xl font-bold text-indigo-700">
               {checkInRate}%
             </p>
           </div>
         </section>
 
-        {/* RECHERCHE MANUELLE */}
         <section className="mb-8 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
           <div className="mb-5">
             <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
@@ -499,21 +657,22 @@ export default function EventControlPage() {
                 {searchSelectedGuest.checkedIn ? (
                   <button
                     type="button"
+                    disabled={loadingAction}
                     onClick={() =>
                       handleResetEntry(searchSelectedGuest)
                     }
-                    className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
+                    className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     ↩ Annuler l'entrée
                   </button>
-                ) : searchSelectedGuest.status ===
-                  "confirmed" ? (
+                ) : searchSelectedGuest.status === "confirmed" ? (
                   <button
                     type="button"
+                    disabled={loadingAction}
                     onClick={() =>
                       handleConfirmEntry(searchSelectedGuest)
                     }
-                    className="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700"
+                    className="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     ✓ Confirmer l'entrée
                   </button>
@@ -527,7 +686,6 @@ export default function EventControlPage() {
           )}
         </section>
 
-        {/* SCANNER */}
         <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
           <div className="mb-6">
             <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
@@ -597,20 +755,22 @@ export default function EventControlPage() {
                   {scannedGuest.checkedIn ? (
                     <button
                       type="button"
+                      disabled={loadingAction}
                       onClick={() =>
                         handleResetEntry(scannedGuest)
                       }
-                      className="w-full rounded-xl bg-red-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-red-700 md:w-auto"
+                      className="w-full rounded-xl bg-red-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                     >
                       ↩ Annuler l'entrée
                     </button>
                   ) : scannedGuest.status === "confirmed" ? (
                     <button
                       type="button"
+                      disabled={loadingAction}
                       onClick={() =>
                         handleConfirmEntry(scannedGuest)
                       }
-                      className="w-full rounded-xl bg-green-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-green-700 md:w-auto"
+                      className="w-full rounded-xl bg-green-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                     >
                       ✓ Confirmer l'entrée
                     </button>

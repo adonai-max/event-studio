@@ -15,14 +15,32 @@ const [time, setTime] = useState("");
 const [location, setLocation] = useState("");
 const [description, setDescription] = useState("");
 
-const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+
+const handleSubmit = async (
+e: FormEvent<HTMLFormElement>,
+) => {
 e.preventDefault();
 
-if (!name.trim() || !type || !date || !time || !location.trim()) {
+setError("");
+
+if (
+  !name.trim() ||
+  !type ||
+  !date ||
+  !time ||
+  !location.trim()
+) {
+  setError(
+    "Veuillez remplir tous les champs obligatoires.",
+  );
   return;
 }
 
-saveEvent({
+setLoading(true);
+
+const saved = await saveEvent({
   name: name.trim(),
   type,
   date,
@@ -31,7 +49,15 @@ saveEvent({
   description: description.trim(),
 });
 
-router.push("/events/demo");
+if (!saved) {
+  setLoading(false);
+  setError(
+    "Impossible d'enregistrer l'événement. Vérifiez la connexion à votre compte.",
+  );
+  return;
+}
+
+router.push("/events/" + saved.id);
 
 };
 
@@ -47,7 +73,8 @@ EVENT STUDIO </p>
       </h1>
 
       <p className="mt-3 text-zinc-600">
-        Renseignez les informations principales de votre événement.
+        Renseignez les informations principales de votre
+        événement.
       </p>
     </div>
 
@@ -67,6 +94,7 @@ EVENT STUDIO </p>
           id="name"
           name="name"
           type="text"
+          autoComplete="off"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Ex. Mariage de Jean & Marie"
@@ -155,6 +183,7 @@ EVENT STUDIO </p>
           id="location"
           name="location"
           type="text"
+          autoComplete="off"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Ex. Salle de réception..."
@@ -182,25 +211,34 @@ EVENT STUDIO </p>
         />
       </div>
 
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          ❌ {error}
+        </div>
+      )}
+
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button
           type="button"
           onClick={handleCancel}
-          className="rounded-full border border-zinc-300 px-6 py-3 font-semibold text-zinc-700 transition hover:bg-zinc-50"
+          disabled={loading}
+          className="rounded-full border border-zinc-300 px-6 py-3 font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Annuler
         </button>
 
         <button
           type="submit"
-          className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
+          disabled={loading}
+          className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Créer l'événement
+          {loading
+            ? "Enregistrement..."
+            : "Créer l'événement"}
         </button>
       </div>
     </form>
   </div>
 </main>
-
 );
 }
