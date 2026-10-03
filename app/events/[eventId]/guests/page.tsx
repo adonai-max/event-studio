@@ -165,6 +165,9 @@ export default function GuestsPage() {
   const [checkInFilter, setCheckInFilter] =
     useState<"all" | "checked-in" | "not-checked-in">("all");
 
+  const [copiedGuestId, setCopiedGuestId] =
+    useState<string | null>(null);
+
   useEffect(() => {
     const loadEventAndGuests = async () => {
       setLoading(true);
@@ -423,6 +426,54 @@ export default function GuestsPage() {
         eventId +
         "/guests/" +
         guestId,
+    );
+  };
+
+  const handleCopyInvitationLink = async (guest: Guest) => {
+    const link =
+      window.location.origin + "/i/" + guest.slug;
+
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopiedGuestId(guest.id);
+
+      window.setTimeout(() => {
+        setCopiedGuestId((current) =>
+          current === guest.id ? null : current,
+        );
+      }, 1800);
+    } catch (error) {
+      console.error(
+        "❌ Impossible de copier le lien :",
+        error,
+      );
+
+      setErrorMessage(
+        "Impossible de copier le lien d'invitation.",
+      );
+    }
+  };
+
+  const handleWhatsAppGuest = (guest: Guest) => {
+    const link =
+      window.location.origin + "/i/" + guest.slug;
+
+    const message =
+      "Bonjour " +
+      guest.firstName1 +
+      ", voici votre invitation : " +
+      link;
+
+    const whatsappUrl =
+      "https://wa.me/" +
+      guest.whatsapp.replace(/[^0-9]/g, "") +
+      "?text=" +
+      encodeURIComponent(message);
+
+    window.open(
+      whatsappUrl,
+      "_blank",
+      "noopener,noreferrer",
     );
   };
 
@@ -922,6 +973,13 @@ export default function GuestsPage() {
                 <GuestRow
                   key={guest.id}
                   guest={guest}
+                  copied={copiedGuestId === guest.id}
+                  onCopyLink={() =>
+                    handleCopyInvitationLink(guest)
+                  }
+                  onWhatsApp={() =>
+                    handleWhatsAppGuest(guest)
+                  }
                   onQr={() =>
                     handleViewQrCode(guest.id)
                   }
@@ -943,11 +1001,17 @@ export default function GuestsPage() {
 
 function GuestRow({
   guest,
+  copied,
+  onCopyLink,
+  onWhatsApp,
   onQr,
   onEdit,
   onDelete,
 }: {
   guest: Guest;
+  copied: boolean;
+  onCopyLink: () => void;
+  onWhatsApp: () => void;
   onQr: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -1033,7 +1097,30 @@ function GuestRow({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:flex lg:shrink-0">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:shrink-0">
+          <button
+            type="button"
+            onClick={onCopyLink}
+            className={[
+              "inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-black transition duration-200",
+              copied
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                : "border-zinc-200 bg-white text-zinc-700 shadow-sm hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700",
+            ].join(" ")}
+          >
+            <span>{copied ? "✓" : "⧉"}</span>
+            {copied ? "Copié" : "Copier le lien"}
+          </button>
+
+          <button
+            type="button"
+            onClick={onWhatsApp}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-black text-emerald-700 transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-100"
+          >
+            <span>💬</span>
+            WhatsApp
+          </button>
+
           <button
             type="button"
             onClick={onQr}
@@ -1055,7 +1142,7 @@ function GuestRow({
           <button
             type="button"
             onClick={onDelete}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-600 transition duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:bg-red-50"
+            className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-600 transition duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:bg-red-50 sm:col-span-1"
           >
             <span>×</span>
             Supprimer
@@ -1065,7 +1152,6 @@ function GuestRow({
     </article>
   );
 }
-
 function GuestTypeButton({
   active,
   icon,
