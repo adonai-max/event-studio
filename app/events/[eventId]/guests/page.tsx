@@ -950,17 +950,37 @@ export default function GuestsPage() {
               </div>
 
               <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_170px_170px_185px]">
-                <input
-                  id="guest-search"
-                  type="search"
-                  value={searchQuery}
-                  onChange={(e) =>
-                    setSearchQuery(e.target.value)
-                  }
-                  placeholder="Rechercher un nom, WhatsApp ou lien..."
-                  className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
-                  aria-label="Rechercher un invité"
-                />
+                <div className="relative">
+                  <span
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-zinc-400"
+                    aria-hidden="true"
+                  >
+                    🔎
+                  </span>
+
+                  <input
+                    id="guest-search"
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) =>
+                      setSearchQuery(e.target.value)
+                    }
+                    placeholder="Rechercher un nom, WhatsApp ou lien..."
+                    className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-3 pl-11 pr-4 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+                    aria-label="Rechercher un invité"
+                  />
+
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-sm font-bold text-zinc-400 transition hover:bg-zinc-200 hover:text-zinc-900"
+                      aria-label="Effacer la recherche"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
 
                 <FilterSelect
                   value={statusFilter}
