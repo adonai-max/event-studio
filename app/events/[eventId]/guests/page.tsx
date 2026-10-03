@@ -495,6 +495,21 @@ export default function GuestsPage() {
     (guest) => guest.checkedIn,
   ).length;
 
+  const confirmedRate =
+    totalGuests > 0
+      ? Math.round((confirmedGuests / totalGuests) * 100)
+      : 0;
+
+  const pendingRate =
+    totalGuests > 0
+      ? Math.round((pendingGuests / totalGuests) * 100)
+      : 0;
+
+  const declinedRate =
+    totalGuests > 0
+      ? Math.round((declinedGuests / totalGuests) * 100)
+      : 0;
+
   const normalizedSearch = searchQuery
     .trim()
     .toLowerCase();
@@ -686,6 +701,80 @@ export default function GuestsPage() {
             icon="✓"
             tone="indigo"
           />
+        </section>
+
+        <section className="mt-6 overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(24,24,27,0.04)]">
+          <div className="p-5 sm:p-6 lg:p-7">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  Vue RSVP
+                </p>
+
+                <h2 className="mt-1 text-xl font-bold text-zinc-950">
+                  Réponses à l’invitation
+                </h2>
+
+                <p className="mt-1 text-sm text-zinc-500">
+                  Une lecture rapide de l’engagement de vos invités.
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-indigo-50 px-4 py-3 text-right ring-1 ring-indigo-100">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-600">
+                  Taux de confirmation
+                </p>
+                <p className="mt-1 text-2xl font-black text-indigo-700">
+                  {confirmedRate}%
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-7 h-3 overflow-hidden rounded-full bg-zinc-100">
+              <div className="flex h-full w-full">
+                <div
+                  className="bg-emerald-500 transition-all duration-500"
+                  style={{ width: confirmedRate + "%" }}
+                />
+
+                <div
+                  className="bg-amber-400 transition-all duration-500"
+                  style={{ width: pendingRate + "%" }}
+                />
+
+                <div
+                  className="bg-red-400 transition-all duration-500"
+                  style={{ width: declinedRate + "%" }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <RsvpSummaryItem
+                label="Confirmés"
+                value={confirmedGuests}
+                percentage={confirmedRate}
+                dot="bg-emerald-500"
+                tone="text-emerald-700"
+              />
+
+              <RsvpSummaryItem
+                label="En attente"
+                value={pendingGuests}
+                percentage={pendingRate}
+                dot="bg-amber-400"
+                tone="text-amber-700"
+              />
+
+              <RsvpSummaryItem
+                label="Refusés"
+                value={declinedGuests}
+                percentage={declinedRate}
+                dot="bg-red-400"
+                tone="text-red-700"
+              />
+            </div>
+          </div>
         </section>
 
         {showForm && (
@@ -1262,6 +1351,47 @@ function FilterSelect({
         </option>
       ))}
     </select>
+  );
+}
+
+function RsvpSummaryItem({
+  label,
+  value,
+  percentage,
+  dot,
+  tone,
+}: {
+  label: string;
+  value: number;
+  percentage: number;
+  dot: string;
+  tone: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-zinc-100 bg-zinc-50/70 p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className={`h-2.5 w-2.5 rounded-full ${dot}`} />
+          <span className="text-sm font-bold text-zinc-800">
+            {label}
+          </span>
+        </div>
+
+        <span className={`text-sm font-black ${tone}`}>
+          {percentage}%
+        </span>
+      </div>
+
+      <div className="mt-3 flex items-end justify-between">
+        <span className="text-2xl font-black tracking-tight text-zinc-950">
+          {value}
+        </span>
+
+        <span className="text-xs font-medium text-zinc-400">
+          invité{value > 1 ? "s" : ""}
+        </span>
+      </div>
+    </div>
   );
 }
 
