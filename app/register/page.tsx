@@ -47,7 +47,7 @@ export default function RegisterPage() {
     }
 
     setMessage(
-      "Compte créé ! Vérifiez votre adresse e-mail pour confirmer votre compte.",
+      "Compte créé avec succès ! Votre espace organisateur est prêt.",
     );
 
     setLoading(false);
