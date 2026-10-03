@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../../lib/supabase";
 import EventNavigation from "../../../components/EventNavigation";
@@ -27,7 +27,7 @@ function normalizeText(value: string) {
   return value
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
@@ -109,6 +109,29 @@ function mapGuest(row: any): Guest {
   };
 }
 
+function getGuestName(guest: Guest) {
+  const first = `${guest.firstName1} ${guest.lastName1}`.trim();
+
+  if (guest.type === "couple") {
+    const second =
+      `${guest.firstName2} ${guest.lastName2}`.trim();
+
+    return second ? `${first} & ${second}` : first;
+  }
+
+  return first;
+}
+
+function getInitials(guest: Guest) {
+  const first =
+    guest.firstName1.trim().charAt(0).toUpperCase();
+
+  const last =
+    guest.lastName1.trim().charAt(0).toUpperCase();
+
+  return `${first}${last}` || "I";
+}
+
 export default function GuestsPage() {
   const router = useRouter();
   const params = useParams();
@@ -134,6 +157,14 @@ export default function GuestsPage() {
   const [editingGuestId, setEditingGuestId] =
     useState<string | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] =
+    useState<"all" | GuestStatus>("all");
+  const [typeFilter, setTypeFilter] =
+    useState<"all" | GuestType>("all");
+  const [checkInFilter, setCheckInFilter] =
+    useState<"all" | "checked-in" | "not-checked-in">("all");
+
   useEffect(() => {
     const loadEventAndGuests = async () => {
       setLoading(true);
@@ -149,18 +180,16 @@ export default function GuestsPage() {
         return;
       }
 
-      const { data: event, error: eventError } = await supabase
-        .from("events")
-        .select("id, name")
-        .eq("id", eventId)
-        .eq("owner_id", user.id)
-        .single();
+      const { data: event, error: eventError } =
+        await supabase
+          .from("events")
+          .select("id, name")
+          .eq("id", eventId)
+          .eq("owner_id", user.id)
+          .single();
 
       if (eventError || !event) {
-        console.error(
-          "❌ Erreur événement :",
-          eventError,
-        );
+        console.error("❌ Erreur événement :", eventError);
 
         setErrorMessage(
           "Événement introuvable ou vous n'avez pas accès à cet événement.",
@@ -180,10 +209,7 @@ export default function GuestsPage() {
           .order("created_at", { ascending: true });
 
       if (guestsError) {
-        console.error(
-          "❌ Erreur invités :",
-          guestsError,
-        );
+        console.error("❌ Erreur invités :", guestsError);
 
         setErrorMessage(
           "Impossible de charger les invités.",
@@ -324,10 +350,7 @@ export default function GuestsPage() {
         .single();
 
       if (error || !data) {
-        console.error(
-          "❌ Erreur ajout invité :",
-          error,
-        );
+        console.error("❌ Erreur ajout invité :", error);
 
         setErrorMessage(
           "Impossible d'ajouter cet invité.",
@@ -417,13 +440,71 @@ export default function GuestsPage() {
     (guest) => guest.status === "declined",
   ).length;
 
+  const checkedInGuests = guests.filter(
+    (guest) => guest.checkedIn,
+  ).length;
+
+  const normalizedSearch = searchQuery
+    .trim()
+    .toLowerCase();
+
+  const filteredGuests = useMemo(() => {
+    return guests.filter((guest) => {
+      const guestName = getGuestName(guest);
+
+      const searchableText = [
+        guestName,
+        guest.whatsapp,
+        guest.slug,
+        guest.id,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      const matchesSearch =
+        !normalizedSearch ||
+        searchableText.includes(normalizedSearch);
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        guest.status === statusFilter;
+
+      const matchesType =
+        typeFilter === "all" ||
+        guest.type === typeFilter;
+
+      const matchesCheckIn =
+        checkInFilter === "all" ||
+        (checkInFilter === "checked-in" &&
+          guest.checkedIn) ||
+        (checkInFilter === "not-checked-in" &&
+          !guest.checkedIn);
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesType &&
+        matchesCheckIn
+      );
+    });
+  }, [
+    guests,
+    normalizedSearch,
+    statusFilter,
+    typeFilter,
+    checkInFilter,
+  ]);
+
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-50">
-        <div className="mx-auto max-w-7xl px-6 py-16 text-center">
-          <p className="text-zinc-500">
-            Chargement des invités...
-          </p>
+      <main className="min-h-screen bg-[#f8fafc]">
+        <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-6">
+          <div className="text-center">
+            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-indigo-600" />
+            <p className="mt-4 text-sm font-medium text-zinc-500">
+              Chargement de vos invités...
+            </p>
+          </div>
         </div>
       </main>
     );
@@ -431,21 +512,23 @@ export default function GuestsPage() {
 
   if (errorMessage && !eventName) {
     return (
-      <main className="min-h-screen bg-zinc-50">
+      <main className="min-h-screen bg-[#f8fafc]">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
-            <h1 className="text-xl font-bold text-red-800">
+          <div className="rounded-[28px] border border-red-200 bg-white p-8 shadow-sm">
+            <div className="text-4xl">⚠️</div>
+
+            <h1 className="mt-5 text-2xl font-bold text-zinc-900">
               Événement inaccessible
             </h1>
 
-            <p className="mt-2 text-red-700">
+            <p className="mt-2 text-sm leading-6 text-zinc-500">
               {errorMessage}
             </p>
 
             <button
               type="button"
               onClick={() => router.push("/dashboard")}
-              className="mt-6 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white"
+              className="mt-6 rounded-2xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-zinc-800"
             >
               Retour au Dashboard
             </button>
@@ -456,9 +539,8 @@ export default function GuestsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50">
-      <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
-
+    <main className="min-h-screen bg-[#f8fafc]">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <EventNavigation eventId={eventId} />
 
         <button
@@ -466,61 +548,35 @@ export default function GuestsPage() {
           onClick={() =>
             router.push("/events/" + eventId)
           }
-          className="mt-6 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+          className="mt-5 inline-flex items-center gap-2 rounded-full px-2 py-2 text-sm font-semibold text-zinc-500 transition hover:text-zinc-950"
         >
-          ← Retour à l'événement
+          <span>←</span>
+          Retour à l'événement
         </button>
 
-        <header className="mt-6 flex flex-col gap-6 border-b border-zinc-200 pb-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-indigo-600">
-              EVENT STUDIO
-            </p>
+        <header className="mt-5 overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(24,24,27,0.04)]">
+          <div className="relative p-6 sm:p-8 lg:p-10">
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-indigo-100/50 blur-3xl" />
 
-            <h1 className="mt-2 text-4xl font-bold tracking-tight text-zinc-900">
-              Gestion des invités
-            </h1>
-
-            <p className="mt-2 text-sm font-medium text-zinc-500">
-              {eventName}
-            </p>
-
-            <p className="mt-3 text-zinc-600">
-              Ajoutez et gérez les personnes invitées à votre événement.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              resetForm();
-              setShowForm(true);
-            }}
-            className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
-          >
-            + Ajouter un invité
-          </button>
-        </header>
-
-        {errorMessage && (
-          <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
-            {errorMessage}
-          </div>
-        )}
-
-        {showForm && (
-          <section className="mt-10 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="relative flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-zinc-900">
-                  {editingGuestId !== null
-                    ? "Modifier l'invité"
-                    : "Ajouter un invité"}
-                </h2>
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-700">
+                  <span>Event Studio</span>
+                  <span className="h-1 w-1 rounded-full bg-indigo-400" />
+                  <span>Invités</span>
+                </div>
 
-                <p className="mt-2 text-sm text-zinc-500">
-                  Choisissez le type d'invitation et renseignez les informations.
+                <h1 className="mt-5 text-3xl font-bold tracking-[-0.03em] text-zinc-950 sm:text-4xl">
+                  Gestion des invités
+                </h1>
+
+                <p className="mt-2 text-base font-semibold text-zinc-700">
+                  {eventName}
+                </p>
+
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
+                  Gérez les invitations, les réponses RSVP et
+                  le suivi des entrées depuis un seul espace.
                 </p>
               </div>
 
@@ -528,334 +584,566 @@ export default function GuestsPage() {
                 type="button"
                 onClick={() => {
                   resetForm();
-                  setShowForm(false);
+                  setShowForm(true);
                 }}
-                className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
               >
-                Fermer
+                <span className="text-lg">+</span>
+                Ajouter un invité
               </button>
             </div>
+          </div>
+        </header>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-
-              <button
-                type="button"
-                onClick={() => setGuestType("individual")}
-                className={
-                  "rounded-2xl border p-5 text-left transition " +
-                  (guestType === "individual"
-                    ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
-                    : "border-zinc-200 bg-white hover:bg-zinc-50")
-                }
-              >
-                <div className="text-3xl">👤</div>
-
-                <h3 className="mt-3 font-semibold text-zinc-900">
-                  Invité individuel
-                </h3>
-
-                <p className="mt-1 text-sm text-zinc-500">
-                  Une seule personne avec ses informations personnelles.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setGuestType("couple")}
-                className={
-                  "rounded-2xl border p-5 text-left transition " +
-                  (guestType === "couple"
-                    ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
-                    : "border-zinc-200 bg-white hover:bg-zinc-50")
-                }
-              >
-                <div className="text-3xl">👥</div>
-
-                <h3 className="mt-3 font-semibold text-zinc-900">
-                  Couple
-                </h3>
-
-                <p className="mt-1 text-sm text-zinc-500">
-                  Deux personnes réunies dans une même invitation.
-                </p>
-              </button>
-
-            </div>
-
-            <div className="mt-6 grid gap-5 sm:grid-cols-2">
-
-              <div>
-                <label
-                  htmlFor="first-name-1"
-                  className="block text-sm font-semibold text-zinc-900"
-                >
-                  {guestType === "individual"
-                    ? "Prénom"
-                    : "Prénom — personne 1"}
-                </label>
-
-                <input
-                  value={firstName1}
-                  onChange={(e) =>
-                    setFirstName1(e.target.value)
-                  }
-                  id="first-name-1"
-                  type="text"
-                  placeholder="Ex. Jean"
-                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="last-name-1"
-                  className="block text-sm font-semibold text-zinc-900"
-                >
-                  {guestType === "individual"
-                    ? "Nom"
-                    : "Nom — personne 1"}
-                </label>
-
-                <input
-                  value={lastName1}
-                  onChange={(e) =>
-                    setLastName1(e.target.value)
-                  }
-                  id="last-name-1"
-                  type="text"
-                  placeholder="Ex. Kabongo"
-                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                />
-              </div>
-
-              {guestType === "couple" && (
-                <>
-                  <div>
-                    <label
-                      htmlFor="first-name-2"
-                      className="block text-sm font-semibold text-zinc-900"
-                    >
-                      Prénom — personne 2
-                    </label>
-
-                    <input
-                      value={firstName2}
-                      onChange={(e) =>
-                        setFirstName2(e.target.value)
-                      }
-                      id="first-name-2"
-                      type="text"
-                      placeholder="Ex. Marie"
-                      className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="last-name-2"
-                      className="block text-sm font-semibold text-zinc-900"
-                    >
-                      Nom — personne 2
-                    </label>
-
-                    <input
-                      value={lastName2}
-                      onChange={(e) =>
-                        setLastName2(e.target.value)
-                      }
-                      id="last-name-2"
-                      type="text"
-                      placeholder="Ex. Mulamba"
-                      className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="whatsapp"
-                  className="block text-sm font-semibold text-zinc-900"
-                >
-                  Numéro WhatsApp
-                </label>
-
-                <input
-                  value={whatsapp}
-                  onChange={(e) =>
-                    setWhatsapp(e.target.value)
-                  }
-                  id="whatsapp"
-                  type="tel"
-                  placeholder="+243 9XX XXX XXX"
-                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                />
-
-                <p className="mt-2 text-xs text-zinc-500">
-                  Ce numéro pourra servir pour l'envoi de l'invitation et le suivi RSVP.
-                </p>
-              </div>
-
-            </div>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                type="button"
-                disabled={saving}
-                onClick={handleSaveGuest}
-                className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {saving
-                  ? "Enregistrement..."
-                  : editingGuestId !== null
-                    ? "Enregistrer les modifications"
-                    : "Ajouter l'invité"}
-              </button>
-            </div>
-
-          </section>
+        {errorMessage && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
+            {errorMessage}
+          </div>
         )}
 
-        <section className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <Stat
-            title="Total invités"
+            title="Total"
             value={String(totalGuests)}
+            icon="👥"
           />
 
           <Stat
             title="Confirmés"
             value={String(confirmedGuests)}
+            icon="✓"
+            tone="success"
           />
 
           <Stat
             title="En attente"
             value={String(pendingGuests)}
+            icon="◷"
+            tone="warning"
           />
 
           <Stat
             title="Refusés"
             value={String(declinedGuests)}
+            icon="×"
+            tone="danger"
+          />
+
+          <Stat
+            title="Entrés"
+            value={String(checkedInGuests)}
+            icon="✓"
+            tone="indigo"
           />
         </section>
 
-        <section className="mt-10 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+        {showForm && (
+          <section className="mt-8 overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(24,24,27,0.05)]">
+            <div className="border-b border-zinc-100 bg-zinc-50/70 px-6 py-5 sm:px-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                    {editingGuestId !== null
+                      ? "Modification"
+                      : "Nouvelle invitation"}
+                  </p>
 
-          <div className="border-b border-zinc-200 p-6">
-            <h2 className="text-xl font-semibold text-zinc-900">
-              Liste des invités
-            </h2>
-          </div>
+                  <h2 className="mt-1 text-xl font-bold text-zinc-950">
+                    {editingGuestId !== null
+                      ? "Modifier l'invité"
+                      : "Ajouter un invité"}
+                  </h2>
 
-          {guests.length === 0 ? (
-            <div className="flex min-h-64 items-center justify-center p-8">
-              <div className="text-center">
-                <div className="text-5xl">👥</div>
-
-                <h3 className="mt-4 text-lg font-semibold text-zinc-900">
-                  Aucun invité pour le moment
-                </h3>
-
-                <p className="mt-2 text-sm text-zinc-500">
-                  Commencez par ajouter votre premier invité.
-                </p>
+                  <p className="mt-1 text-sm text-zinc-500">
+                    Les informations seront utilisées pour
+                    l'invitation personnalisée.
+                  </p>
+                </div>
 
                 <button
                   type="button"
-                  onClick={() => setShowForm(true)}
-                  className="mt-5 rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                  onClick={() => {
+                    resetForm();
+                    setShowForm(false);
+                  }}
+                  className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950"
                 >
-                  Ajouter le premier invité
+                  Fermer
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="divide-y divide-zinc-200">
 
-              {guests.map((guest) => (
-                <div
-                  key={guest.id}
-                  className="p-6 transition hover:bg-zinc-50"
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="p-6 sm:p-8">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <GuestTypeButton
+                  active={guestType === "individual"}
+                  icon="👤"
+                  title="Invité individuel"
+                  description="Une personne dans une invitation dédiée."
+                  onClick={() => setGuestType("individual")}
+                />
 
-                    <div className="min-w-0">
-                      <p className="font-semibold text-zinc-900">
-                        {guest.type === "couple"
-                          ? guest.firstName1 +
-                            " " +
-                            guest.lastName1 +
-                            " & " +
-                            guest.firstName2 +
-                            " " +
-                            guest.lastName2
-                          : guest.firstName1 +
-                            " " +
-                            guest.lastName1}
-                      </p>
+                <GuestTypeButton
+                  active={guestType === "couple"}
+                  icon="👥"
+                  title="Couple"
+                  description="Deux personnes réunies dans une invitation."
+                  onClick={() => setGuestType("couple")}
+                />
+              </div>
 
-                      <p className="mt-1 text-sm text-zinc-500">
-                        {guest.type === "couple"
-                          ? "Couple • "
-                          : ""}
-                        {guest.whatsapp}
-                      </p>
+              <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                <InputField
+                  id="first-name-1"
+                  label={
+                    guestType === "individual"
+                      ? "Prénom"
+                      : "Prénom — personne 1"
+                  }
+                  value={firstName1}
+                  onChange={setFirstName1}
+                  placeholder="Ex. Jean"
+                />
 
-                      <div className="mt-3 rounded-xl bg-zinc-50 px-4 py-3">
-                        <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                          Lien personnalisé
-                        </p>
+                <InputField
+                  id="last-name-1"
+                  label={
+                    guestType === "individual"
+                      ? "Nom"
+                      : "Nom — personne 1"
+                  }
+                  value={lastName1}
+                  onChange={setLastName1}
+                  placeholder="Ex. Kabongo"
+                />
 
-                        <p className="mt-1 break-all font-mono text-sm text-indigo-600">
-                          /i/{guest.slug}
-                        </p>
-                      </div>
-                    </div>
+                {guestType === "couple" && (
+                  <>
+                    <InputField
+                      id="first-name-2"
+                      label="Prénom — personne 2"
+                      value={firstName2}
+                      onChange={setFirstName2}
+                      placeholder="Ex. Marie"
+                    />
 
-                    <div className="flex flex-wrap items-center gap-2">
-                      <StatusBadge status={guest.status} />
+                    <InputField
+                      id="last-name-2"
+                      label="Nom — personne 2"
+                      value={lastName2}
+                      onChange={setLastName2}
+                      placeholder="Ex. Mulamba"
+                    />
+                  </>
+                )}
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleViewQrCode(guest.id)
-                        }
-                        className="rounded-full bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-700"
-                      >
-                        📱 QR Code
-                      </button>
+                <div className="sm:col-span-2">
+                  <InputField
+                    id="whatsapp"
+                    label="Numéro WhatsApp"
+                    value={whatsapp}
+                    onChange={setWhatsapp}
+                    placeholder="+243 9XX XXX XXX"
+                    type="tel"
+                  />
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleEditGuest(guest)
-                        }
-                        className="rounded-full border border-zinc-300 px-4 py-1.5 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100"
-                      >
-                        Modifier
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleDeleteGuest(guest.id)
-                        }
-                        className="rounded-full border border-red-200 px-4 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50"
-                      >
-                        Supprimer
-                      </button>
-                    </div>
-
-                  </div>
+                  <p className="mt-2 text-xs text-zinc-500">
+                    Utilisé pour l'envoi de l'invitation et
+                    le suivi RSVP.
+                  </p>
                 </div>
-              ))}
+              </div>
 
+              <div className="mt-8 flex flex-col-reverse gap-3 border-t border-zinc-100 pt-6 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetForm();
+                    setShowForm(false);
+                  }}
+                  className="rounded-2xl border border-zinc-200 px-5 py-3 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-50"
+                >
+                  Annuler
+                </button>
+
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={handleSaveGuest}
+                  className="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {saving
+                    ? "Enregistrement..."
+                    : editingGuestId !== null
+                      ? "Enregistrer les modifications"
+                      : "Ajouter l'invité"}
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section className="mt-8 overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(24,24,27,0.04)]">
+          <div className="border-b border-zinc-100 p-5 sm:p-6">
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                    Annuaire événement
+                  </p>
+
+                  <h2 className="mt-1 text-xl font-bold text-zinc-950">
+                    Liste des invités
+                  </h2>
+                </div>
+
+                <p className="text-sm font-medium text-zinc-500">
+                  <span className="font-bold text-zinc-900">
+                    {filteredGuests.length}
+                  </span>{" "}
+                  affiché
+                  {filteredGuests.length > 1 ? "s" : ""}
+                  {filteredGuests.length !== guests.length
+                    ? ` sur ${guests.length}`
+                    : ""}
+                </p>
+              </div>
+
+              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_170px_170px_185px]">
+                <input
+                  id="guest-search"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) =>
+                    setSearchQuery(e.target.value)
+                  }
+                  placeholder="Rechercher un nom, WhatsApp ou lien..."
+                  className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+                  aria-label="Rechercher un invité"
+                />
+
+                <FilterSelect
+                  value={statusFilter}
+                  onChange={(value) =>
+                    setStatusFilter(
+                      value as "all" | GuestStatus,
+                    )
+                  }
+                  ariaLabel="Filtrer par statut RSVP"
+                  options={[
+                    ["all", "Tous les RSVP"],
+                    ["confirmed", "Confirmés"],
+                    ["pending", "En attente"],
+                    ["declined", "Refusés"],
+                  ]}
+                />
+
+                <FilterSelect
+                  value={typeFilter}
+                  onChange={(value) =>
+                    setTypeFilter(
+                      value as "all" | GuestType,
+                    )
+                  }
+                  ariaLabel="Filtrer par type"
+                  options={[
+                    ["all", "Tous les types"],
+                    ["individual", "Individuels"],
+                    ["couple", "Couples"],
+                  ]}
+                />
+
+                <FilterSelect
+                  value={checkInFilter}
+                  onChange={(value) =>
+                    setCheckInFilter(
+                      value as
+                        | "all"
+                        | "checked-in"
+                        | "not-checked-in",
+                    )
+                  }
+                  ariaLabel="Filtrer par entrée"
+                  options={[
+                    ["all", "Toutes les entrées"],
+                    ["checked-in", "Déjà entrés"],
+                    ["not-checked-in", "Pas encore entrés"],
+                  ]}
+                />
+              </div>
+
+              {(searchQuery ||
+                statusFilter !== "all" ||
+                typeFilter !== "all" ||
+                checkInFilter !== "all") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("all");
+                    setTypeFilter("all");
+                    setCheckInFilter("all");
+                  }}
+                  className="w-fit rounded-full border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950"
+                >
+                  Réinitialiser les filtres
+                </button>
+              )}
+            </div>
+          </div>
+
+          {guests.length === 0 ? (
+            <EmptyGuests
+              onAdd={() => {
+                resetForm();
+                setShowForm(true);
+              }}
+            />
+          ) : filteredGuests.length === 0 ? (
+            <div className="flex min-h-64 items-center justify-center p-8">
+              <div className="max-w-sm text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-zinc-100 text-2xl">
+                  🔎
+                </div>
+
+                <h3 className="mt-5 text-lg font-bold text-zinc-950">
+                  Aucun résultat
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-zinc-500">
+                  Aucun invité ne correspond aux filtres
+                  actuellement sélectionnés.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="divide-y divide-zinc-100">
+              {filteredGuests.map((guest) => (
+                <GuestRow
+                  key={guest.id}
+                  guest={guest}
+                  onQr={() =>
+                    handleViewQrCode(guest.id)
+                  }
+                  onEdit={() =>
+                    handleEditGuest(guest)
+                  }
+                  onDelete={() =>
+                    handleDeleteGuest(guest.id)
+                  }
+                />
+              ))}
             </div>
           )}
-
         </section>
-
       </div>
     </main>
+  );
+}
+
+function GuestRow({
+  guest,
+  onQr,
+  onEdit,
+  onDelete,
+}: {
+  guest: Guest;
+  onQr: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <article className="group p-5 transition duration-200 hover:bg-zinc-50/70 sm:p-6">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-sm font-bold text-indigo-700 ring-1 ring-indigo-100">
+            {getInitials(guest)}
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="truncate text-base font-bold text-zinc-950">
+                {getGuestName(guest)}
+              </h3>
+
+              {guest.type === "couple" && (
+                <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-violet-700">
+                  Couple
+                </span>
+              )}
+            </div>
+
+            <p className="mt-1 text-sm text-zinc-500">
+              {guest.whatsapp}
+            </p>
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <StatusBadge status={guest.status} />
+
+              {guest.checkedIn ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Entré
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-bold text-zinc-500">
+                  Pas encore entré
+                </span>
+              )}
+            </div>
+
+            <div className="mt-3 flex max-w-xl items-center gap-2 rounded-xl bg-zinc-50 px-3 py-2">
+              <span className="text-xs text-zinc-400">
+                🔗
+              </span>
+
+              <span className="truncate font-mono text-xs text-indigo-600">
+                /i/{guest.slug}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2 lg:justify-end">
+          <button
+            type="button"
+            onClick={onQr}
+            className="rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700"
+          >
+            📱 QR Code
+          </button>
+
+          <button
+            type="button"
+            onClick={onEdit}
+            className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-xs font-bold text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950"
+          >
+            Modifier
+          </button>
+
+          <button
+            type="button"
+            onClick={onDelete}
+            className="rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-50"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function GuestTypeButton({
+  active,
+  icon,
+  title,
+  description,
+  onClick,
+}: {
+  active: boolean;
+  icon: string;
+  title: string;
+  description: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "rounded-[22px] border p-5 text-left transition duration-200",
+        active
+          ? "border-indigo-500 bg-indigo-50/70 shadow-sm ring-4 ring-indigo-50"
+          : "border-zinc-200 bg-white hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-sm",
+      ].join(" ")}
+    >
+      <div className="flex items-start gap-4">
+        <div
+          className={[
+            "flex h-11 w-11 items-center justify-center rounded-2xl text-xl",
+            active
+              ? "bg-indigo-600 text-white"
+              : "bg-zinc-100",
+          ].join(" ")}
+        >
+          {icon}
+        </div>
+
+        <div>
+          <h3 className="font-bold text-zinc-950">
+            {title}
+          </h3>
+
+          <p className="mt-1 text-sm leading-5 text-zinc-500">
+            {description}
+          </p>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function InputField({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  type?: string;
+}) {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="block text-sm font-bold text-zinc-900"
+      >
+        {label}
+      </label>
+
+      <input
+        id={id}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="mt-2 w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+      />
+    </div>
+  );
+}
+
+function FilterSelect({
+  value,
+  onChange,
+  options,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  options: [string, string][];
+  ariaLabel: string;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      aria-label={ariaLabel}
+      className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-semibold text-zinc-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+    >
+      {options.map(([optionValue, label]) => (
+        <option key={optionValue} value={optionValue}>
+          {label}
+        </option>
+      ))}
+    </select>
   );
 }
 
@@ -864,25 +1152,35 @@ function StatusBadge({
 }: {
   status: GuestStatus;
 }) {
-  if (status === "confirmed") {
-    return (
-      <span className="w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-        Confirmé
-      </span>
-    );
-  }
-
-  if (status === "declined") {
-    return (
-      <span className="w-fit rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-        Refusé
-      </span>
-    );
-  }
+  const config = {
+    confirmed: {
+      label: "Confirmé",
+      className:
+        "bg-emerald-50 text-emerald-700 ring-emerald-100",
+      dot: "bg-emerald-500",
+    },
+    declined: {
+      label: "Refusé",
+      className:
+        "bg-red-50 text-red-700 ring-red-100",
+      dot: "bg-red-500",
+    },
+    pending: {
+      label: "En attente",
+      className:
+        "bg-amber-50 text-amber-700 ring-amber-100",
+      dot: "bg-amber-500",
+    },
+  }[status];
 
   return (
-    <span className="w-fit rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-      En attente
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold ring-1 ${config.className}`}
+    >
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${config.dot}`}
+      />
+      {config.label}
     </span>
   );
 }
@@ -890,19 +1188,77 @@ function StatusBadge({
 function Stat({
   title,
   value,
+  icon,
+  tone = "default",
 }: {
   title: string;
   value: string;
+  icon: string;
+  tone?:
+    | "default"
+    | "success"
+    | "warning"
+    | "danger"
+    | "indigo";
 }) {
-  return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <p className="text-sm text-zinc-500">
-        {title}
-      </p>
+  const tones = {
+    default: "bg-zinc-100 text-zinc-700",
+    success: "bg-emerald-50 text-emerald-700",
+    warning: "bg-amber-50 text-amber-700",
+    danger: "bg-red-50 text-red-700",
+    indigo: "bg-indigo-50 text-indigo-700",
+  };
 
-      <p className="mt-2 text-3xl font-bold text-zinc-900">
+  return (
+    <div className="rounded-[24px] border border-zinc-200 bg-white p-5 shadow-[0_8px_30px_rgba(24,24,27,0.035)] transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-zinc-500">
+          {title}
+        </p>
+
+        <div
+          className={`flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold ${tones[tone]}`}
+        >
+          {icon}
+        </div>
+      </div>
+
+      <p className="mt-4 text-3xl font-bold tracking-tight text-zinc-950">
         {value}
       </p>
+    </div>
+  );
+}
+
+function EmptyGuests({
+  onAdd,
+}: {
+  onAdd: () => void;
+}) {
+  return (
+    <div className="flex min-h-72 items-center justify-center p-8">
+      <div className="max-w-sm text-center">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[28px] bg-indigo-50 text-3xl">
+          👥
+        </div>
+
+        <h3 className="mt-5 text-xl font-bold text-zinc-950">
+          Votre liste est encore vide
+        </h3>
+
+        <p className="mt-2 text-sm leading-6 text-zinc-500">
+          Ajoutez vos invités pour commencer à gérer les
+          invitations et les réponses RSVP.
+        </p>
+
+        <button
+          type="button"
+          onClick={onAdd}
+          className="mt-6 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-indigo-700"
+        >
+          Ajouter le premier invité
+        </button>
+      </div>
     </div>
   );
 }

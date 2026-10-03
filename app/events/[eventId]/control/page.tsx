@@ -145,6 +145,21 @@ export default function EventControlPage() {
       ? 0
       : Math.round((checkedInGuests / totalGuests) * 100);
 
+  const recentCheckIns = useMemo(() => {
+    return guests
+      .filter(
+        (guest) =>
+          guest.checkedIn &&
+          guest.checkedInAt,
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.checkedInAt as string).getTime() -
+          new Date(a.checkedInAt as string).getTime(),
+      )
+      .slice(0, 8);
+  }, [guests]);
+
   const searchResults = useMemo(() => {
     const value = searchTerm.trim().toLowerCase();
 
@@ -467,15 +482,15 @@ export default function EventControlPage() {
     <main className="min-h-screen bg-zinc-50">
       <EventNavigation eventId={eventId} />
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
+      <div className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
+        <div className="mb-5 sm:mb-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-green-600">
                 Event Control
               </p>
 
-              <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
                 Contrôle des entrées
               </h1>
 
@@ -496,43 +511,43 @@ export default function EventControlPage() {
           </div>
         </div>
 
-        <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <section className="mb-5 grid grid-cols-2 gap-2 sm:mb-8 sm:gap-3 lg:grid-cols-6">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <p className="text-sm text-zinc-500">Total</p>
             <p className="mt-2 text-3xl font-bold text-zinc-900">
               {totalGuests}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
             <p className="text-sm text-blue-700">Confirmés</p>
             <p className="mt-2 text-3xl font-bold text-blue-700">
               {confirmedGuests}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
             <p className="text-sm text-amber-700">En attente</p>
             <p className="mt-2 text-3xl font-bold text-amber-700">
               {pendingGuests}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-5">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
             <p className="text-sm text-red-700">Refusés</p>
             <p className="mt-2 text-3xl font-bold text-red-700">
               {declinedGuests}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
             <p className="text-sm text-emerald-700">Entrés</p>
             <p className="mt-2 text-3xl font-bold text-emerald-700">
               {checkedInGuests}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5">
+          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
             <p className="text-sm text-indigo-700">Check-in</p>
             <p className="mt-2 text-3xl font-bold text-indigo-700">
               {checkInRate}%
@@ -540,7 +555,7 @@ export default function EventControlPage() {
           </div>
         </section>
 
-        <section className="mb-8 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <section className="mb-5 rounded-[24px] border border-zinc-200 bg-white p-4 shadow-sm sm:mb-8 sm:rounded-3xl sm:p-6">
           <div className="mb-5">
             <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
               Contrôle manuel
@@ -686,7 +701,109 @@ export default function EventControlPage() {
           )}
         </section>
 
-        <section className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
+
+        <section className="mb-5 overflow-hidden rounded-[24px] border border-zinc-200 bg-white shadow-sm sm:mb-8 sm:rounded-[28px]">
+          <div className="flex flex-col gap-3 border-b border-zinc-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">
+                Activité récente
+              </p>
+
+              <h2 className="mt-1 text-xl font-bold tracking-tight text-zinc-950 sm:text-2xl">
+                🕐 Dernières entrées
+              </h2>
+
+              <p className="mt-1 text-sm text-zinc-500">
+                Les dernières personnes enregistrées à l'entrée.
+              </p>
+            </div>
+
+            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              {checkedInGuests} entrée{checkedInGuests > 1 ? "s" : ""}
+            </div>
+          </div>
+
+          {recentCheckIns.length === 0 ? (
+            <div className="px-6 py-10 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 text-2xl">
+                🕐
+              </div>
+
+              <h3 className="mt-4 font-bold text-zinc-900">
+                Aucune entrée enregistrée
+              </h3>
+
+              <p className="mx-auto mt-1 max-w-md text-sm text-zinc-500">
+                Les invités validés apparaîtront ici dès qu'ils seront enregistrés à l'entrée.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-zinc-100">
+              {recentCheckIns.map((guest, index) => (
+                <div
+                  key={guest.id}
+                  className="flex flex-col gap-4 px-5 py-4 transition hover:bg-zinc-50 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+                >
+                  <div className="flex min-w-0 items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-sm font-bold text-emerald-700">
+                      {index + 1}
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-zinc-900">
+                        {getGuestName(guest)}
+                      </p>
+
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                        <span>
+                          {guest.type === "couple"
+                            ? "Couple"
+                            : "Individuel"}
+                        </span>
+
+                        <span className="text-zinc-300">•</span>
+
+                        <span>
+                          {guest.whatsapp || "WhatsApp non renseigné"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 sm:justify-end">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-700">
+                      <span>✓</span>
+                      Entré
+                    </span>
+
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-zinc-900">
+                        {new Date(
+                          guest.checkedInAt as string,
+                        ).toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-zinc-400">
+                        {new Date(
+                          guest.checkedInAt as string,
+                        ).toLocaleDateString("fr-FR", {
+                          day: "2-digit",
+                          month: "short",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="rounded-[24px] border border-zinc-200 bg-white p-4 shadow-sm sm:rounded-[28px] sm:p-6">
           <div className="mb-6">
             <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
               Contrôle QR
@@ -701,10 +818,27 @@ export default function EventControlPage() {
             </p>
           </div>
 
-          <QRScanner
-            onScanSuccess={handleScanSuccess}
-            onScanError={() => {}}
-          />
+          <div className="rounded-[24px] border border-zinc-200 bg-zinc-950 p-3 shadow-inner sm:p-5">
+            <div className="mb-4 flex items-center justify-between gap-3 px-1">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-400">
+                  Scanner actif
+                </p>
+                <p className="mt-1 text-xs text-zinc-400">
+                  Présentez le QR code de l'invitation devant la caméra.
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-400">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                Prêt
+              </span>
+            </div>
+
+            <QRScanner
+              onScanSuccess={handleScanSuccess}
+              onScanError={() => {}}
+            />
+          </div>
 
           {scannedValue && (
             <div className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
@@ -719,14 +853,14 @@ export default function EventControlPage() {
           )}
 
           {scannedGuest && (
-            <div className="mt-6 rounded-3xl border border-green-200 bg-green-50 p-6">
+            <div className="mt-6 overflow-hidden rounded-[28px] border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 shadow-sm">
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-green-700">
                     Invité identifié
                   </p>
 
-                  <h3 className="mt-2 text-2xl font-bold text-zinc-900">
+                  <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
                     {getGuestName(scannedGuest)}
                   </h3>
 
@@ -795,14 +929,6 @@ export default function EventControlPage() {
               ⚠️ {errorMessage}
             </div>
           )}
-
-          {!scannedGuest &&
-            scannedValue &&
-            errorMessage && (
-              <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
-                {errorMessage}
-              </div>
-            )}
         </section>
       </div>
     </main>

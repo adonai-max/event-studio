@@ -1,0 +1,131 @@
+:root {
+  --es-primary: #4f46e5;
+  --es-primary-hover: #4338ca;
+  --es-secondary: #7c3aed;
+
+  --es-success: #059669;
+  --es-warning: #d97706;
+  --es-danger: #dc2626;
+  --es-info: #0284c7;
+
+  --es-bg: #f8fafc;
+  --es-surface: #ffffff;
+  --es-surface-soft: #f1f5f9;
+
+  --es-text: #09090b;
+  --es-text-muted: #71717a;
+  --es-border: #e4e4e7;
+
+  --es-radius-sm: 0.75rem;
+  --es-radius-md: 1rem;
+  --es-radius-lg: 1.5rem;
+  --es-radius-xl: 2rem;
+
+  --es-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --es-shadow-md: 0 8px 24px rgb(0 0 0 / 0.08);
+  --es-shadow-lg: 0 20px 45px rgb(0 0 0 / 0.12);
+
+  --es-transition: 180ms ease;
+}
+
+.es-card {
+  border: 1px solid var(--es-border);
+  border-radius: var(--es-radius-lg);
+  background: var(--es-surface);
+  box-shadow: var(--es-shadow-sm);
+}
+
+.es-card-hover {
+  transition:
+    transform var(--es-transition),
+    box-shadow var(--es-transition),
+    border-color var(--es-transition);
+}
+
+.es-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+  box-shadow: var(--es-shadow-md);
+}
+
+.es-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--es-radius-md);
+  background: var(--es-primary);
+  color: white;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  transition:
+    background var(--es-transition),
+    transform var(--es-transition),
+    box-shadow var(--es-transition);
+}
+
+.es-button-primary:hover {
+  background: var(--es-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--es-shadow-md);
+}
+
+.es-button-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.es-input {
+  width: 100%;
+  border: 1px solid var(--es-border);
+  border-radius: var(--es-radius-md);
+  background: white;
+  padding: 0.75rem 1rem;
+  color: var(--es-text);
+  outline: none;
+  transition:
+    border-color var(--es-transition),
+    box-shadow var(--es-transition);
+}
+
+.es-input:focus {
+  border-color: var(--es-primary);
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.12);
+}
+
+.es-badge-success {
+  border-radius: 9999px;
+  background: #ecfdf5;
+  color: #047857;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.es-badge-warning {
+  border-radius: 9999px;
+  background: #fffbeb;
+  color: #b45309;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.es-badge-danger {
+  border-radius: 9999px;
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.es-badge-info {
+  border-radius: 9999px;
+  background: #f0f9ff;
+  color: #0369a1;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
