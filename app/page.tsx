@@ -13,6 +13,10 @@ export default function Home() {
     router.push("/events/demo");
   };
 
+  const handleLogin = () => {
+    router.push("/login");
+  };
+
   return (
     <main className="min-h-screen bg-white text-zinc-900">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-8">
@@ -31,7 +35,7 @@ export default function Home() {
 
           <button
             type="button"
-            onClick={handleDemo}
+            onClick={handleLogin}
             className="rounded-full bg-zinc-900 px-5 py-2.5 text-white transition hover:bg-zinc-700"
           >
             Connexion
