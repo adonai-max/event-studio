@@ -362,7 +362,8 @@ export default function ProfilePage() {
                   </button>
 
                   {message && (
-                    <p className="text-sm font-semibold text-emerald-600">
+                    <p className="inline-flex items-center gap-2 rounded-xl bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700">
+                      <span aria-hidden="true">✓</span>
                       {message}
                     </p>
                   )}
