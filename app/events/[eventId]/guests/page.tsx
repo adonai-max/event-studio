@@ -953,36 +953,65 @@ function GuestRow({
   onDelete: () => void;
 }) {
   return (
-    <article className="group p-5 transition duration-200 hover:bg-zinc-50/70 sm:p-6">
+    <article className="group relative p-4 transition duration-300 hover:bg-zinc-50/70 sm:p-5 lg:p-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-sm font-bold text-indigo-700 ring-1 ring-indigo-100">
-            {getInitials(guest)}
+          <div className="relative shrink-0">
+            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-indigo-50 to-violet-50 text-sm font-black text-indigo-700 ring-1 ring-indigo-100 transition duration-300 group-hover:scale-105">
+              {getInitials(guest)}
+            </div>
+
+            <span
+              className={[
+                "absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full border-2 border-white",
+                guest.checkedIn
+                  ? "bg-emerald-500"
+                  : guest.status === "confirmed"
+                    ? "bg-indigo-500"
+                    : guest.status === "declined"
+                      ? "bg-red-500"
+                      : "bg-amber-400",
+              ].join(" ")}
+            />
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="truncate text-base font-bold text-zinc-950">
+              <h3 className="max-w-full truncate text-base font-black tracking-[-0.02em] text-zinc-950 sm:text-lg">
                 {getGuestName(guest)}
               </h3>
 
               {guest.type === "couple" && (
-                <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-violet-700">
+                <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-violet-700 ring-1 ring-violet-100">
                   Couple
                 </span>
               )}
             </div>
 
-            <p className="mt-1 text-sm text-zinc-500">
-              {guest.whatsapp}
-            </p>
+            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <p className="text-sm font-medium text-zinc-500">
+                {guest.whatsapp}
+              </p>
+
+              {guest.checkedIn && guest.checkedInAt && (
+                <span className="text-xs font-semibold text-emerald-600">
+                  Entré à{" "}
+                  {new Date(
+                    guest.checkedInAt,
+                  ).toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              )}
+            </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <StatusBadge status={guest.status} />
 
               {guest.checkedIn ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">
+                  <span className="text-xs">✓</span>
                   Entré
                 </span>
               ) : (
@@ -992,40 +1021,43 @@ function GuestRow({
               )}
             </div>
 
-            <div className="mt-3 flex max-w-xl items-center gap-2 rounded-xl bg-zinc-50 px-3 py-2">
-              <span className="text-xs text-zinc-400">
+            <div className="mt-3 flex max-w-xl items-center gap-2 rounded-2xl border border-zinc-100 bg-zinc-50 px-3 py-2.5 transition group-hover:border-indigo-100 group-hover:bg-indigo-50/40">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white text-xs shadow-sm">
                 🔗
               </span>
 
-              <span className="truncate font-mono text-xs text-indigo-600">
+              <span className="min-w-0 truncate font-mono text-xs font-medium text-indigo-600">
                 /i/{guest.slug}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 lg:justify-end">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:flex lg:shrink-0">
           <button
             type="button"
             onClick={onQr}
-            className="rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
           >
-            📱 QR Code
+            <span>▣</span>
+            QR Code
           </button>
 
           <button
             type="button"
             onClick={onEdit}
-            className="rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-xs font-bold text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-xs font-bold text-zinc-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-950"
           >
+            <span>✎</span>
             Modifier
           </button>
 
           <button
             type="button"
             onClick={onDelete}
-            className="rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-600 transition duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:bg-red-50"
           >
+            <span>×</span>
             Supprimer
           </button>
         </div>
