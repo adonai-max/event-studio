@@ -1307,39 +1307,60 @@ function GuestTypeButton({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={[
-        "rounded-[22px] border p-5 text-left transition duration-200",
+        "group relative overflow-hidden rounded-[24px] border p-5 text-left transition duration-300 sm:p-6",
         active
-          ? "border-indigo-500 bg-indigo-50/70 shadow-sm ring-4 ring-indigo-50"
-          : "border-zinc-200 bg-white hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-sm",
+          ? "border-indigo-300 bg-indigo-50/60 shadow-[0_10px_30px_rgba(79,70,229,0.10)] ring-4 ring-indigo-50"
+          : "border-zinc-200 bg-white hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md",
       ].join(" ")}
     >
+      {active && (
+        <span
+          className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-black text-white shadow-sm"
+          aria-hidden="true"
+        >
+          ✓
+        </span>
+      )}
+
       <div className="flex items-start gap-4">
         <div
           className={[
-            "flex h-11 w-11 items-center justify-center rounded-2xl text-xl",
+            "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl transition duration-300",
             active
-              ? "bg-indigo-600 text-white"
-              : "bg-zinc-100",
+              ? "bg-indigo-600 text-white shadow-sm"
+              : "bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200 group-hover:text-zinc-800",
           ].join(" ")}
+          aria-hidden="true"
         >
           {icon}
         </div>
 
-        <div>
-          <h3 className="font-bold text-zinc-950">
-            {title}
-          </h3>
+        <div className="min-w-0 pr-7">
+          <div className="flex items-center gap-2">
+            <h3 className="font-black tracking-tight text-zinc-950">
+              {title}
+            </h3>
+          </div>
 
-          <p className="mt-1 text-sm leading-5 text-zinc-500">
+          <p className="mt-1.5 text-sm leading-6 text-zinc-500">
             {description}
+          </p>
+
+          <p
+            className={[
+              "mt-3 text-[10px] font-black uppercase tracking-[0.16em]",
+              active ? "text-indigo-600" : "text-zinc-400",
+            ].join(" ")}
+          >
+            {active ? "Sélectionné" : "Choisir ce format"}
           </p>
         </div>
       </div>
     </button>
   );
 }
-
 function InputField({
   id,
   label,
