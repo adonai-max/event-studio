@@ -1144,11 +1144,11 @@ function GuestRow({
   onDelete: () => void;
 }) {
   return (
-    <article className="group relative p-4 transition duration-300 hover:bg-zinc-50/70 sm:p-5 lg:p-6">
+    <article className="group relative border-b border-zinc-100 p-4 last:border-b-0 transition duration-300 hover:bg-zinc-50/60 sm:p-5 lg:p-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 items-start gap-4">
           <div className="relative shrink-0">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-indigo-50 to-violet-50 text-sm font-black text-indigo-700 ring-1 ring-indigo-100 transition duration-300 group-hover:scale-105">
+            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-indigo-50 via-white to-violet-50 text-sm font-black text-indigo-700 ring-1 ring-indigo-100 transition duration-300 group-hover:scale-[1.03] group-hover:shadow-sm sm:h-16 sm:w-16">
               {getInitials(guest)}
             </div>
 
@@ -1168,7 +1168,7 @@ function GuestRow({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="max-w-full truncate text-base font-black tracking-[-0.02em] text-zinc-950 sm:text-lg">
+              <h3 className="max-w-full truncate text-base font-black tracking-[-0.025em] text-zinc-950 sm:text-lg">
                 {getGuestName(guest)}
               </h3>
 
@@ -1180,12 +1180,19 @@ function GuestRow({
             </div>
 
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-              <p className="text-sm font-medium text-zinc-500">
-                {guest.whatsapp}
-              </p>
+              {guest.whatsapp ? (
+                <p className="text-sm font-medium text-zinc-500">
+                  {guest.whatsapp}
+                </p>
+              ) : (
+                <p className="text-sm font-medium text-zinc-400">
+                  WhatsApp non renseigné
+                </p>
+              )}
 
               {guest.checkedIn && guest.checkedInAt && (
-                <span className="text-xs font-semibold text-emerald-600">
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Entré à{" "}
                   {new Date(
                     guest.checkedInAt,
@@ -1202,7 +1209,7 @@ function GuestRow({
 
               {guest.checkedIn ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">
-                  <span className="text-xs">✓</span>
+                  <span aria-hidden="true">✓</span>
                   Entré
                 </span>
               ) : (
@@ -1212,19 +1219,40 @@ function GuestRow({
               )}
             </div>
 
-            <div className="mt-3 flex max-w-xl items-center gap-2 rounded-2xl border border-zinc-100 bg-zinc-50 px-3 py-2.5 transition group-hover:border-indigo-100 group-hover:bg-indigo-50/40">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white text-xs shadow-sm">
+            <div className="mt-3 flex max-w-xl items-center gap-2">
+              <span
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-white text-xs text-zinc-400 shadow-sm"
+                aria-hidden="true"
+              >
                 🔗
               </span>
 
-              <span className="min-w-0 truncate font-mono text-xs font-medium text-indigo-600">
+              <span className="min-w-0 truncate font-mono text-[11px] font-medium text-zinc-400">
                 /i/{guest.slug}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:shrink-0">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:items-center lg:justify-end">
+          <button
+            type="button"
+            onClick={onQr}
+            className="order-first inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
+          >
+            <span aria-hidden="true">▣</span>
+            QR Code
+          </button>
+
+          <button
+            type="button"
+            onClick={onWhatsApp}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-black text-emerald-700 transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-100"
+          >
+            <span aria-hidden="true">💬</span>
+            WhatsApp
+          </button>
+
           <button
             type="button"
             onClick={onCopyLink}
@@ -1235,26 +1263,8 @@ function GuestRow({
                 : "border-zinc-200 bg-white text-zinc-700 shadow-sm hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700",
             ].join(" ")}
           >
-            <span>{copied ? "✓" : "⧉"}</span>
+            <span aria-hidden="true">{copied ? "✓" : "⧉"}</span>
             {copied ? "Copié" : "Copier le lien"}
-          </button>
-
-          <button
-            type="button"
-            onClick={onWhatsApp}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-black text-emerald-700 transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-100"
-          >
-            <span>💬</span>
-            WhatsApp
-          </button>
-
-          <button
-            type="button"
-            onClick={onQr}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
-          >
-            <span>▣</span>
-            QR Code
           </button>
 
           <button
@@ -1262,7 +1272,7 @@ function GuestRow({
             onClick={onEdit}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-xs font-bold text-zinc-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-950"
           >
-            <span>✎</span>
+            <span aria-hidden="true">✎</span>
             Modifier
           </button>
 
@@ -1271,7 +1281,7 @@ function GuestRow({
             onClick={onDelete}
             className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-4 py-2.5 text-xs font-bold text-red-600 transition duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:bg-red-50 sm:col-span-1"
           >
-            <span>×</span>
+            <span aria-hidden="true">×</span>
             Supprimer
           </button>
         </div>
@@ -1279,6 +1289,7 @@ function GuestRow({
     </article>
   );
 }
+
 function GuestTypeButton({
   active,
   icon,
