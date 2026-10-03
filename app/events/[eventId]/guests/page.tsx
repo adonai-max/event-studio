@@ -1417,33 +1417,46 @@ function RsvpSummaryItem({
   tone: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-100 bg-zinc-50/70 p-4">
+    <div className="group rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md sm:p-5">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className={`h-2.5 w-2.5 rounded-full ${dot}`} />
-          <span className="text-sm font-bold text-zinc-800">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span
+            className={`h-2.5 w-2.5 shrink-0 rounded-full ${dot}`}
+          />
+
+          <span className="truncate text-sm font-bold text-zinc-800">
             {label}
           </span>
         </div>
 
-        <span className={`text-sm font-black ${tone}`}>
+        <span
+          className={`shrink-0 text-sm font-black tabular-nums ${tone}`}
+        >
           {percentage}%
         </span>
       </div>
 
-      <div className="mt-3 flex items-end justify-between">
-        <span className="text-2xl font-black tracking-tight text-zinc-950">
-          {value}
-        </span>
+      <div className="mt-5 flex items-end justify-between gap-3">
+        <div>
+          <span className="text-3xl font-black tracking-[-0.04em] text-zinc-950">
+            {value}
+          </span>
 
-        <span className="text-xs font-medium text-zinc-400">
-          invité{value > 1 ? "s" : ""}
-        </span>
+          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-400">
+            invité{value > 1 ? "s" : ""}
+          </p>
+        </div>
+
+        <div className="mb-1 h-1.5 w-20 overflow-hidden rounded-full bg-zinc-100">
+          <div
+            className={`h-full rounded-full ${dot} transition-all duration-500`}
+            style={{ width: percentage + "%" }}
+          />
+        </div>
       </div>
     </div>
   );
 }
-
 function StatusBadge({
   status,
 }: {
