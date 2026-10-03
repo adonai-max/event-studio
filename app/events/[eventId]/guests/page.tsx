@@ -1060,20 +1060,38 @@ export default function GuestsPage() {
               }}
             />
           ) : filteredGuests.length === 0 ? (
-            <div className="flex min-h-64 items-center justify-center p-8">
-              <div className="max-w-sm text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-zinc-100 text-2xl">
+            <div className="flex min-h-72 items-center justify-center px-6 py-12 sm:px-8">
+              <div className="w-full max-w-md text-center">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[28px] border border-zinc-200 bg-zinc-50 text-3xl shadow-sm">
                   🔎
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold text-zinc-950">
-                  Aucun résultat
+                <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  Recherche
+                </p>
+
+                <h3 className="mt-2 text-xl font-bold tracking-tight text-zinc-950">
+                  Aucun invité trouvé
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-zinc-500">
-                  Aucun invité ne correspond aux filtres
-                  actuellement sélectionnés.
+                <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-zinc-500">
+                  Aucun invité ne correspond aux critères actuellement
+                  sélectionnés. Essayez une autre recherche ou réinitialisez
+                  les filtres.
                 </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("all");
+                    setTypeFilter("all");
+                    setCheckInFilter("all");
+                  }}
+                  className="mt-6 inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold text-zinc-700 shadow-sm transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-950"
+                >
+                  Réinitialiser la recherche
+                </button>
               </div>
             </div>
           ) : (
@@ -1504,28 +1522,48 @@ function EmptyGuests({
   onAdd: () => void;
 }) {
   return (
-    <div className="flex min-h-72 items-center justify-center p-8">
-      <div className="max-w-sm text-center">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[28px] bg-indigo-50 text-3xl">
+    <div className="relative flex min-h-80 items-center justify-center overflow-hidden px-6 py-12 sm:px-8">
+      <div
+        className="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-indigo-100/60 blur-3xl"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -bottom-20 -right-12 h-48 w-48 rounded-full bg-violet-100/50 blur-3xl"
+        aria-hidden="true"
+      />
+
+      <div className="relative w-full max-w-lg text-center">
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[32px] border border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50 text-4xl shadow-sm">
           👥
         </div>
 
-        <h3 className="mt-5 text-xl font-bold text-zinc-950">
-          Votre liste est encore vide
+        <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+          Votre espace invités
+        </p>
+
+        <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
+          Construisez votre liste d’invités
         </h3>
 
-        <p className="mt-2 text-sm leading-6 text-zinc-500">
-          Ajoutez vos invités pour commencer à gérer les
-          invitations et les réponses RSVP.
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-zinc-500 sm:text-base">
+          Ajoutez vos invités pour centraliser les invitations, suivre les
+          réponses RSVP et préparer le contrôle des entrées.
         </p>
 
         <button
           type="button"
           onClick={onAdd}
-          className="mt-6 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-indigo-700"
+          className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
         >
+          <span className="text-base" aria-hidden="true">
+            +
+          </span>
           Ajouter le premier invité
         </button>
+
+        <p className="mt-4 text-xs text-zinc-400">
+          Vous pourrez ensuite suivre les confirmations et les entrées.
+        </p>
       </div>
     </div>
   );
