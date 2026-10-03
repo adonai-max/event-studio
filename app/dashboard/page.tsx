@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
 type EventItem = {
@@ -19,11 +20,137 @@ type GuestItem = {
   event_id: string;
   status: "pending" | "confirmed" | "declined";
   checked_in: boolean;
+  created_at: string | null;
+  updated_at: string | null;
 };
+
+type EventStatus = {
+  label: string;
+  tone: "gray" | "blue" | "green" | "purple";
+};
+
+function getEventStatus(event: EventItem): EventStatus {
+  if (!event.date) return { label: "Brouillon", tone: "gray" };
+
+  const eventDate = new Date(event.date + "T23:59:59");
+  const now = new Date();
+
+  if (eventDate < now) return { label: "Terminé", tone: "purple" };
+
+  const diff = eventDate.getTime() - now.getTime();
+  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+  if (days <= 7) return { label: "Actif", tone: "green" };
+
+  return { label: "Programmé", tone: "blue" };
+}
+
+function formatDate(date: string | null) {
+  if (!date) return "Date à définir";
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(date + "T12:00:00"));
+}
+
+function formatShortDate(date: string | null) {
+  if (!date) return "—";
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit",
+    month: "short",
+  }).format(new Date(date + "T12:00:00"));
+}
+
+function formatActivityDate(date: string | null) {
+  if (!date) return "";
+
+  const parsed = new Date(date);
+  const diff = Date.now() - parsed.getTime();
+
+  if (diff < 60 * 1000) return "À l’instant";
+  if (diff < 60 * 60 * 1000) return "Il y a " + Math.floor(diff / (60 * 1000)) + " min";
+  if (diff < 24 * 60 * 60 * 1000) return "Il y a " + Math.floor(diff / (60 * 60 * 1000)) + " h";
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "short",
+  }).format(parsed);
+}
+
+function StatusBadge({ status }: { status: EventStatus }) {
+  const styles = {
+    gray: "border-zinc-200 bg-zinc-100 text-zinc-600",
+    blue: "border-blue-100 bg-blue-50 text-blue-700",
+    green: "border-emerald-100 bg-emerald-50 text-emerald-700",
+    purple: "border-purple-100 bg-purple-50 text-purple-700",
+  };
+
+  const dots = {
+    gray: "bg-zinc-400",
+    blue: "bg-blue-500",
+    green: "bg-emerald-500",
+    purple: "bg-purple-500",
+  };
+
+  return (
+    <span className={["inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold", styles[status.tone]].join(" ")}>
+      <span className={["h-1.5 w-1.5 rounded-full", dots[status.tone], status.tone === "green" ? "animate-pulse" : ""].join(" ")} />
+      {status.label}
+    </span>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+  detail,
+}: {
+  icon: string;
+  label: string;
+  value: number;
+  detail: string;
+}) {
+  return (
+    <div className="group rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-950/5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium text-zinc-500">{label}</p>
+          <p className="mt-3 text-3xl font-black tracking-tight text-zinc-950">{value}</p>
+          <p className="mt-1 text-xs text-zinc-400">{detail}</p>
+        </div>
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-lg text-indigo-600 transition-transform duration-300 group-hover:scale-110">
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="font-medium text-zinc-500">{label}</span>
+        <span className="font-bold text-zinc-800">{value}%</span>
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-zinc-100">
+        <div className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 transition-all duration-1000 ease-out" style={{ width: value + "%" }} />
+      </div>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [guests, setGuests] = useState<GuestItem[]>([]);
+  const [userName, setUserName] = useState("Adonaï");
+  const [userEmail, setUserEmail] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -32,45 +159,40 @@ export default function DashboardPage() {
       setLoading(true);
       setErrorMessage("");
 
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        setErrorMessage(
-          "Vous devez être connecté pour voir votre Dashboard.",
-        );
+        setErrorMessage("Vous devez être connecté pour voir votre Dashboard.");
         setLoading(false);
         return;
       }
 
-      const { data: eventsData, error: eventsError } =
-        await supabase
-          .from("events")
-          .select(
-            "id, name, type, date, time, location, description, created_at",
-          )
-          .eq("owner_id", user.id)
-          .order("created_at", {
-            ascending: false,
-          });
+      const metadataName =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split("@")[0];
+
+      if (metadataName) {
+        setUserName(metadataName);
+      }
+
+      setUserEmail(user.email ?? "");
+      setAvatarUrl(user.user_metadata?.avatar_url ?? "");
+
+      const { data: eventsData, error: eventsError } = await supabase
+        .from("events")
+        .select("id, name, type, date, time, location, description, created_at")
+        .eq("owner_id", user.id)
+        .order("created_at", { ascending: false });
 
       if (eventsError) {
-        console.error(
-          "❌ Erreur chargement événements Dashboard :",
-          eventsError,
-        );
-
-        setErrorMessage(
-          "Impossible de charger vos événements.",
-        );
+        console.error("❌ Erreur chargement événements Dashboard :", eventsError);
+        setErrorMessage("Impossible de charger vos événements.");
         setLoading(false);
         return;
       }
 
       const loadedEvents = eventsData ?? [];
-
       setEvents(loadedEvents);
 
       if (loadedEvents.length === 0) {
@@ -79,28 +201,17 @@ export default function DashboardPage() {
         return;
       }
 
-      const eventIds = loadedEvents.map(
-        (event) => event.id,
-      );
+      const eventIds = loadedEvents.map((event) => event.id);
 
-      const { data: guestsData, error: guestsError } =
-        await supabase
-          .from("guests")
-          .select(
-            "id, event_id, status, checked_in",
-          )
-          .in("event_id", eventIds);
+      const { data: guestsData, error: guestsError } = await supabase
+        .from("guests")
+        .select("id, event_id, status, checked_in, created_at, updated_at")
+        .in("event_id", eventIds)
+        .order("updated_at", { ascending: false });
 
       if (guestsError) {
-        console.error(
-          "❌ Erreur chargement invités Dashboard :",
-          guestsError,
-        );
-
-        setErrorMessage(
-          "Les événements sont chargés, mais les statistiques des invités sont indisponibles.",
-        );
-
+        console.error("❌ Erreur chargement invités Dashboard :", guestsError);
+        setErrorMessage("Les événements sont chargés, mais les statistiques des invités sont indisponibles.");
         setGuests([]);
         setLoading(false);
         return;
@@ -110,373 +221,589 @@ export default function DashboardPage() {
       setLoading(false);
     };
 
-    loadDashboard();
+    void loadDashboard();
   }, []);
 
+  async function handleDuplicateEvent(eventId: string) {
+    setErrorMessage("");
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      setErrorMessage(
+        "Votre session a expiré. Veuillez vous reconnecter.",
+      );
+      return;
+    }
+
+    const { data: originalEvent, error: eventError } = await supabase
+      .from("events")
+      .select(
+        "name, type, date, time, location, description, owner_id",
+      )
+      .eq("id", eventId)
+      .eq("owner_id", user.id)
+      .single();
+
+    if (eventError || !originalEvent) {
+      setErrorMessage(
+        "Impossible de récupérer l'événement à dupliquer.",
+      );
+      return;
+    }
+
+    const { data: duplicatedEvent, error: duplicateError } =
+      await supabase
+        .from("events")
+        .insert({
+          owner_id: user.id,
+          name: originalEvent.name + " — Copie",
+          type: originalEvent.type,
+          date: originalEvent.date,
+          time: originalEvent.time,
+          location: originalEvent.location,
+          description: originalEvent.description,
+        })
+        .select(
+          "id, name, type, date, time, location, description, created_at",
+        )
+        .single();
+
+    if (duplicateError || !duplicatedEvent) {
+      console.error(
+        "Erreur duplication événement:",
+        duplicateError,
+      );
+      setErrorMessage(
+        "Impossible de créer la copie de l'événement.",
+      );
+      return;
+    }
+
+    const { data: originalGuests, error: guestsError } =
+      await supabase
+        .from("guests")
+        .select(
+          "type, first_name_1, last_name_1, first_name_2, last_name_2, whatsapp, status, slug",
+        )
+        .eq("event_id", eventId);
+
+    if (guestsError) {
+      console.error(
+        "Erreur récupération invités à dupliquer:",
+        guestsError,
+      );
+      setEvents((current) => [duplicatedEvent, ...current]);
+      setErrorMessage(
+        "Événement dupliqué, mais les invités n'ont pas pu être copiés.",
+      );
+      return;
+    }
+
+    if (originalGuests && originalGuests.length > 0) {
+      const duplicatedGuests = originalGuests.map((guest) => ({
+        event_id: duplicatedEvent.id,
+        type: guest.type,
+        first_name_1: guest.first_name_1,
+        last_name_1: guest.last_name_1,
+        first_name_2: guest.first_name_2,
+        last_name_2: guest.last_name_2,
+        whatsapp: guest.whatsapp,
+        status: "pending",
+        slug:
+          guest.slug +
+          "-copy-" +
+          Math.random().toString(36).slice(2, 8),
+        checked_in: false,
+        checked_in_at: null,
+      }));
+
+      const { error: insertGuestsError } = await supabase
+        .from("guests")
+        .insert(duplicatedGuests);
+
+      if (insertGuestsError) {
+        console.error(
+          "Erreur création invités dupliqués:",
+          insertGuestsError,
+        );
+        setEvents((current) => [duplicatedEvent, ...current]);
+        setErrorMessage(
+          "Événement dupliqué, mais les invités n'ont pas pu être copiés.",
+        );
+        return;
+      }
+    }
+
+    setEvents((current) => [duplicatedEvent, ...current]);
+  }
+
+  async function handleDeleteEvent(eventId: string, eventName: string) {
+    const confirmed = window.confirm(
+      'Supprimer l\'événement "' + eventName + '" ? Cette action est irréversible.',
+    );
+
+    if (!confirmed) return;
+
+    setErrorMessage("");
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      setErrorMessage(
+        "Votre session a expiré. Veuillez vous reconnecter.",
+      );
+      return;
+    }
+
+    const { error } = await supabase
+      .from("events")
+      .delete()
+      .eq("id", eventId)
+      .eq("owner_id", user.id);
+
+    if (error) {
+      console.error("Erreur suppression événement:", error);
+      setErrorMessage(
+        "Impossible de supprimer cet événement. Veuillez réessayer.",
+      );
+      return;
+    }
+
+    setEvents((current) =>
+      current.filter((item) => item.id !== eventId),
+    );
+  }
+
+  const globalStats = useMemo(() => {
+    const total = guests.length;
+    const confirmed = guests.filter((guest) => guest.status === "confirmed").length;
+    const checkedIn = guests.filter((guest) => guest.checked_in).length;
+    const confirmationRate = total > 0 ? Math.round((confirmed / total) * 100) : 0;
+    const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
+
+    return { total, confirmed, checkedIn, confirmationRate, checkInRate };
+  }, [guests]);
+
+  const nextEvent = useMemo(() => {
+    const now = new Date();
+
+    return events
+      .filter((event) => !event.date || new Date(event.date + "T23:59:59") >= now)
+      .sort((a, b) => {
+        if (!a.date) return 1;
+        if (!b.date) return -1;
+        return a.date.localeCompare(b.date);
+      })[0] ?? null;
+  }, [events]);
+
+  const recentActivity = useMemo(() => {
+    return guests
+      .filter((guest) => guest.updated_at || guest.created_at)
+      .slice(0, 6)
+      .map((guest) => {
+        const event = events.find((item) => item.id === guest.event_id);
+        const date = guest.updated_at || guest.created_at;
+
+        let title = "Invité mis à jour";
+        let icon = "↻";
+        let tone = "text-indigo-600 bg-indigo-50";
+
+        if (guest.checked_in) {
+          title = "Entrée enregistrée";
+          icon = "✓";
+          tone = "text-emerald-600 bg-emerald-50";
+        } else if (guest.status === "confirmed") {
+          title = "Invitation confirmée";
+          icon = "✓";
+          tone = "text-emerald-600 bg-emerald-50";
+        } else if (guest.status === "declined") {
+          title = "Invitation refusée";
+          icon = "×";
+          tone = "text-red-600 bg-red-50";
+        } else {
+          title = "Invitation en attente";
+          icon = "…";
+          tone = "text-amber-600 bg-amber-50";
+        }
+
+        return { id: guest.id, title, eventName: event?.name || "Événement", date, icon, tone };
+      });
+  }, [guests, events]);
+
   return (
-    <main className="min-h-screen bg-zinc-50">
-      <div className="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+    <main className="min-h-screen bg-[#f7f8fc] text-zinc-950">
 
-        <header>
-          <p className="text-sm font-semibold text-indigo-600">
-            EVENT STUDIO
-          </p>
+      <header className="sticky top-0 z-40 border-b border-zinc-200/80 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+          <Link href="/dashboard" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 text-xs font-black text-white shadow-sm">ES</div>
+            <div className="hidden sm:block">
+              <p className="text-sm font-black tracking-tight text-zinc-950">Event Studio</p>
+              <p className="text-[11px] font-medium text-zinc-400">Centre de pilotage</p>
+            </div>
+          </Link>
 
-          <h1 className="mt-2 text-4xl font-bold tracking-tight text-zinc-900">
-            Dashboard
-          </h1>
+          <div className="flex items-center gap-3">
+            <button type="button" aria-label="Notifications" className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-500 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600">
+              <span className="text-base">●</span>
+              <span className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-indigo-600" />
+            </button>
 
-          <p className="mt-3 max-w-2xl text-zinc-600">
-            Gérez vos événements, vos invitations et vos invités
-            depuis un seul espace.
-          </p>
-        </header>
+            <div className="hidden h-8 w-px bg-zinc-200 sm:block" />
 
-        {errorMessage && (
-          <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-700">
-            {errorMessage}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setProfileMenuOpen((open) => !open)}
+                className="flex items-center gap-3 rounded-2xl p-1.5 transition hover:bg-zinc-100"
+                aria-label="Ouvrir le menu utilisateur"
+                aria-expanded={profileMenuOpen}
+              >
+                <div className="hidden text-right sm:block">
+                  <p className="text-xs font-bold text-zinc-800">{userName}</p>
+                  <p className="max-w-[180px] truncate text-[11px] text-zinc-400">
+                    {userEmail || "Organisateur"}
+                  </p>
+                </div>
+
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={`Photo de profil de ${userName}`}
+                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white"
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-sm font-black text-white shadow-md">
+                    {userName
+                      .trim()
+                      .split(/\s+/)
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((part) => part.charAt(0).toUpperCase())
+                      .join("") || "ES"}
+                  </div>
+                )}
+
+                <span className="hidden text-xs text-zinc-400 sm:block">
+                  {profileMenuOpen ? "▲" : "▼"}
+                </span>
+              </button>
+
+              {profileMenuOpen && (
+                <div className="absolute right-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-zinc-950/10">
+                  <div className="border-b border-zinc-100 bg-zinc-50 px-4 py-4">
+                    <p className="truncate text-sm font-black text-zinc-900">
+                      {userName}
+                    </p>
+
+                    <p className="mt-1 truncate text-xs text-zinc-500">
+                      {userEmail}
+                    </p>
+                  </div>
+
+                  <div className="p-2">
+                    <Link
+                      href="/profile"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-indigo-50 hover:text-indigo-700"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                        👤
+                      </span>
+                      <span>Mon profil</span>
+                    </Link>
+
+                    <a href="/settings" className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100">
+                        ⚙️
+                      </span>
+                      <span>Paramètres</span>
+                    </a>
+                  </div>
+
+                  <div className="border-t border-zinc-100 p-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        window.location.href = "/login";
+                      }}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-red-600 transition hover:bg-red-50"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50">
+                        ↪
+                      </span>
+                      <span>Déconnexion</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
+      </header>
 
-        {/* VUE GÉNÉRALE */}
-        <section className="mt-10">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
 
-            
+        <section className="relative overflow-hidden rounded-[2rem] bg-zinc-950 px-6 py-8 shadow-xl sm:px-8 lg:px-10 lg:py-9">
+          <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl" />
+          <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-violet-600/15 blur-3xl" />
 
-            
+          <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Tableau de bord</p>
+              <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Bonjour {userName} 👋</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">Pilotez vos événements, vos invitations et vos invités depuis un seul espace.</p>
+            </div>
 
-            
-
+            <Link href="/events/new" className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-xl">
+              <span className="text-lg text-indigo-600">+</span>
+              Créer un événement
+            </Link>
           </div>
         </section>
 
-        {/* MES ÉVÉNEMENTS */}
+        {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
+
         <section className="mt-10">
-
-          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-            <div>
-              <h2 className="text-2xl font-bold text-zinc-900">
-                Mes événements
-              </h2>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                Chaque événement possède ses propres invités,
-                RSVP et statistiques.
-              </p>
-            </div>
-
-            <a
-              href="/events/new"
-              className="inline-flex w-fit rounded-full bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
-            >
-              + Créer un événement
-            </a>
-
+          <div className="mb-5">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Vue générale</p>
+            <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
+            <p className="mt-1 text-sm text-zinc-500">Une vision rapide de votre activité événementielle.</p>
           </div>
 
           {loading ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-10 text-center shadow-sm">
-              <p className="text-zinc-500">
-                Chargement de votre Dashboard...
-              </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-white" />)}</div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <StatCard icon="▦" label="Événements" value={events.length} detail="Créés par vous" />
+              <StatCard icon="◎" label="Invités" value={globalStats.total} detail="Sur vos événements" />
+              <StatCard icon="✓" label="Confirmés" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
+              <StatCard icon="→" label="Entrées" value={globalStats.checkedIn} detail={globalStats.checkInRate + "% des confirmés"} />
             </div>
+          )}
+        </section>
+
+        <section className="mt-10 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+
+          <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-5 sm:px-7">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">Agenda</p>
+                <h2 className="mt-1 text-xl font-black">Prochain événement</h2>
+              </div>
+              {nextEvent && <Link href={"/events/" + nextEvent.id} className="text-xs font-bold text-indigo-600 hover:text-indigo-800">Ouvrir →</Link>}
+            </div>
+
+            {loading ? (
+              <div className="p-7"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div>
+            ) : nextEvent ? (
+              <div className="p-6 sm:p-7">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                  <div className="flex h-24 w-24 shrink-0 flex-col items-center justify-center rounded-3xl bg-indigo-50 text-indigo-700">
+                    <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
+                    <span className="mt-1 text-3xl font-black">{nextEvent.date ? new Date(nextEvent.date + "T12:00:00").getDate() : "—"}</span>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <StatusBadge status={getEventStatus(nextEvent)} />
+                      {nextEvent.type && <span className="text-xs font-medium text-zinc-400">{nextEvent.type}</span>}
+                    </div>
+                    <h3 className="mt-3 truncate text-2xl font-black">{nextEvent.name}</h3>
+                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-500">
+                      <span>📅 {formatDate(nextEvent.date)}</span>
+                      {nextEvent.time && <span>🕐 {nextEvent.time}</span>}
+                      {nextEvent.location && <span className="truncate">📍 {nextEvent.location}</span>}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-7 grid grid-cols-3 gap-3 border-t border-zinc-100 pt-6">
+                  <div><p className="text-xs text-zinc-400">Invités</p><p className="mt-1 text-lg font-black">{guests.filter((guest) => guest.event_id === nextEvent.id).length}</p></div>
+                  <div><p className="text-xs text-zinc-400">Confirmés</p><p className="mt-1 text-lg font-black text-emerald-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.status === "confirmed").length}</p></div>
+                  <div><p className="text-xs text-zinc-400">Entrées</p><p className="mt-1 text-lg font-black text-indigo-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.checked_in).length}</p></div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center sm:p-12">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 text-2xl">+</div>
+                <h3 className="mt-5 text-lg font-black">Aucun événement à venir</h3>
+                <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-500">Créez votre prochain événement pour commencer à construire votre expérience.</p>
+                <Link href="/events/new" className="mt-5 inline-flex rounded-xl bg-zinc-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700">Créer un événement</Link>
+              </div>
+            )}
+          </div>
+
+          <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
+            <div className="border-b border-zinc-100 px-6 py-5 sm:px-7">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">Suivi</p>
+              <h2 className="mt-1 text-xl font-black">Activité récente</h2>
+            </div>
+
+            <div className="p-5 sm:p-6">
+              {loading ? (
+                <div className="space-y-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-12 animate-pulse rounded-xl bg-zinc-100" />)}</div>
+              ) : recentActivity.length === 0 ? (
+                <div className="py-8 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-400">•</div>
+                  <p className="mt-4 text-sm font-bold text-zinc-700">Aucune activité récente</p>
+                  <p className="mt-1 text-xs leading-5 text-zinc-400">Les actions sur vos invités apparaîtront ici.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-zinc-50">
+                      <div className={["flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black", activity.tone].join(" ")}>{activity.icon}</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-bold text-zinc-800">{activity.title}</p>
+                        <p className="truncate text-xs text-zinc-400">{activity.eventName}</p>
+                      </div>
+                      <span className="shrink-0 text-[10px] font-medium text-zinc-400">{formatActivityDate(activity.date)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+        </section>
+
+        <section className="mt-12">
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Gestion</p>
+              <h2 className="mt-1 text-2xl font-black tracking-tight">Mes événements</h2>
+              <p className="mt-1 text-sm text-zinc-500">Retrouvez et pilotez tous vos événements.</p>
+            </div>
+
+            {!loading && events.length > 0 && <Link href="/events/new" className="inline-flex w-fit items-center rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">+ Nouvel événement</Link>}
+          </div>
+
+          {loading ? (
+            <div className="grid gap-6 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[2rem] bg-white" />)}</div>
           ) : events.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center">
-
-              <h2 className="text-xl font-semibold text-zinc-900">
-                Aucun événement pour le moment
-              </h2>
-
-              <p className="mx-auto mt-2 max-w-md text-zinc-500">
-                Créez votre premier événement pour commencer à
-                construire votre invitation.
-              </p>
-
-              <a
-                href="/events/new"
-                className="mt-6 inline-flex rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white"
-              >
-                Créer un événement
-              </a>
-
+            <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-16 text-center shadow-sm">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-2xl text-indigo-600">+</div>
+              <h3 className="mt-5 text-xl font-black">Votre espace est prêt</h3>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p>
+              <Link href="/events/new" className="mt-6 inline-flex rounded-xl bg-zinc-950 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-indigo-700">Créer mon premier événement</Link>
             </div>
           ) : (
-            <div className="space-y-8">
-
+            <div className="grid gap-6 xl:grid-cols-2">
               {events.map((event) => {
-
-                /*
-                 * IMPORTANT :
-                 * On récupère UNIQUEMENT les invités appartenant
-                 * à cet événement.
-                 */
-                const eventGuests = guests.filter(
-                  (guest) =>
-                    guest.event_id === event.id,
-                );
-
-                const eventTotal =
-                  eventGuests.length;
-
-                const eventConfirmed =
-                  eventGuests.filter(
-                    (guest) =>
-                      guest.status === "confirmed",
-                  ).length;
-
-                const eventPending =
-                  eventGuests.filter(
-                    (guest) =>
-                      guest.status === "pending",
-                  ).length;
-
-                const eventDeclined =
-                  eventGuests.filter(
-                    (guest) =>
-                      guest.status === "declined",
-                  ).length;
-
-                const eventCheckedIn =
-                  eventGuests.filter(
-                    (guest) =>
-                      guest.checked_in,
-                  ).length;
-
-                const eventConfirmationRate =
-                  eventTotal > 0
-                    ? Math.round(
-                        (eventConfirmed /
-                          eventTotal) *
-                          100,
-                      )
-                    : 0;
-
-                const eventCheckInRate =
-                  eventConfirmed > 0
-                    ? Math.round(
-                        (eventCheckedIn /
-                          eventConfirmed) *
-                          100,
-                      )
-                    : 0;
+                const eventGuests = guests.filter((guest) => guest.event_id === event.id);
+                const total = eventGuests.length;
+                const confirmed = eventGuests.filter((guest) => guest.status === "confirmed").length;
+                const pending = eventGuests.filter((guest) => guest.status === "pending").length;
+                const declined = eventGuests.filter((guest) => guest.status === "declined").length;
+                const checkedIn = eventGuests.filter((guest) => guest.checked_in).length;
+                const confirmationRate = total > 0 ? Math.round((confirmed / total) * 100) : 0;
+                const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
                 return (
-                  <article
-                    key={event.id}
-                    className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm"
-                  >
-
-                    {/* EN-TÊTE DE L'ÉVÉNEMENT */}
-                    <div className="border-b border-zinc-200 bg-zinc-50 p-6">
-
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
-                        <div>
-                          <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
-                            {event.type || "Événement"}
-                          </p>
-
-                          <h3 className="mt-2 text-2xl font-bold text-zinc-900">
-                            {event.name}
-                          </h3>
-
-                          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-500">
-
-                            {event.date && (
-                              <span>
-                                📅 {event.date}
-                              </span>
-                            )}
-
-                            {event.time && (
-                              <span>
-                                🕐 {event.time}
-                              </span>
-                            )}
-
-                            {event.location && (
-                              <span>
-                                📍 {event.location}
-                              </span>
-                            )}
-
-                          </div>
+                  <article key={event.id} className="group overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/5">
+                    <div className="border-b border-zinc-100 bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 text-white sm:p-7">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-300">{event.type || "Événement"}</p>
+                          <h3 className="mt-2 truncate text-2xl font-black tracking-tight">{event.name}</h3>
                         </div>
-
-                        <span className="w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                          Actif
-                        </span>
-
+                        <StatusBadge status={getEventStatus(event)} />
                       </div>
 
-                      {event.description && (
-                        <p className="mt-4 max-w-3xl text-sm text-zinc-500">
-                          {event.description}
-                        </p>
-                      )}
-
+                      <div className="mt-5 flex flex-wrap gap-2 text-xs text-zinc-300">
+                        <span className="rounded-xl bg-white/5 px-3 py-2">📅 {formatShortDate(event.date)}</span>
+                        {event.time && <span className="rounded-xl bg-white/5 px-3 py-2">🕐 {event.time}</span>}
+                        {event.location && <span className="max-w-full truncate rounded-xl bg-white/5 px-3 py-2">📍 {event.location}</span>}
+                      </div>
                     </div>
 
-                    {/* STATISTIQUES DE CET ÉVÉNEMENT UNIQUEMENT */}
-                    <div className="p-6">
-
-                      <div className="mb-5">
-                        <h4 className="text-lg font-bold text-zinc-900">
-                          Statistiques de cet événement
-                        </h4>
-
-                        <p className="mt-1 text-sm text-zinc-500">
-                          Ces chiffres concernent uniquement :
-                          <span className="font-semibold text-zinc-700">
-                            {" "}{event.name}
-                          </span>
-                        </p>
+                    <div className="p-6 sm:p-7">
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div className="rounded-2xl bg-zinc-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">Invités</p><p className="mt-2 text-2xl font-black">{total}</p></div>
+                        <div className="rounded-2xl bg-emerald-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
+                        <div className="rounded-2xl bg-amber-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
+                        <div className="rounded-2xl bg-indigo-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-indigo-600">Entrées</p><p className="mt-2 text-2xl font-black text-indigo-800">{checkedIn}</p></div>
                       </div>
 
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-                        <div className="rounded-2xl bg-zinc-50 p-5">
-                          <p className="text-sm font-medium text-zinc-500">
-                            Invités
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-zinc-900">
-                            {eventTotal}
-                          </p>
-
-                          <p className="mt-1 text-xs text-zinc-400">
-                            Total de cet événement
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-green-50 p-5">
-                          <p className="text-sm font-medium text-green-700">
-                            Confirmés
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-green-800">
-                            {eventConfirmed}
-                          </p>
-
-                          <p className="mt-1 text-xs text-green-600">
-                            {eventConfirmationRate}% de confirmation
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-amber-50 p-5">
-                          <p className="text-sm font-medium text-amber-700">
-                            En attente
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-amber-800">
-                            {eventPending}
-                          </p>
-
-                          <p className="mt-1 text-xs text-amber-600">
-                            RSVP en attente
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-red-50 p-5">
-                          <p className="text-sm font-medium text-red-700">
-                            Refusés
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-red-800">
-                            {eventDeclined}
-                          </p>
-
-                          <p className="mt-1 text-xs text-red-600">
-                            Invitations refusées
-                          </p>
-                        </div>
-
+                      <div className="mt-7 space-y-5">
+                        <ProgressBar label="Taux de confirmation" value={confirmationRate} />
+                        <ProgressBar label="Taux d’entrée" value={checkInRate} />
                       </div>
 
-                      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
-                        <div className="rounded-2xl bg-indigo-50 p-5">
-                          <p className="text-sm font-medium text-indigo-700">
-                            Entrées
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-indigo-800">
-                            {eventCheckedIn}
-                          </p>
-
-                          <p className="mt-1 text-xs text-indigo-600">
-                            {eventCheckInRate}% des confirmés
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-blue-50 p-5">
-                          <p className="text-sm font-medium text-blue-700">
-                            Taux de confirmation
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-blue-800">
-                            {eventConfirmationRate}%
-                          </p>
-
-                          <p className="mt-1 text-xs text-blue-600">
-                            Confirmés / invités
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-purple-50 p-5">
-                          <p className="text-sm font-medium text-purple-700">
-                            Taux d'entrée
-                          </p>
-
-                          <p className="mt-2 text-3xl font-bold text-purple-800">
-                            {eventCheckInRate}%
-                          </p>
-
-                          <p className="mt-1 text-xs text-purple-600">
-                            Entrées / confirmés
-                          </p>
-                        </div>
-
+                      <div className="mt-6 flex items-center justify-between border-t border-zinc-100 pt-5">
+                        <div><p className="text-xs text-zinc-400">Refusées</p><p className="mt-1 text-sm font-bold text-red-600">{declined}</p></div>
+                        <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
                       </div>
 
-                      {/* ACTIONS */}
-                      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-
-                        <a
+                      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                        <Link
                           href={"/events/" + event.id}
-                          className="flex-1 rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
+                          className="rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-bold text-zinc-700 transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                         >
-                          Ouvrir l'événement
-                        </a>
+                          Ouvrir →
+                        </Link>
 
-                        <a
+                        <Link
                           href={"/events/" + event.id + "/guests"}
-                          className="flex-1 rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
+                          className="rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-bold text-zinc-700 transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                         >
-                          Voir les invités
-                        </a>
+                          Invités
+                        </Link>
 
-                        <a
+                        <Link
+                          href={"/events/" + event.id + "/edit"}
+                          className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-700 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-100"
+                        >
+                          ✏️ Modifier
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            void handleDuplicateEvent(event.id)
+                          }
+                          className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-center text-sm font-bold text-violet-700 transition-all hover:-translate-y-0.5 hover:border-violet-300 hover:bg-violet-100"
+                        >
+                          📑 Dupliquer
+                        </button>
+
+                        <Link
                           href={"/events/" + event.id + "/control"}
-                          className="flex-1 rounded-xl bg-zinc-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-zinc-800"
+                          className="rounded-xl bg-zinc-950 px-4 py-3 text-center text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200"
                         >
                           Event Control
-                        </a>
+                        </Link>
 
+                        <button
+                          type="button"
+                          onClick={() =>
+                            void handleDeleteEvent(event.id, event.name)
+                          }
+                          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-700 transition-all hover:-translate-y-0.5 hover:border-red-300 hover:bg-red-100"
+                        >
+                          🗑️ Supprimer
+                        </button>
                       </div>
-
                     </div>
-
                   </article>
                 );
               })}
-
             </div>
           )}
-
         </section>
+
+        <footer className="mt-14 border-t border-zinc-200 py-7 text-center">
+          <p className="text-xs font-medium text-zinc-400">Event Studio · Centre de pilotage événementiel</p>
+        </footer>
 
       </div>
     </main>

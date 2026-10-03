@@ -26,6 +26,29 @@ checkedIn: boolean;
 checkedInAt: string | null;
 };
 
+export type EventDesign = {
+style: string;
+layout: string;
+palette: {
+name: string;
+primary: string;
+secondary: string;
+background: string;
+surface: string;
+text: string;
+muted: string;
+border: string;
+};
+accentColor: string;
+titleFont: string;
+bodyFont: string;
+background: string;
+customBackgroundColor: string;
+density: string;
+radius: string;
+decoration: string;
+};
+
 export type EventData = {
 id?: string;
 name: string;
@@ -34,6 +57,7 @@ date: string;
 time: string;
 location: string;
 description: string;
+design: EventDesign;
 };
 
 type EventContextType = {
@@ -66,6 +90,28 @@ date: "",
 time: "",
 location: "",
 description: "",
+design: {
+style: "elegant",
+layout: "classic",
+palette: {
+name: "Ivoire Royal",
+primary: "#4f46e5",
+secondary: "#7c3aed",
+background: "#f8f5ed",
+surface: "#ffffff",
+text: "#18181b",
+muted: "#71717a",
+border: "#e4e4e7",
+},
+accentColor: "#4f46e5",
+titleFont: "serif",
+bodyFont: "sans",
+background: "ivory",
+customBackgroundColor: "#f8f5ed",
+density: "balanced",
+radius: "elegant",
+decoration: "none",
+},
 };
 
 const EventContext = createContext<
@@ -113,7 +159,7 @@ useEffect(() => {
     } = await supabase
       .from("events")
       .select(
-        "id, name, type, date, time, location, description",
+        "id, name, type, date, time, location, description, design",
       )
       .eq("owner_id", user.id)
       .order("created_at", {
@@ -145,6 +191,7 @@ useEffect(() => {
       time: eventData.time ?? "",
       location: eventData.location ?? "",
       description: eventData.description ?? "",
+      design: eventData.design ?? defaultEvent.design,
     };
 
     setEvent(remoteEvent);
@@ -270,12 +317,13 @@ if (data.id) {
       time: data.time || null,
       location: data.location,
       description: data.description,
+      design: data.design,
       updated_at: new Date().toISOString(),
     })
     .eq("id", data.id)
     .eq("owner_id", user.id)
     .select(
-      "id, name, type, date, time, location, description",
+      "id, name, type, date, time, location, description, design",
     )
     .single();
 
@@ -295,8 +343,8 @@ if (data.id) {
     date: updatedEvent.date ?? "",
     time: updatedEvent.time ?? "",
     location: updatedEvent.location ?? "",
-    description:
-      updatedEvent.description ?? "",
+    description: updatedEvent.description ?? "",
+    design: updatedEvent.design ?? defaultEvent.design,
   };
 
   setEvent(finalEvent);
@@ -332,9 +380,10 @@ const {
     time: data.time || null,
     location: data.location,
     description: data.description,
+    design: data.design,
   })
   .select(
-    "id, name, type, date, time, location, description",
+    "id, name, type, date, time, location, description, design",
   )
   .single();
 
@@ -356,6 +405,7 @@ const finalEvent: EventData = {
   location: newEvent.location ?? "",
   description:
     newEvent.description ?? "",
+  design: newEvent.design ?? defaultEvent.design,
 };
 
 setEvent(finalEvent);

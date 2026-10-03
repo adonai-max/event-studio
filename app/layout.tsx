@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { EventProvider } from "./context/EventContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,17 +16,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Event Studio",
-  description: "Créez, personnalisez et gérez vos invitations événementielles.",
+  description:
+    "Créez, personnalisez et gérez vos invitations événementielles.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: LayoutProps<"/">) {
   return (
     <html
       lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <EventProvider>{children}</EventProvider>
+        <ThemeProvider>
+          <EventProvider>{children}</EventProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -47,6 +47,28 @@ const saved = await saveEvent({
   time,
   location: location.trim(),
   description: description.trim(),
+  design: {
+    style: "elegant",
+    layout: "classic",
+    palette: {
+      name: "Ivoire Royal",
+      primary: "#4f46e5",
+      secondary: "#7c3aed",
+      background: "#f8f5ed",
+      surface: "#ffffff",
+      text: "#18181b",
+      muted: "#71717a",
+      border: "#e4e4e7",
+    },
+    accentColor: "#4f46e5",
+    titleFont: "serif",
+    bodyFont: "sans",
+    background: "ivory",
+    customBackgroundColor: "#f8f5ed",
+    density: "balanced",
+    radius: "elegant",
+    decoration: "none",
+  },
 });
 
 if (!saved) {
