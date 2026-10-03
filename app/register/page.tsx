@@ -57,7 +57,7 @@ export default function RegisterPage() {
     <main className="flex min-h-screen items-center justify-center bg-zinc-950 p-6">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
         <div className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-green-600">
+          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">
             Event Studio
           </p>
 
@@ -86,7 +86,7 @@ export default function RegisterPage() {
               onChange={(event) => setFullName(event.target.value)}
               placeholder="Votre nom complet"
               required
-              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
+              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
           </div>
 
@@ -105,7 +105,7 @@ export default function RegisterPage() {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="vous@exemple.com"
               required
-              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
+              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
           </div>
 
@@ -125,7 +125,7 @@ export default function RegisterPage() {
               placeholder="Minimum 6 caractères"
               minLength={6}
               required
-              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
+              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
           </div>
 
@@ -136,7 +136,7 @@ export default function RegisterPage() {
           )}
 
           {message && (
-            <div className="rounded-xl bg-green-50 p-4 text-sm text-green-700">
+            <div className="rounded-xl bg-indigo-50 p-4 text-sm text-indigo-700">
               {message}
             </div>
           )}
@@ -144,7 +144,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Création..." : "Créer mon compte"}
           </button>
@@ -155,7 +155,7 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => router.push("/login")}
-            className="ml-1 font-semibold text-green-600 hover:text-green-700"
+            className="ml-1 font-semibold text-indigo-600 hover:text-indigo-700"
           >
             Se connecter
           </button>
