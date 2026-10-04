@@ -859,7 +859,7 @@ export default function InvitationBuilderPage() {
 
               <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-600 sm:text-base">
                 Contrôlez la composition, les couleurs,
-                la typographie et l'ambiance de votre
+                la typographie et l&apos;ambiance de votre
                 invitation avec un aperçu immédiat.
               </p>
             </div>
@@ -938,7 +938,7 @@ export default function InvitationBuilderPage() {
               </h2>
 
               <p className="mt-1 text-sm text-zinc-500">
-                L'identité générale de l'invitation.
+                L&apos;identité générale de l&apos;invitation.
               </p>
 
               <div className="mt-4 grid gap-3">
@@ -1164,7 +1164,7 @@ export default function InvitationBuilderPage() {
               </h2>
 
               <p className="mt-1 text-sm text-zinc-500">
-                L'arrière-plan de l'invitation, indépendant du thème Event Studio.
+                L&apos;arrière-plan de l&apos;invitation, indépendant du thème Event Studio.
               </p>
 
               <div className="mt-4 grid grid-cols-4 gap-3">
@@ -1586,7 +1586,6 @@ export default function InvitationBuilderPage() {
 
                       <PreviewInformation
                         event={event}
-                        design={design}
                         bodyFontClass={bodyFontClass}
                         mutedColor={previewMuted}
                         surfaceColor={previewSurface}
@@ -1648,7 +1647,6 @@ export default function InvitationBuilderPage() {
                         <div className="mt-8">
                           <PreviewInformation
                             event={event}
-                            design={design}
                             bodyFontClass={bodyFontClass}
                             mutedColor={previewMuted}
                             surfaceColor={previewSurface}
@@ -1706,7 +1704,6 @@ export default function InvitationBuilderPage() {
                         <div className="mt-7">
                           <PreviewInformation
                             event={event}
-                            design={design}
                             bodyFontClass={bodyFontClass}
                             mutedColor={previewMuted}
                             surfaceColor={previewSurface}
@@ -1777,7 +1774,6 @@ export default function InvitationBuilderPage() {
                       <div className="mt-6">
                         <PreviewInformation
                           event={event}
-                          design={design}
                           bodyFontClass={bodyFontClass}
                           mutedColor={previewMuted}
                           surfaceColor={previewSurface}
@@ -1846,7 +1842,6 @@ export default function InvitationBuilderPage() {
                       <div className="relative mt-8">
                         <PreviewInformation
                           event={event}
-                          design={design}
                           bodyFontClass={bodyFontClass}
                           mutedColor={previewMuted}
                           surfaceColor={previewSurface}
@@ -1897,7 +1892,6 @@ export default function InvitationBuilderPage() {
 
 function PreviewInformation({
   event,
-  design,
   bodyFontClass,
   mutedColor,
   surfaceColor,
@@ -1905,7 +1899,6 @@ function PreviewInformation({
   densityClass,
 }: {
   event: EventData;
-  design: InvitationDesign;
   bodyFontClass: string;
   mutedColor: string;
   surfaceColor: string;

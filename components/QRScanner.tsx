@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 
 interface QRScannerProps {
@@ -14,16 +14,52 @@ export default function QRScanner({
 }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const scanLockedRef = useRef(false);
+  const unlockTimerRef = useRef<number | null>(null);
 
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState("");
   const [decodedValue, setDecodedValue] = useState("");
 
+  const stopScanner = useCallback(async () => {
+    scanLockedRef.current = true;
+
+    if (unlockTimerRef.current !== null) {
+      window.clearTimeout(unlockTimerRef.current);
+      unlockTimerRef.current = null;
+    }
+
+    const scanner = scannerRef.current;
+
+    if (!scanner) {
+      setIsScanning(false);
+      return;
+    }
+
+    try {
+      if (scanner.isScanning) {
+        await scanner.stop();
+      }
+
+      await scanner.clear();
+    } catch (err) {
+      console.error(
+        "Erreur lors de l'arrêt du scanner :",
+        err,
+      );
+    } finally {
+      if (scannerRef.current === scanner) {
+        scannerRef.current = null;
+      }
+
+      setIsScanning(false);
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
       void stopScanner();
     };
-  }, []);
+  }, [stopScanner]);
 
   const startScanner = async () => {
     try {
@@ -31,19 +67,9 @@ export default function QRScanner({
       setDecodedValue("");
       scanLockedRef.current = false;
 
-      if (scannerRef.current) {
-        try {
-          if (scannerRef.current.isScanning) {
-            await scannerRef.current.stop();
-          }
+      await stopScanner();
 
-          await scannerRef.current.clear();
-        } catch {
-          // On continue avec une nouvelle instance.
-        }
-
-        scannerRef.current = null;
-      }
+      scanLockedRef.current = false;
 
       const scanner = new Html5Qrcode("qr-reader");
 
@@ -80,9 +106,11 @@ export default function QRScanner({
 
           onScanSuccess(decodedText);
 
-          window.setTimeout(() => {
-            scanLockedRef.current = false;
-          }, 1500);
+          unlockTimerRef.current =
+            window.setTimeout(() => {
+              scanLockedRef.current = false;
+              unlockTimerRef.current = null;
+            }, 1500);
         },
         (scanErrorMessage) => {
           onScanError?.(scanErrorMessage);
@@ -96,37 +124,14 @@ export default function QRScanner({
         err,
       );
 
+      scannerRef.current = null;
+
       setError(
         "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
       );
 
       setIsScanning(false);
     }
-  };
-
-  const stopScanner = async () => {
-    scanLockedRef.current = true;
-
-    if (!scannerRef.current) {
-      setIsScanning(false);
-      return;
-    }
-
-    try {
-      if (scannerRef.current.isScanning) {
-        await scannerRef.current.stop();
-      }
-
-      await scannerRef.current.clear();
-    } catch (err) {
-      console.error(
-        "Erreur lors de l'arrêt du scanner :",
-        err,
-      );
-    }
-
-    scannerRef.current = null;
-    setIsScanning(false);
   };
 
   return (
@@ -158,7 +163,7 @@ export default function QRScanner({
         {!isScanning ? (
           <button
             type="button"
-            onClick={startScanner}
+            onClick={() => void startScanner()}
             className="rounded-xl bg-green-600 px-5 py-3 font-medium text-white transition hover:bg-green-700"
           >
             📷 Démarrer le scanner

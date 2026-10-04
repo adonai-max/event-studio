@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
+
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useParams } from "next/navigation";
 import EventNavigation from "../../../../components/EventNavigation";
-import { DemoGuest, useDemoEvent } from "../../../../context/DemoEventContext";
+import { useDemoEvent } from "../../../../context/DemoEventContext";
 
 export default function GuestDetailPage() {
   const params = useParams();
@@ -127,7 +129,7 @@ export default function GuestDetailPage() {
           </p>
 
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-900">
-            QR Code de l'invité
+            QR Code de l&apos;invité
           </h1>
 
           <p className="mt-3 text-zinc-600">
@@ -211,14 +213,14 @@ export default function GuestDetailPage() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-zinc-500">
-              Ce QR Code ouvre directement l'invitation personnalisée
+              Ce QR Code ouvre directement l&apos;invitation personnalisée
               de cet invité.
             </p>
 
             <div className="mt-8 flex justify-center">
               {qrCode ? (
                 <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <img
+                  <Image
                     src={qrCode}
                     alt={`QR Code de ${guestName}`}
                     width={500}
@@ -238,7 +240,7 @@ export default function GuestDetailPage() {
             </div>
 
             <p className="mt-6 text-sm font-semibold text-zinc-800">
-              Scanner pour ouvrir l'invitation
+              Scanner pour ouvrir l&apos;invitation
             </p>
 
             <p className="mx-auto mt-2 max-w-sm text-xs leading-5 text-zinc-500">

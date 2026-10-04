@@ -121,6 +121,44 @@ const defaultGuests: DemoGuest[] = [
   },
 ];
 
+function getInitialEvent(): DemoEvent {
+  if (typeof window === "undefined") {
+    return defaultEvent;
+  }
+
+  try {
+    const storedEvent =
+      window.localStorage.getItem(DEMO_EVENT_KEY);
+
+    if (storedEvent) {
+      return JSON.parse(storedEvent) as DemoEvent;
+    }
+  } catch {
+    // Retour aux données de démonstration par défaut.
+  }
+
+  return defaultEvent;
+}
+
+function getInitialGuests(): DemoGuest[] {
+  if (typeof window === "undefined") {
+    return defaultGuests;
+  }
+
+  try {
+    const storedGuests =
+      window.localStorage.getItem(DEMO_GUESTS_KEY);
+
+    if (storedGuests) {
+      return JSON.parse(storedGuests) as DemoGuest[];
+    }
+  } catch {
+    // Retour aux données de démonstration par défaut.
+  }
+
+  return defaultGuests;
+}
+
 const DemoEventContext =
   createContext<DemoEventContextValue | null>(null);
 
@@ -129,32 +167,11 @@ export function DemoEventProvider({
 }: {
   children: ReactNode;
 }) {
-  const [event, setEvent] =
-    useState<DemoEvent>(defaultEvent);
+  const [event] =
+    useState<DemoEvent>(getInitialEvent);
 
   const [guests, setGuests] =
-    useState<DemoGuest[]>(defaultGuests);
-
-  useEffect(() => {
-    try {
-      const storedEvent =
-        window.localStorage.getItem(DEMO_EVENT_KEY);
-
-      const storedGuests =
-        window.localStorage.getItem(DEMO_GUESTS_KEY);
-
-      if (storedEvent) {
-        setEvent(JSON.parse(storedEvent));
-      }
-
-      if (storedGuests) {
-        setGuests(JSON.parse(storedGuests));
-      }
-    } catch {
-      setEvent(defaultEvent);
-      setGuests(defaultGuests);
-    }
-  }, []);
+    useState<DemoGuest[]>(getInitialGuests);
 
   useEffect(() => {
     window.localStorage.setItem(

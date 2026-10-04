@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { use, useEffect, useState } from "react";
 import QRCode from "qrcode";
 
@@ -178,7 +180,7 @@ export default function PublicInvitationPage({
       if (!response.ok) {
         throw new Error(
           data?.error ||
-            "Impossible d'enregistrer votre réponse.",
+            "Impossible d&apos;enregistrer votre réponse.",
         );
       }
 
@@ -204,7 +206,7 @@ export default function PublicInvitationPage({
       setResponseError(
         error instanceof Error
           ? error.message
-          : "Impossible d'enregistrer votre réponse.",
+          : "Impossible d&apos;enregistrer votre réponse.",
       );
     } finally {
       setResponseLoading(false);
@@ -262,7 +264,7 @@ export default function PublicInvitationPage({
 
             <p className="mt-3 leading-7 text-zinc-500">
               {loadError ||
-                "Ce lien d'invitation n'est pas associé à un invité enregistré."}
+                "Ce lien d&apos;invitation n&apos;est pas associé à un invité enregistré."}
             </p>
 
             <div className="mt-7 rounded-2xl bg-zinc-50 p-4">
@@ -492,7 +494,7 @@ export default function PublicInvitationPage({
                 </div>
 
                 <h2 className="mt-3 text-lg font-bold text-zinc-900">
-                  Votre pass d'accès
+                  Votre pass d&apos;accès
                 </h2>
 
                 <p className="mt-1 text-xs text-zinc-500">
@@ -503,7 +505,7 @@ export default function PublicInvitationPage({
               <div className="px-5 py-7 text-center sm:py-9">
                 <div className="mx-auto inline-block rounded-[1.5rem] border border-zinc-200 bg-white p-4 shadow-sm">
                   {qrCodeUrl ? (
-                    <img
+                    <Image
                       src={qrCodeUrl}
                       alt={`QR Code de ${guestName}`}
                       width={260}
@@ -520,8 +522,8 @@ export default function PublicInvitationPage({
                 </div>
 
                 <p className="mx-auto mt-5 max-w-md text-xs leading-5 text-zinc-500">
-                  Présentez ce QR Code à l'entrée de l'événement.
-                  Il permettra à l'équipe d'accueil de retrouver
+                  Présentez ce QR Code à l&apos;entrée de l&apos;événement.
+                  Il permettra à l&apos;équipe d&apos;accueil de retrouver
                   rapidement votre invitation.
                 </p>
 

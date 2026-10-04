@@ -1,10 +1,14 @@
 "use client";
 
+import Image from "next/image";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const supabase = createClient();
 
   const [loading, setLoading] = useState(true);
@@ -29,7 +33,7 @@ export default function ProfilePage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        window.location.href = "/login";
+        router.replace("/login");
         return;
       }
 
@@ -46,7 +50,7 @@ export default function ProfilePage() {
     }
 
     void loadProfile();
-  }, []);
+  }, [router, supabase.auth]);
 
 
   async function handleAvatarUpload(
@@ -78,7 +82,7 @@ export default function ProfilePage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        window.location.href = "/login";
+        router.replace("/login");
         return;
       }
 
@@ -146,7 +150,7 @@ export default function ProfilePage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        window.location.href = "/login";
+        router.replace("/login");
         return;
       }
 
@@ -251,9 +255,11 @@ export default function ProfilePage() {
             <div className="relative flex flex-col gap-7 sm:flex-row sm:items-center">
               <div className="group relative">
                 {avatarUrl ? (
-                  <img
+                  <Image
                     src={avatarUrl}
                     alt="Photo de profil"
+                    width={112}
+                    height={112}
                     className="h-28 w-28 rounded-[2rem] object-cover ring-4 ring-white/20"
                   />
                 ) : (

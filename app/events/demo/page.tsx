@@ -55,7 +55,7 @@ export default function EventPage() {
             onClick={() => router.push("/events/new")}
             className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
           >
-            Modifier l'événement
+            Modifier l&apos;événement
           </button>
         </header>
 
@@ -69,8 +69,8 @@ export default function EventPage() {
         <section className="mt-10 grid gap-6 lg:grid-cols-3">
           <ControlCard
             title="💌 Invitation"
-            description="Créez et personnalisez l'invitation de votre événement."
-            action="Créer l'invitation"
+            description="Créez et personnalisez l&apos;invitation de votre événement."
+            action="Créer l&apos;invitation"
             onClick={() => router.push("/events/demo/invitation")}
           />
 
@@ -91,7 +91,7 @@ export default function EventPage() {
 
         <section className="mt-10 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
           <h2 className="text-xl font-semibold text-zinc-900">
-            Informations de l'événement
+            Informations de l&apos;événement
           </h2>
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

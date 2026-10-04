@@ -116,7 +116,7 @@ export default function InvitationBuilderPage() {
                   htmlFor="event-name"
                   className="block text-sm font-medium text-zinc-900"
                 >
-                  Nom de l'événement
+                  Nom de l&apos;événement
                 </label>
 
                 <input
@@ -184,7 +184,7 @@ export default function InvitationBuilderPage() {
                   htmlFor="message"
                   className="block text-sm font-medium text-zinc-900"
                 >
-                  Message d'invitation
+                  Message d&apos;invitation
                 </label>
 
                 <textarea
@@ -198,7 +198,7 @@ export default function InvitationBuilderPage() {
 
               <div className="rounded-xl border border-zinc-200 bg-white p-4">
                 <p className="text-sm font-semibold text-zinc-900">
-                  Style de l'invitation
+                  Style de l&apos;invitation
                 </p>
 
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">

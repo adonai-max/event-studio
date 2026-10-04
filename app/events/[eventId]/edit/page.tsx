@@ -191,7 +191,7 @@ export default function EditEventPage() {
             className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-zinc-600 transition hover:bg-white hover:text-zinc-950"
           >
             <span className="text-lg">←</span>
-            Retour à l'événement
+            Retour à l&apos;événement
           </Link>
         </div>
 
@@ -202,7 +202,7 @@ export default function EditEventPage() {
             </p>
 
             <h1 className="mt-2 text-3xl font-black tracking-tight">
-              Modifier l'événement
+              Modifier l&apos;événement
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm text-indigo-100">
@@ -226,7 +226,7 @@ export default function EditEventPage() {
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label className="mb-2 block text-sm font-bold text-zinc-900">
-                  Nom de l'événement
+                  Nom de l&apos;événement
                 </label>
 
                 <input
@@ -240,7 +240,7 @@ export default function EditEventPage() {
 
               <div>
                 <label className="mb-2 block text-sm font-bold text-zinc-900">
-                  Type d'événement
+                  Type d&apos;événement
                 </label>
 
                 <input

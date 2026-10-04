@@ -90,7 +90,7 @@ export default function Home() {
             <p className="font-semibold text-indigo-600">FONCTIONNALITÉS</p>
 
             <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-              Tout ce qu'il faut pour gérer vos invitations.
+              Tout ce qu&apos;il faut pour gérer vos invitations.
             </h2>
           </div>
 

@@ -76,7 +76,7 @@ export default function EventPage() {
       <main className="min-h-screen bg-zinc-50">
         <div className="mx-auto max-w-5xl px-6 py-16 text-center">
           <p className="text-zinc-500">
-            Chargement de l'événement...
+            Chargement de l&apos;événement...
           </p>
         </div>
       </main>
@@ -149,7 +149,7 @@ export default function EventPage() {
             </h2>
 
             <p className="mt-2 text-sm text-zinc-500">
-              Créez et personnalisez l'invitation de votre événement.
+              Créez et personnalisez l&apos;invitation de votre événement.
             </p>
           </button>
 
@@ -166,7 +166,7 @@ export default function EventPage() {
             </h2>
 
             <p className="mt-2 text-sm text-zinc-500">
-              Gérez votre liste d'invités et leurs réponses RSVP.
+              Gérez votre liste d&apos;invités et leurs réponses RSVP.
             </p>
           </button>
 
@@ -193,7 +193,7 @@ export default function EventPage() {
         <section className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
 
           <h2 className="text-xl font-bold text-zinc-900">
-            Informations de l'événement
+            Informations de l&apos;événement
           </h2>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2">

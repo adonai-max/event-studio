@@ -98,7 +98,7 @@ export default function NewEventPage() {
         );
 
         setError(
-          "Impossible d'enregistrer l'événement. Vérifiez la connexion à votre compte.",
+          "Impossible d&apos;enregistrer l&apos;événement. Vérifiez la connexion à votre compte.",
         );
 
         setLoading(false);
@@ -129,7 +129,7 @@ export default function NewEventPage() {
       );
 
       setError(
-        "Une erreur est survenue lors de la création de l'événement.",
+        "Une erreur est survenue lors de la création de l&apos;événement.",
       );
 
       setLoading(false);
@@ -182,7 +182,7 @@ export default function NewEventPage() {
                 htmlFor="name"
                 className="mb-2 block text-sm font-semibold text-zinc-900"
               >
-                Nom de l'événement
+                Nom de l&apos;événement
               </label>
 
               <input
@@ -200,7 +200,7 @@ export default function NewEventPage() {
                 htmlFor="type"
                 className="mb-2 block text-sm font-semibold text-zinc-900"
               >
-                Type d'événement
+                Type d&apos;événement
               </label>
 
               <select

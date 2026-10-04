@@ -1,28 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 import { useTheme, type Theme } from "../context/ThemeContext";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
 
-  const [notifications, setNotifications] = useState(true);
-  const [language, setLanguage] = useState("fr");
+  const [notifications, setNotifications] = useState(() => {
+    if (typeof window === "undefined") {
+      return true;
+    }
+
+    return (
+      window.localStorage.getItem(
+        "event-studio-notifications",
+      ) !== "false"
+    );
+  });
+
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === "undefined") {
+      return "fr";
+    }
+
+    return (
+      window.localStorage.getItem(
+        "event-studio-language",
+      ) || "fr"
+    );
+  });
+
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const savedNotifications =
-      localStorage.getItem("event-studio-notifications");
-
-    const savedLanguage =
-      localStorage.getItem("event-studio-language") || "fr";
-
-    setNotifications(savedNotifications !== "false");
-    setLanguage(savedLanguage);
-  }, []);
 
   function toggleNotifications() {
     const next = !notifications;
@@ -41,7 +54,7 @@ export default function SettingsPage() {
 
   async function handleSignOut() {
     await supabase.auth.signOut();
-    window.location.href = "/login";
+    router.replace("/login");
   }
 
   async function handleSave() {
@@ -250,7 +263,7 @@ export default function SettingsPage() {
                     <h3 className="font-bold">Langue</h3>
 
                     <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                      Langue principale de l'interface.
+                      Langue principale de l&apos;interface.
                     </p>
                   </div>
 
@@ -313,7 +326,7 @@ export default function SettingsPage() {
                 </p>
 
                 <h2 className="mt-2 text-xl font-black">
-                  Personnalisez l'interface
+                  Personnalisez l&apos;interface
                 </h2>
 
                 <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">

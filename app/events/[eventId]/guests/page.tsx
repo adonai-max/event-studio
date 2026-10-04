@@ -92,7 +92,22 @@ function createUniqueGuestSlug(
   return baseSlug + "-" + counter;
 }
 
-function mapGuest(row: any): Guest {
+type GuestRow = {
+  id: string;
+  event_id: string;
+  type: GuestType;
+  first_name_1: string | null;
+  last_name_1: string | null;
+  first_name_2: string | null;
+  last_name_2: string | null;
+  whatsapp: string | null;
+  status: GuestStatus | null;
+  slug: string | null;
+  checked_in: boolean | null;
+  checked_in_at: string | null;
+};
+
+function mapGuest(row: GuestRow): Guest {
   return {
     id: String(row.id),
     eventId: String(row.event_id),
@@ -617,7 +632,7 @@ export default function GuestsPage() {
           className="mt-5 inline-flex items-center gap-2 rounded-full px-2 py-2 text-sm font-semibold text-zinc-500 transition hover:text-zinc-950"
         >
           <span>←</span>
-          Retour à l'événement
+          Retour à l&apos;événement
         </button>
 
         <header className="mt-5 overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(24,24,27,0.04)]">
@@ -790,13 +805,13 @@ export default function GuestsPage() {
 
                   <h2 className="mt-1 text-xl font-bold text-zinc-950">
                     {editingGuestId !== null
-                      ? "Modifier l'invité"
+                      ? "Modifier l&apos;invité"
                       : "Ajouter un invité"}
                   </h2>
 
                   <p className="mt-1 text-sm text-zinc-500">
                     Les informations seront utilisées pour
-                    l'invitation personnalisée.
+                    l&apos;invitation personnalisée.
                   </p>
                 </div>
 
@@ -888,7 +903,7 @@ export default function GuestsPage() {
                   />
 
                   <p className="mt-2 text-xs text-zinc-500">
-                    Utilisé pour l'envoi de l'invitation et
+                    Utilisé pour l&apos;envoi de l&apos;invitation et
                     le suivi RSVP.
                   </p>
                 </div>

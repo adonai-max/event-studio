@@ -1,6 +1,9 @@
 "use client";
 
+import Image from "next/image";
+
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
@@ -145,6 +148,7 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [guests, setGuests] = useState<GuestItem[]>([]);
   const [userName, setUserName] = useState("Adonaï");
@@ -250,7 +254,7 @@ export default function DashboardPage() {
 
     if (eventError || !originalEvent) {
       setErrorMessage(
-        "Impossible de récupérer l'événement à dupliquer.",
+        "Impossible de récupérer l&apos;événement à dupliquer.",
       );
       return;
     }
@@ -278,7 +282,7 @@ export default function DashboardPage() {
         duplicateError,
       );
       setErrorMessage(
-        "Impossible de créer la copie de l'événement.",
+        "Impossible de créer la copie de l&apos;événement.",
       );
       return;
     }
@@ -298,7 +302,7 @@ export default function DashboardPage() {
       );
       setEvents((current) => [duplicatedEvent, ...current]);
       setErrorMessage(
-        "Événement dupliqué, mais les invités n'ont pas pu être copiés.",
+        "Événement dupliqué, mais les invités n&apos;ont pas pu être copiés.",
       );
       return;
     }
@@ -332,7 +336,7 @@ export default function DashboardPage() {
         );
         setEvents((current) => [duplicatedEvent, ...current]);
         setErrorMessage(
-          "Événement dupliqué, mais les invités n'ont pas pu être copiés.",
+          "Événement dupliqué, mais les invités n&apos;ont pas pu être copiés.",
         );
         return;
       }
@@ -343,7 +347,7 @@ export default function DashboardPage() {
 
   async function handleDeleteEvent(eventId: string, eventName: string) {
     const confirmed = window.confirm(
-      'Supprimer l\'événement "' + eventName + '" ? Cette action est irréversible.',
+      'Supprimer l&apos;événement "' + eventName + '" ? Cette action est irréversible.',
     );
 
     if (!confirmed) return;
@@ -474,9 +478,11 @@ export default function DashboardPage() {
                 </div>
 
                 {avatarUrl ? (
-                  <img
+                  <Image
                     src={avatarUrl}
                     alt={`Photo de profil de ${userName}`}
+                    width={40}
+                    height={40}
                     className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white"
                   />
                 ) : (
@@ -533,7 +539,7 @@ export default function DashboardPage() {
                       type="button"
                       onClick={async () => {
                         await supabase.auth.signOut();
-                        window.location.href = "/login";
+                        router.replace("/login");
                       }}
                       className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-red-600 transition hover:bg-red-50"
                     >

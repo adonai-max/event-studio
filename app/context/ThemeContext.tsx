@@ -26,6 +26,24 @@ function getSystemTheme(): "light" | "dark" {
     : "light";
 }
 
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") {
+    return "system";
+  }
+
+  const savedTheme = window.localStorage.getItem(THEME_KEY);
+
+  if (
+    savedTheme === "light" ||
+    savedTheme === "dark" ||
+    savedTheme === "system"
+  ) {
+    return savedTheme;
+  }
+
+  return "system";
+}
+
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
 
@@ -41,27 +59,18 @@ export function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] =
+    useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem(THEME_KEY);
-
-    const initialTheme: Theme =
-      savedTheme === "light" ||
-      savedTheme === "dark" ||
-      savedTheme === "system"
-        ? savedTheme
-        : "system";
-
-    setThemeState(initialTheme);
-    applyTheme(initialTheme);
+    applyTheme(theme);
 
     const mediaQuery = window.matchMedia(
       "(prefers-color-scheme: dark)",
     );
 
     function handleSystemThemeChange() {
-      if (initialTheme === "system") {
+      if (theme === "system") {
         applyTheme("system");
       }
     }
@@ -77,16 +86,24 @@ export function ThemeProvider({
         handleSystemThemeChange,
       );
     };
-  }, []);
+  }, [theme]);
 
-  function setTheme(theme: Theme) {
-    setThemeState(theme);
-    localStorage.setItem(THEME_KEY, theme);
-    applyTheme(theme);
+  function setTheme(nextTheme: Theme) {
+    setThemeState(nextTheme);
+    window.localStorage.setItem(
+      THEME_KEY,
+      nextTheme,
+    );
+    applyTheme(nextTheme);
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

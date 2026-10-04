@@ -29,7 +29,22 @@ type EventData = {
   name: string;
 };
 
-function mapGuest(row: any): Guest {
+type GuestRow = {
+  id: string;
+  event_id: string;
+  type: GuestType;
+  first_name_1: string;
+  last_name_1: string;
+  first_name_2: string | null;
+  last_name_2: string | null;
+  whatsapp: string | null;
+  status: GuestStatus;
+  slug: string;
+  checked_in: boolean | null;
+  checked_in_at: string | null;
+};
+
+function mapGuest(row: GuestRow): Guest {
   return {
     id: row.id,
     eventId: row.event_id,
@@ -64,57 +79,75 @@ export default function EventControlPage() {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const loadData = async () => {
-    setLoading(true);
-    setPageError("");
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      setPageError("Vous devez être connecté pour accéder à Event Control.");
-      setLoading(false);
-      return;
-    }
-
-    const { data: eventData, error: eventError } = await supabase
-      .from("events")
-      .select("id, name")
-      .eq("id", eventId)
-      .eq("owner_id", user.id)
-      .single();
-
-    if (eventError || !eventData) {
-      setPageError("Événement introuvable ou accès non autorisé.");
-      setLoading(false);
-      return;
-    }
-
-    const { data: guestsData, error: guestsError } = await supabase
-      .from("guests")
-      .select("*")
-      .eq("event_id", eventId)
-      .order("created_at", { ascending: true });
-
-    if (guestsError) {
-      setPageError(
-        "Impossible de charger la liste des invités : " +
-          guestsError.message,
-      );
-      setLoading(false);
-      return;
-    }
-
-    setEvent(eventData);
-    setGuests((guestsData ?? []).map(mapGuest));
-    setLoading(false);
-  };
-
   // Chargement initial
   useEffect(() => {
+    let isActive = true;
+
+    async function loadData() {
+      setLoading(true);
+      setPageError("");
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (!isActive) {
+        return;
+      }
+
+      if (userError || !user) {
+        setPageError("Vous devez être connecté pour accéder à Event Control.");
+        setLoading(false);
+        return;
+      }
+
+      const { data: eventData, error: eventError } = await supabase
+        .from("events")
+        .select("id, name")
+        .eq("id", eventId)
+        .eq("owner_id", user.id)
+        .single();
+
+      if (!isActive) {
+        return;
+      }
+
+      if (eventError || !eventData) {
+        setPageError("Événement introuvable ou accès non autorisé.");
+        setLoading(false);
+        return;
+      }
+
+      const { data: guestsData, error: guestsError } = await supabase
+        .from("guests")
+        .select("*")
+        .eq("event_id", eventId)
+        .order("created_at", { ascending: true });
+
+      if (!isActive) {
+        return;
+      }
+
+      if (guestsError) {
+        setPageError(
+          "Impossible de charger la liste des invités : " +
+            guestsError.message,
+        );
+        setLoading(false);
+        return;
+      }
+
+      setEvent(eventData);
+      setGuests((guestsData ?? []).map(mapGuest));
+      setLoading(false);
+    }
+
     void loadData();
+
+    return () => {
+      isActive = false;
+    };
   }, [eventId]);
 
   const totalGuests = guests.length;
@@ -134,11 +167,6 @@ export default function EventControlPage() {
   const declinedGuests = guests.filter(
     (guest) => guest.status === "declined",
   ).length;
-
-  const confirmationRate =
-    totalGuests === 0
-      ? 0
-      : Math.round((confirmedGuests / totalGuests) * 100);
 
   const checkInRate =
     totalGuests === 0
@@ -608,7 +636,7 @@ export default function EventControlPage() {
                   </p>
 
                   <p className="mt-1 text-sm text-amber-700">
-                    Vérifiez l'orthographe ou le numéro WhatsApp.
+                    Vérifiez l&apos;orthographe ou le numéro WhatsApp.
                   </p>
                 </div>
               ) : (
@@ -678,7 +706,7 @@ export default function EventControlPage() {
                     }
                     className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    ↩ Annuler l'entrée
+                    ↩ Annuler l&apos;entrée
                   </button>
                 ) : searchSelectedGuest.status === "confirmed" ? (
                   <button
@@ -689,11 +717,11 @@ export default function EventControlPage() {
                     }
                     className="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    ✓ Confirmer l'entrée
+                    ✓ Confirmer l&apos;entrée
                   </button>
                 ) : (
                   <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-medium text-amber-800">
-                    Entrée non autorisée tant que la présence n'est pas confirmée.
+                    Entrée non autorisée tant que la présence n&apos;est pas confirmée.
                   </div>
                 )}
               </div>
@@ -714,7 +742,7 @@ export default function EventControlPage() {
               </h2>
 
               <p className="mt-1 text-sm text-zinc-500">
-                Les dernières personnes enregistrées à l'entrée.
+                Les dernières personnes enregistrées à l&apos;entrée.
               </p>
             </div>
 
@@ -735,7 +763,7 @@ export default function EventControlPage() {
               </h3>
 
               <p className="mx-auto mt-1 max-w-md text-sm text-zinc-500">
-                Les invités validés apparaîtront ici dès qu'ils seront enregistrés à l'entrée.
+                Les invités validés apparaîtront ici dès qu&apos;ils seront enregistrés à l&apos;entrée.
               </p>
             </div>
           ) : (
@@ -814,7 +842,7 @@ export default function EventControlPage() {
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
-              Scannez le QR code présent sur l'invitation.
+              Scannez le QR code présent sur l&apos;invitation.
             </p>
           </div>
 
@@ -825,7 +853,7 @@ export default function EventControlPage() {
                   Scanner actif
                 </p>
                 <p className="mt-1 text-xs text-zinc-400">
-                  Présentez le QR code de l'invitation devant la caméra.
+                  Présentez le QR code de l&apos;invitation devant la caméra.
                 </p>
               </div>
               <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-400">
@@ -895,7 +923,7 @@ export default function EventControlPage() {
                       }
                       className="w-full rounded-xl bg-red-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                     >
-                      ↩ Annuler l'entrée
+                      ↩ Annuler l&apos;entrée
                     </button>
                   ) : scannedGuest.status === "confirmed" ? (
                     <button
@@ -906,7 +934,7 @@ export default function EventControlPage() {
                       }
                       className="w-full rounded-xl bg-green-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                     >
-                      ✓ Confirmer l'entrée
+                      ✓ Confirmer l&apos;entrée
                     </button>
                   ) : (
                     <div className="max-w-sm rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-800">

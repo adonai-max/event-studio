@@ -240,12 +240,12 @@ export default function GuestsPage() {
               <div>
                 <h2 className="text-xl font-semibold text-zinc-900">
                   {editingGuestId !== null
-                    ? "Modifier l'invité"
+                    ? "Modifier l&apos;invité"
                     : "Ajouter un invité"}
                 </h2>
 
                 <p className="mt-2 text-sm text-zinc-500">
-                  Choisissez le type d'invitation et renseignez les informations.
+                  Choisissez le type d&apos;invitation et renseignez les informations.
                 </p>
               </div>
 
@@ -402,7 +402,7 @@ export default function GuestsPage() {
                 />
 
                 <p className="mt-2 text-xs text-zinc-500">
-                  Ce numéro pourra servir pour l'envoi de l'invitation et le suivi RSVP.
+                  Ce numéro pourra servir pour l&apos;envoi de l&apos;invitation et le suivi RSVP.
                 </p>
               </div>
             </div>
@@ -427,7 +427,7 @@ export default function GuestsPage() {
               >
                 {editingGuestId !== null
                   ? "Enregistrer les modifications"
-                  : "Ajouter l'invité"}
+                  : "Ajouter l&apos;invité"}
               </button>
             </div>
           </section>

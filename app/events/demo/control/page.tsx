@@ -40,19 +40,6 @@ export default function EventControlPage() {
     (guest) => guest.status === "declined",
   ).length;
 
-  const pendingEntryGuests = guests.filter(
-    (guest) =>
-      guest.status === "confirmed" &&
-      !guest.checkedIn,
-  ).length;
-
-  const confirmationRate =
-    totalGuests === 0
-      ? 0
-      : Math.round(
-          (confirmedGuests / totalGuests) * 100,
-        );
-
   const checkInRate =
     totalGuests === 0
       ? 0
@@ -152,7 +139,7 @@ export default function EventControlPage() {
     if (!foundGuest) {
       setScannedGuest(null);
       setErrorMessage(
-        "QR détecté, mais aucun invité correspondant n'a été trouvé.",
+        "QR détecté, mais aucun invité correspondant n&apos;a été trouvé.",
       );
       return;
     }
@@ -161,7 +148,7 @@ export default function EventControlPage() {
 
     if (foundGuest.checkedIn) {
       setMessage(
-        "Cette invitation a déjà été enregistrée à l'entrée.",
+        "Cette invitation a déjà été enregistrée à l&apos;entrée.",
       );
       return;
     }
@@ -169,14 +156,14 @@ export default function EventControlPage() {
     if (foundGuest.status !== "confirmed") {
       setErrorMessage(
         foundGuest.status === "pending"
-          ? "L'invité n'a pas encore confirmé sa présence."
-          : "L'invité a décliné l'invitation. Entrée non autorisée.",
+          ? "L&apos;invité n&apos;a pas encore confirmé sa présence."
+          : "L&apos;invité a décliné l&apos;invitation. Entrée non autorisée.",
       );
       return;
     }
 
     setMessage(
-      "Invité confirmé identifié. L'entrée peut être enregistrée.",
+      "Invité confirmé identifié. L&apos;entrée peut être enregistrée.",
     );
   };
 
@@ -193,8 +180,8 @@ export default function EventControlPage() {
     if (guest.status !== "confirmed") {
       setErrorMessage(
         guest.status === "pending"
-          ? "Entrée impossible : l'invité doit d'abord confirmer sa présence."
-          : "Entrée refusée : l'invité a décliné l'invitation.",
+          ? "Entrée impossible : l&apos;invité doit d&apos;abord confirmer sa présence."
+          : "Entrée refusée : l&apos;invité a décliné l&apos;invitation.",
       );
       return;
     }
@@ -435,7 +422,7 @@ export default function EventControlPage() {
                   </p>
 
                   <p className="mt-1 text-sm text-amber-700">
-                    Vérifiez l'orthographe ou le numéro WhatsApp.
+                    Vérifiez l&apos;orthographe ou le numéro WhatsApp.
                   </p>
                 </div>
               ) : (
@@ -504,7 +491,7 @@ export default function EventControlPage() {
                     }
                     className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
                   >
-                    ↩ Annuler l'entrée
+                    ↩ Annuler l&apos;entrée
                   </button>
                 ) : searchSelectedGuest.status ===
                   "confirmed" ? (
@@ -515,11 +502,11 @@ export default function EventControlPage() {
                     }
                     className="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700"
                   >
-                    ✓ Confirmer l'entrée
+                    ✓ Confirmer l&apos;entrée
                   </button>
                 ) : (
                   <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-medium text-amber-800">
-                    Entrée non autorisée tant que la présence n'est pas confirmée.
+                    Entrée non autorisée tant que la présence n&apos;est pas confirmée.
                   </div>
                 )}
               </div>
@@ -539,7 +526,7 @@ export default function EventControlPage() {
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
-              Scannez le QR code présent sur l'invitation.
+              Scannez le QR code présent sur l&apos;invitation.
             </p>
           </div>
 
@@ -602,7 +589,7 @@ export default function EventControlPage() {
                       }
                       className="w-full rounded-xl bg-red-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-red-700 md:w-auto"
                     >
-                      ↩ Annuler l'entrée
+                      ↩ Annuler l&apos;entrée
                     </button>
                   ) : scannedGuest.status === "confirmed" ? (
                     <button
@@ -612,7 +599,7 @@ export default function EventControlPage() {
                       }
                       className="w-full rounded-xl bg-green-600 px-6 py-4 font-bold text-white shadow-sm transition hover:bg-green-700 md:w-auto"
                     >
-                      ✓ Confirmer l'entrée
+                      ✓ Confirmer l&apos;entrée
                     </button>
                   ) : (
                     <div className="max-w-sm rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-800">
