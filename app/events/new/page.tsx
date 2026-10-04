@@ -2,265 +2,322 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useEvent } from "../../context/EventContext";
+import { supabase } from "../../../lib/supabase";
+
+const defaultDesign = {
+  style: "elegant",
+  layout: "classic",
+  palette: {
+    name: "Ivoire Royal",
+    primary: "#4f46e5",
+    secondary: "#7c3aed",
+    background: "#f8f5ed",
+    surface: "#ffffff",
+    text: "#18181b",
+    muted: "#71717a",
+    border: "#e4e4e7",
+  },
+  accentColor: "#4f46e5",
+  titleFont: "serif",
+  bodyFont: "sans",
+  background: "ivory",
+  customBackgroundColor: "#f8f5ed",
+  density: "balanced",
+  radius: "elegant",
+  decoration: "none",
+};
 
 export default function NewEventPage() {
-const router = useRouter();
-const { saveEvent } = useEvent();
+  const router = useRouter();
 
-const [name, setName] = useState("");
-const [type, setType] = useState("");
-const [date, setDate] = useState("");
-const [time, setTime] = useState("");
-const [location, setLocation] = useState("");
-const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
 
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-const handleSubmit = async (
-e: FormEvent<HTMLFormElement>,
-) => {
-e.preventDefault();
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
 
-setError("");
+    setError("");
 
-if (
-  !name.trim() ||
-  !type ||
-  !date ||
-  !time ||
-  !location.trim()
-) {
-  setError(
-    "Veuillez remplir tous les champs obligatoires.",
-  );
-  return;
-}
+    if (
+      !name.trim() ||
+      !type ||
+      !date ||
+      !time ||
+      !location.trim()
+    ) {
+      setError(
+        "Veuillez remplir tous les champs obligatoires.",
+      );
+      return;
+    }
 
-setLoading(true);
+    setLoading(true);
 
-const saved = await saveEvent({
-  name: name.trim(),
-  type,
-  date,
-  time,
-  location: location.trim(),
-  description: description.trim(),
-  design: {
-    style: "elegant",
-    layout: "classic",
-    palette: {
-      name: "Ivoire Royal",
-      primary: "#4f46e5",
-      secondary: "#7c3aed",
-      background: "#f8f5ed",
-      surface: "#ffffff",
-      text: "#18181b",
-      muted: "#71717a",
-      border: "#e4e4e7",
-    },
-    accentColor: "#4f46e5",
-    titleFont: "serif",
-    bodyFont: "sans",
-    background: "ivory",
-    customBackgroundColor: "#f8f5ed",
-    density: "balanced",
-    radius: "elegant",
-    decoration: "none",
-  },
-});
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-if (!saved) {
-  setLoading(false);
-  setError(
-    "Impossible d'enregistrer l'événement. Vérifiez la connexion à votre compte.",
-  );
-  return;
-}
+      if (userError || !user) {
+        router.push("/login");
+        return;
+      }
 
-router.push("/events/" + saved.id);
+      const { data: newEvent, error: insertError } =
+        await supabase
+          .from("events")
+          .insert({
+            owner_id: user.id,
+            name: name.trim(),
+            type,
+            date: date || null,
+            time: time || null,
+            location: location.trim(),
+            description: description.trim(),
+            design: defaultDesign,
+          })
+          .select(
+            "id, name, type, date, time, location, description, design",
+          )
+          .single();
 
-};
+      if (insertError || !newEvent) {
+        console.error(
+          "❌ ERREUR SUPABASE — création événement :",
+          insertError,
+        );
 
-const handleCancel = () => {
-router.push("/dashboard");
-};
+        setError(
+          "Impossible d'enregistrer l'événement. Vérifiez la connexion à votre compte.",
+        );
 
-return ( <main className="min-h-screen bg-zinc-50"> <div className="mx-auto max-w-3xl px-6 py-10 lg:px-8"> <div className="mb-10"> <p className="text-sm font-semibold text-indigo-600">
-EVENT STUDIO </p>
+        setLoading(false);
+        return;
+      }
 
-      <h1 className="mt-2 text-4xl font-bold tracking-tight text-zinc-900">
-        Créer un événement
-      </h1>
+      const finalEvent = {
+        id: newEvent.id,
+        name: newEvent.name ?? "",
+        type: newEvent.type ?? "",
+        date: newEvent.date ?? "",
+        time: newEvent.time ?? "",
+        location: newEvent.location ?? "",
+        description: newEvent.description ?? "",
+        design: newEvent.design ?? defaultDesign,
+      };
 
-      <p className="mt-3 text-zinc-600">
-        Renseignez les informations principales de votre
-        événement.
-      </p>
-    </div>
+      localStorage.setItem(
+        "event-studio-event",
+        JSON.stringify(finalEvent),
+      );
 
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
-    >
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-zinc-900"
-        >
-          Nom de l'événement
-        </label>
+      router.push("/events/" + newEvent.id);
+    } catch (error) {
+      console.error(
+        "❌ ERREUR CRÉATION ÉVÉNEMENT :",
+        error,
+      );
 
-        <input
-          id="name"
-          name="name"
-          type="text"
-          autoComplete="off"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ex. Mariage de Jean & Marie"
-          required
-          className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-        />
-      </div>
+      setError(
+        "Une erreur est survenue lors de la création de l'événement.",
+      );
 
-      <div>
-        <label
-          htmlFor="type"
-          className="block text-sm font-medium text-zinc-900"
-        >
-          Type d'événement
-        </label>
+      setLoading(false);
+    }
+  };
 
-        <select
-          id="type"
-          name="type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          required
-          className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-        >
-          <option value="" disabled>
-            Sélectionnez un type
-          </option>
+  const handleCancel = () => {
+    router.push("/dashboard");
+  };
 
-          <option value="mariage">Mariage</option>
-          <option value="anniversaire">Anniversaire</option>
-          <option value="naissance">Naissance</option>
-          <option value="conference">Conférence</option>
-          <option value="autre">Autre</option>
-        </select>
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium text-zinc-900"
+  return (
+    <main className="min-h-screen bg-zinc-50">
+      <div className="mx-auto max-w-4xl px-6 py-10 lg:px-8">
+        <div className="mb-8">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="mb-6 text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
           >
-            Date
-          </label>
+            ← Retour au Dashboard
+          </button>
 
-          <input
-            id="date"
-            name="date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-          />
+          <div className="rounded-[28px] bg-gradient-to-br from-zinc-950 via-indigo-950 to-violet-900 p-8 text-white shadow-xl sm:p-10">
+            <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-lg font-bold ring-1 ring-white/15">
+              ES
+            </div>
+
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-indigo-200">
+              Event Studio
+            </p>
+
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Créer votre événement
+            </h1>
+
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-300 sm:text-base">
+              Préparez votre événement et personnalisez ensuite
+              son invitation depuis votre espace.
+            </p>
+          </div>
         </div>
 
-        <div>
-          <label
-            htmlFor="time"
-            className="block text-sm font-medium text-zinc-900"
-          >
-            Heure
-          </label>
-
-          <input
-            id="time"
-            name="time"
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            required
-            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label
-          htmlFor="location"
-          className="block text-sm font-medium text-zinc-900"
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
         >
-          Lieu
-        </label>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <label
+                htmlFor="name"
+                className="mb-2 block text-sm font-semibold text-zinc-900"
+              >
+                Nom de l'événement
+              </label>
 
-        <input
-          id="location"
-          name="location"
-          type="text"
-          autoComplete="off"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Ex. Salle de réception..."
-          required
-          className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-        />
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ex. Mariage Adonaï & Grâce"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="type"
+                className="mb-2 block text-sm font-semibold text-zinc-900"
+              >
+                Type d'événement
+              </label>
+
+              <select
+                id="type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+              >
+                <option value="">Sélectionner</option>
+                <option value="Mariage">Mariage</option>
+                <option value="Anniversaire">Anniversaire</option>
+                <option value="Baptême">Baptême</option>
+                <option value="Conférence">Conférence</option>
+                <option value="Église">Église</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="location"
+                className="mb-2 block text-sm font-semibold text-zinc-900"
+              >
+                Lieu
+              </label>
+
+              <input
+                id="location"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Ex. Salle des fêtes"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="date"
+                className="mb-2 block text-sm font-semibold text-zinc-900"
+              >
+                Date
+              </label>
+
+              <input
+                id="date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="time"
+                className="mb-2 block text-sm font-semibold text-zinc-900"
+              >
+                Heure
+              </label>
+
+              <input
+                id="time"
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label
+                htmlFor="description"
+                className="mb-2 block text-sm font-semibold text-zinc-900"
+              >
+                Description
+              </label>
+
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Ajoutez quelques détails sur votre événement..."
+                rows={5}
+                className="w-full resize-none rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm leading-6 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+              />
+            </div>
+          </div>
+
+          {error && (
+            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              {error}
+            </div>
+          )}
+
+          <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={handleCancel}
+              disabled={loading}
+              className="rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Annuler
+            </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading
+                ? "Création en cours..."
+                : "Créer mon événement"}
+            </button>
+          </div>
+        </form>
       </div>
-
-      <div>
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-zinc-900"
-        >
-          Description
-        </label>
-
-        <textarea
-          id="description"
-          name="description"
-          rows={5}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Ajoutez quelques détails sur votre événement..."
-          className="mt-2 w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-        />
-      </div>
-
-      {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-          ❌ {error}
-        </div>
-      )}
-
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <button
-          type="button"
-          onClick={handleCancel}
-          disabled={loading}
-          className="rounded-full border border-zinc-300 px-6 py-3 font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Annuler
-        </button>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {loading
-            ? "Enregistrement..."
-            : "Créer l'événement"}
-        </button>
-      </div>
-    </form>
-  </div>
-</main>
-);
+    </main>
+  );
 }
