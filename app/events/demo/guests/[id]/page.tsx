@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useParams } from "next/navigation";
 import EventNavigation from "../../../../components/EventNavigation";
-import { useEvent } from "../../../../context/EventContext";
+import { DemoGuest, useDemoEvent } from "../../../../context/DemoEventContext";
 
 export default function GuestDetailPage() {
   const params = useParams();
-  const { guests } = useEvent();
+  const { guests } = useDemoEvent();
 
   const [qrCode, setQrCode] = useState("");
   const [qrError, setQrError] = useState(false);

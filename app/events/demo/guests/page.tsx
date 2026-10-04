@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Guest,
-  GuestType,
-  useEvent,
-} from "../../../context/EventContext";
+  DemoGuest,
+  DemoGuestType,
+  useDemoEvent,
+} from "../../../context/DemoEventContext";
 import EventNavigation from "../../../components/EventNavigation";
 
 function normalizeText(value: string) {
@@ -23,7 +23,7 @@ function createGuestSlug(
   lastName1: string,
   firstName2: string,
   lastName2: string,
-  type: GuestType,
+  type: DemoGuestType,
 ) {
   const primaryName = normalizeText(
     `${firstName1}-${lastName1}`,
@@ -47,8 +47,8 @@ function createUniqueGuestSlug(
   lastName1: string,
   firstName2: string,
   lastName2: string,
-  type: GuestType,
-  guests: Guest[],
+  type: DemoGuestType,
+  guests: DemoGuest[],
   currentGuestId?: string,
 ) {
   const baseSlug = createGuestSlug(
@@ -81,11 +81,11 @@ function createUniqueGuestSlug(
 export default function GuestsPage() {
   const router = useRouter();
 
-  const { guests, addGuest, updateGuest, deleteGuest } = useEvent();
+  const { guests, addGuest, updateGuest, deleteGuest } = useDemoEvent();
 
   const [showForm, setShowForm] = useState(false);
   const [guestType, setGuestType] =
-    useState<GuestType>("individual");
+    useState<DemoGuestType>("individual");
 
   const [firstName1, setFirstName1] = useState("");
   const [lastName1, setLastName1] = useState("");
@@ -172,7 +172,7 @@ export default function GuestsPage() {
     setShowForm(false);
   };
 
-  const handleEditGuest = (guest: Guest) => {
+  const handleEditGuest = (guest: DemoGuest) => {
     setEditingGuestId(guest.id);
     setGuestType(guest.type);
     setFirstName1(guest.firstName1);
@@ -541,7 +541,7 @@ export default function GuestsPage() {
 function StatusBadge({
   status,
 }: {
-  status: Guest["status"];
+  status: DemoGuest["status"];
 }) {
   if (status === "confirmed") {
     return (

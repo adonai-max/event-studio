@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Guest, useEvent } from "../../../context/EventContext";
+import { DemoGuest, useDemoEvent } from "../../../context/DemoEventContext";
 import EventNavigation from "../../../components/EventNavigation";
 import QRScanner from "../../../../components/QRScanner";
 
@@ -11,14 +11,14 @@ export default function EventControlPage() {
     guests,
     checkInGuest,
     resetGuestCheckIn,
-  } = useEvent();
+  } = useDemoEvent();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [scannedValue, setScannedValue] = useState("");
   const [scannedGuest, setScannedGuest] =
-    useState<Guest | null>(null);
+    useState<DemoGuest | null>(null);
   const [searchSelectedGuest, setSearchSelectedGuest] =
-    useState<Guest | null>(null);
+    useState<DemoGuest | null>(null);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -90,7 +90,7 @@ export default function EventControlPage() {
     });
   }, [guests, searchTerm]);
 
-  const getGuestName = (guest: Guest) => {
+  const getGuestName = (guest: DemoGuest) => {
     const firstPerson =
       `${guest.firstName1} ${guest.lastName1}`;
 
@@ -180,7 +180,7 @@ export default function EventControlPage() {
     );
   };
 
-  const handleConfirmEntry = async (guest: Guest) => {
+  const handleConfirmEntry = async (guest: DemoGuest) => {
     clearMessages();
 
     if (guest.checkedIn) {
@@ -228,7 +228,7 @@ export default function EventControlPage() {
     );
   };
 
-  const handleResetEntry = async (guest: Guest) => {
+  const handleResetEntry = async (guest: DemoGuest) => {
     clearMessages();
 
     await resetGuestCheckIn(guest.id);
@@ -258,7 +258,7 @@ export default function EventControlPage() {
     );
   };
 
-  const renderGuestStatus = (guest: Guest) => {
+  const renderGuestStatus = (guest: DemoGuest) => {
     if (guest.checkedIn) {
       return (
         <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">

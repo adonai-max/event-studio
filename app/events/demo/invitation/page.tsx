@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import EventNavigation from "../../../components/EventNavigation";
-import { useEvent } from "../../../context/EventContext";
+import { useDemoEvent } from "../../../context/DemoEventContext";
 
 const colorPalettes = [
   { name: "Élégant", color: "#4f46e5" },
@@ -70,7 +70,7 @@ function getMessageClasses(style: string) {
 }
 
 export default function InvitationBuilderPage() {
-  const { event } = useEvent();
+  const { event } = useDemoEvent();
 
   const [message, setMessage] = useState(
     event.description ||

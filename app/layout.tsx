@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { EventProvider } from "./context/EventContext";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const geistSans = Geist({
@@ -30,7 +29,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          <EventProvider>{children}</EventProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

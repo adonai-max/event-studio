@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import EventNavigation from "../../components/EventNavigation";
-import { useEvent } from "../../context/EventContext";
+import { useDemoEvent } from "../../context/DemoEventContext";
 
 export default function EventPage() {
   const router = useRouter();
-  const { event, guests } = useEvent();
+  const { event, guests } = useDemoEvent();
 
   const eventName = event.name || "Mon événement";
   const eventType = event.type || "Événement";
