@@ -118,14 +118,25 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-950/5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-zinc-500">{label}</p>
-          <p className="mt-3 text-3xl font-black tracking-tight text-zinc-950">{value}</p>
-          <p className="mt-1 text-xs text-zinc-400">{detail}</p>
+    <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-950/10">
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-indigo-500/5 blur-2xl transition-all duration-500 group-hover:bg-indigo-500/10" />
+
+      <div className="relative flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-400">
+            {label}
+          </p>
+
+          <p className="mt-3 text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
+            {value}
+          </p>
+
+          <p className="mt-1 truncate text-xs font-medium text-zinc-400">
+            {detail}
+          </p>
         </div>
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-lg text-indigo-600 transition-transform duration-300 group-hover:scale-110">
+
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-violet-50 text-lg font-black text-indigo-600 ring-1 ring-indigo-100 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-indigo-200/50">
           {icon}
         </div>
       </div>
@@ -715,8 +726,8 @@ export default function DashboardPage() {
                 const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
                 return (
-                  <article key={event.id} className="group overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/5">
-                    <div className="border-b border-zinc-100 bg-gradient-to-br from-zinc-950 to-zinc-900 p-6 text-white sm:p-7">
+                  <article key={event.id} className="group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/10">
+                    <div className="relative border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 p-6 text-white sm:p-7">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-300">{event.type || "Événement"}</p>
@@ -750,7 +761,7 @@ export default function DashboardPage() {
                         <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
                       </div>
 
-                      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                         <Link
                           href={"/events/" + event.id}
                           className="rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-bold text-zinc-700 transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
@@ -784,7 +795,7 @@ export default function DashboardPage() {
 
                         <Link
                           href={"/events/" + event.id + "/control"}
-                          className="rounded-xl bg-zinc-950 px-4 py-3 text-center text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200"
+                          className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-center text-sm font-bold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-700 hover:to-violet-700 hover:shadow-lg hover:shadow-indigo-200"
                         >
                           Event Control
                         </Link>
