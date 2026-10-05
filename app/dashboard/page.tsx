@@ -498,7 +498,7 @@ export default function DashboardPage() {
       <header
         className={[
 
-          "sticky top-0 z-40 overflow-hidden border-b border-sky-200/50 bg-gradient-to-r from-white via-sky-600/95 to-sky-700/90 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
+          "sticky top-0 z-40 overflow-visible border-b border-sky-200/50 bg-gradient-to-r from-white via-sky-600/95 to-sky-700/90 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
           headerScrolled
             ? "border-zinc-200/90 bg-white/95 shadow-[0_10px_35px_rgba(15,23,42,0.08)]"
             : "border-zinc-200/60 bg-white/75",
@@ -522,7 +522,7 @@ export default function DashboardPage() {
             <button
               type="button"
               aria-label="Notifications"
-              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-blue-950/70 bg-gradient-to-br from-sky-600 to-blue-700 text-white shadow-md shadow-blue-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-600 hover:text-white hover:shadow-lg hover:shadow-blue-800/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group relative flex h-10 w-10 items-center justify-center rounded-full border border-sky-200 bg-white text-sky-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -530,12 +530,19 @@ export default function DashboardPage() {
                 className="h-5 w-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-hover:rotate-0"
               >
                 <path
-                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                  d="M6.8 9.2a5.2 5.2 0 0 1 10.4 0c0 5.8 2 6.8 2 8.2H4.8c0-1.4 2-2.4 2-8.2Z"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                />
+                <path
+                  d="M9.5 20h5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
                 />
               </svg>
               <span
@@ -610,12 +617,12 @@ export default function DashboardPage() {
                       <span>Mon profil</span>
                     </Link>
 
-                    <a href="/settings" className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950">
+                    <Link href="/settings" onClick={() => setProfileMenuOpen(false)} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950">
                       <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100">
                         ⚙️
                       </span>
                       <span>Paramètres</span>
-                    </a>
+                    </Link>
                   </div>
 
                   <div className="border-t border-zinc-100 p-2">
