@@ -12,6 +12,7 @@ export type Theme = "system" | "light" | "dark";
 type ThemeContextType = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -46,12 +47,12 @@ function getInitialTheme(): Theme {
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
-
   const effectiveTheme =
     theme === "system" ? getSystemTheme() : theme;
 
   root.classList.toggle("dark", effectiveTheme === "dark");
   root.style.colorScheme = effectiveTheme;
+  root.dataset.theme = effectiveTheme;
 }
 
 export function ThemeProvider({
@@ -59,8 +60,7 @@ export function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setThemeState] =
-    useState<Theme>(getInitialTheme);
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     applyTheme(theme);
@@ -75,10 +75,7 @@ export function ThemeProvider({
       }
     }
 
-    mediaQuery.addEventListener(
-      "change",
-      handleSystemThemeChange,
-    );
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
 
     return () => {
       mediaQuery.removeEventListener(
@@ -90,11 +87,15 @@ export function ThemeProvider({
 
   function setTheme(nextTheme: Theme) {
     setThemeState(nextTheme);
-    window.localStorage.setItem(
-      THEME_KEY,
-      nextTheme,
-    );
+    window.localStorage.setItem(THEME_KEY, nextTheme);
     applyTheme(nextTheme);
+  }
+
+  function toggleTheme() {
+    const effectiveTheme =
+      theme === "system" ? getSystemTheme() : theme;
+
+    setTheme(effectiveTheme === "dark" ? "light" : "dark");
   }
 
   return (
@@ -102,6 +103,7 @@ export function ThemeProvider({
       value={{
         theme,
         setTheme,
+        toggleTheme,
       }}
     >
       {children}
