@@ -517,7 +517,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((open) => !open)}
-                className="group flex items-center gap-3 rounded-2xl border border-transparent p-1.5 transition-all duration-300 hover:border-zinc-200 hover:bg-white hover:shadow-sm motion-reduce:transition-none"
+                className="group flex items-center gap-3 rounded-2xl border border-transparent bg-white/40 p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-white hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 aria-label="Ouvrir le menu utilisateur"
                 aria-expanded={profileMenuOpen}
               >
@@ -534,7 +534,7 @@ export default function DashboardPage() {
                     alt={`Photo de profil de ${userName}`}
                     width={40}
                     height={40}
-                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white"
+                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white transition-all duration-300 group-hover:ring-indigo-100 group-hover:scale-105 motion-reduce:transition-none"
                   />
                 ) : (
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover:scale-105 group-hover:ring-indigo-100 motion-reduce:transition-none">
@@ -554,7 +554,7 @@ export default function DashboardPage() {
               </button>
 
               {profileMenuOpen && (
-                <div className="absolute right-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 shadow-2xl shadow-zinc-950/15 backdrop-blur-xl">
+                <div className="absolute right-0 top-full z-50 mt-3 w-72 origin-top-right overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 shadow-2xl shadow-indigo-950/10 backdrop-blur-xl motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200">
                   <div className="border-b border-zinc-100 bg-zinc-50 px-4 py-4">
                     <p className="truncate text-sm font-black text-zinc-900">
                       {userName}
@@ -571,7 +571,7 @@ export default function DashboardPage() {
                       onClick={() => setProfileMenuOpen(false)}
                       className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-indigo-50 hover:text-indigo-700"
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-all duration-300 group-hover:scale-105">
                         👤
                       </span>
                       <span>Mon profil</span>
