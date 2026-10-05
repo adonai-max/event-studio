@@ -507,8 +507,24 @@ export default function DashboardPage() {
               aria-label="Notifications"
               className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-500 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 hover:shadow-lg hover:shadow-indigo-200/40 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
-              <span className="text-sm transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">●</span>
-              <span className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-indigo-600 motion-safe:animate-pulse" />
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-5 w-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-hover:rotate-0"
+              >
+                <path
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span
+                aria-hidden="true"
+                className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-indigo-600 ring-2 ring-white motion-safe:animate-pulse motion-reduce:animate-none"
+              />
             </button>
 
             <div className="hidden h-8 w-px bg-zinc-200 sm:block" />
