@@ -67,6 +67,18 @@ function formatShortDate(date: string | null) {
   }).format(new Date(date + "T12:00:00"));
 }
 
+function getDaysUntil(date: string | null) {
+  if (!date) return null;
+
+  const target = new Date(date + "T23:59:59");
+  const now = new Date();
+  const diff = target.getTime() - now.getTime();
+
+  if (diff < 0) return 0;
+
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+}
+
 function formatActivityDate(date: string | null) {
   if (!date) return "";
 
@@ -584,18 +596,35 @@ export default function DashboardPage() {
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Tableau de bord</p>
               <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Bonjour {userName} 👋</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">Pilotez vos événements, vos invitations et vos invités depuis un seul espace.</p>
+              <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold text-zinc-400">
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Création</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">RSVP</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Event Control</span>
+              </div>
             </div>
 
-            <Link href="/events/new" className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-xl">
-              <span className="text-lg text-indigo-600">+</span>
-              Créer un événement
-            </Link>
+            <div className="flex flex-col items-start gap-3">
+              {nextEvent && (
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left backdrop-blur-sm">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-300">Prochain rendez-vous</p>
+                  <p className="mt-1 max-w-[240px] truncate text-sm font-bold text-white">{nextEvent.name}</p>
+                  <p className="mt-1 text-xs text-zinc-400">
+                    {getDaysUntil(nextEvent.date) === 0 ? "Aujourd’hui" : getDaysUntil(nextEvent.date) === 1 ? "Demain" : getDaysUntil(nextEvent.date) ? "Dans " + getDaysUntil(nextEvent.date) + " jours" : "Date à définir"}
+                  </p>
+                </div>
+              )}
+
+              <Link href="/events/new" className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                <span className="text-lg text-indigo-600">+</span>
+                Créer un événement
+              </Link>
+            </div>
           </div>
         </section>
 
         {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
 
-        <section className={["mt-10 transition-all duration-700 ease-out",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
+        <section className={["mt-10 transition-all duration-700 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
           <div className="mb-5">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Vue générale</p>
             <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
@@ -614,7 +643,7 @@ export default function DashboardPage() {
           )}
         </section>
 
-        <section className={["mt-10 grid gap-6 transition-all duration-700 ease-out lg:grid-cols-[1.25fr_0.75fr]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
+        <section className={["mt-10 grid gap-6 transition-all duration-700 ease-out motion-reduce:transition-none lg:grid-cols-[1.25fr_0.75fr]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
 
           <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-5 sm:px-7">
@@ -699,7 +728,7 @@ export default function DashboardPage() {
 
         </section>
 
-        <section className={["mt-12 transition-all duration-700 ease-out",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
+        <section className={["mt-12 transition-all duration-700 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Gestion</p>
@@ -732,7 +761,7 @@ export default function DashboardPage() {
                 const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
                 return (
-                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-700 ease-out hover:-translate-y-1.5 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/10",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
+                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-700 ease-out hover:-translate-y-1.5 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
                     <div className="relative border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 p-6 text-white sm:p-7">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
@@ -767,7 +796,7 @@ export default function DashboardPage() {
                         <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
                       </div>
 
-                      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         <Link
                           href={"/events/" + event.id}
                           className="rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-bold text-zinc-700 transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
@@ -825,6 +854,11 @@ export default function DashboardPage() {
         </section>
 
         <footer className="mt-14 border-t border-zinc-200 py-7 text-center">
+          <div className="mb-3 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-300">
+            <span className="h-px w-8 bg-zinc-200" />
+            Event Studio
+            <span className="h-px w-8 bg-zinc-200" />
+          </div>
           <p className="text-xs font-medium text-zinc-400">Event Studio · Centre de pilotage événementiel</p>
         </footer>
 
