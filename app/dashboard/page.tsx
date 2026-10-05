@@ -522,7 +522,7 @@ export default function DashboardPage() {
             <button
               type="button"
               aria-label="Notifications"
-              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-500 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 hover:shadow-lg hover:shadow-indigo-200/40 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/70 bg-indigo-950 text-indigo-100 shadow-md shadow-indigo-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300 hover:bg-violet-900 hover:text-white hover:shadow-lg hover:shadow-violet-300/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -540,7 +540,7 @@ export default function DashboardPage() {
               </svg>
               <span
                 aria-hidden="true"
-                className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-indigo-600 ring-2 ring-white motion-safe:animate-pulse motion-reduce:animate-none"
+                className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-violet-300 ring-2 ring-indigo-950 motion-safe:animate-pulse motion-reduce:animate-none"
               />
             </button>
 
@@ -550,13 +550,13 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((open) => !open)}
-                className="group/profile flex items-center gap-3 rounded-2xl border border-indigo-100/70 bg-white/65 p-1.5 shadow-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-indigo-300/70 hover:bg-white/90 hover:shadow-lg hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group/profile flex items-center gap-3 rounded-2xl border border-violet-200/70 bg-gradient-to-r from-indigo-950/95 via-indigo-900/95 to-violet-900/95 p-1.5 shadow-md shadow-indigo-950/20 transition-all duration-500 hover:-translate-y-0.5 hover:border-violet-300 hover:from-indigo-900 hover:via-violet-900 hover:to-fuchsia-900 hover:shadow-lg hover:shadow-violet-300/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 aria-label="Ouvrir le menu utilisateur"
                 aria-expanded={profileMenuOpen}
               >
                 <div className="hidden text-right sm:block">
-                  <p className="text-xs font-bold text-zinc-800">{userName}</p>
-                  <p className="max-w-[180px] truncate text-[11px] text-zinc-400">
+                  <p className="text-xs font-bold text-white">{userName}</p>
+                  <p className="max-w-[180px] truncate text-[11px] text-indigo-200/80">
                     {userEmail || "Organisateur"}
                   </p>
                 </div>
@@ -567,10 +567,10 @@ export default function DashboardPage() {
                     alt={`Photo de profil de ${userName}`}
                     width={40}
                     height={40}
-                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:ring-indigo-200 group-hover/profile:scale-105 motion-reduce:transition-none"
+                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-indigo-200/70 transition-all duration-300 group-hover/profile:ring-violet-300 group-hover/profile:scale-105 motion-reduce:transition-none"
                   />
                 ) : (
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:scale-105 group-hover/profile:ring-indigo-200 motion-reduce:transition-none">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:scale-105 group-hover/profile:ring-indigo-200 motion-reduce:transition-none">
                     {userName
                       .trim()
                       .split(/\s+/)
