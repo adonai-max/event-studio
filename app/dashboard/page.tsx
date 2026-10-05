@@ -504,13 +504,14 @@ export default function DashboardPage() {
         ].join(" ")}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="group flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 text-xs font-black text-white shadow-sm ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-300/30 motion-reduce:transition-none">
-              <span className="transition-transform duration-300 group-hover:rotate-3 motion-reduce:transition-none">ES</span>
+          <Link href="/dashboard" className="group/brand flex items-center gap-3">
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-950 via-indigo-950 to-violet-900 text-xs font-black text-white shadow-sm ring-1 ring-indigo-200/20 transition-all duration-500 group-hover/brand:-translate-y-0.5 group-hover/brand:scale-105 group-hover/brand:ring-indigo-300/50 group-hover/brand:shadow-lg group-hover/brand:shadow-indigo-300/30 motion-reduce:transition-none">
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-700 group-hover/brand:translate-x-full group-hover/brand:opacity-100 motion-reduce:transition-none" />
+              <span className="relative transition-transform duration-500 group-hover/brand:scale-110 group-hover/brand:rotate-3 motion-reduce:transition-none">ES</span>
             </div>
             <div className="hidden sm:block">
-              <p className="text-sm font-black tracking-tight text-zinc-950">Event Studio</p>
-              <p className="text-[11px] font-medium text-zinc-400">Centre de pilotage</p>
+              <p className="bg-gradient-to-r from-zinc-950 via-indigo-800 to-violet-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all duration-500 group-hover/brand:from-indigo-700 group-hover/brand:via-violet-700 group-hover/brand:to-fuchsia-600">Event Studio</p>
+              <p className="text-[11px] font-medium text-zinc-400 transition-colors duration-300 group-hover/brand:text-indigo-500">Centre de pilotage</p>
             </div>
           </Link>
 
@@ -546,7 +547,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((open) => !open)}
-                className="group flex items-center gap-3 rounded-2xl border border-transparent bg-white/40 p-1.5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-white hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group/profile flex items-center gap-3 rounded-2xl border border-transparent bg-white/40 p-1.5 shadow-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-white hover:shadow-lg hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 aria-label="Ouvrir le menu utilisateur"
                 aria-expanded={profileMenuOpen}
               >
@@ -563,10 +564,10 @@ export default function DashboardPage() {
                     alt={`Photo de profil de ${userName}`}
                     width={40}
                     height={40}
-                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white transition-all duration-300 group-hover:ring-indigo-100 group-hover:scale-105 motion-reduce:transition-none"
+                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:ring-indigo-200 group-hover/profile:scale-105 motion-reduce:transition-none"
                   />
                 ) : (
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover:scale-105 group-hover:ring-indigo-100 motion-reduce:transition-none">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:scale-105 group-hover/profile:ring-indigo-200 motion-reduce:transition-none">
                     {userName
                       .trim()
                       .split(/\s+/)
