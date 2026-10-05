@@ -680,7 +680,7 @@ export default function DashboardPage() {
             {loading ? (
               <div className="p-7"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div>
             ) : nextEvent ? (
-              <div className="p-6 sm:p-7">
+              <div className="relative p-6 sm:p-7">
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                   <div className="flex h-24 w-24 shrink-0 flex-col items-center justify-center rounded-3xl bg-indigo-50 text-indigo-700">
                     <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
@@ -785,16 +785,18 @@ export default function DashboardPage() {
 
                 return (
                   <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-700 ease-out hover:-translate-y-1.5 hover:border-indigo-200 hover:ring-indigo-100 hover:shadow-2xl hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
-                    <div className="relative border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 p-6 text-white sm:p-7">
-                      <div className="flex items-start justify-between gap-4">
+                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 p-6 text-white sm:p-7">
+                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-violet-500/25 motion-reduce:transition-none" />
+                      <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-violet-500/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
+                      <div className="relative flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-300">{event.type || "Événement"}</p>
-                          <h3 className="mt-2 truncate text-2xl font-black tracking-tight">{event.name}</h3>
+                          <h3 className="mt-2 truncate text-2xl font-black tracking-tight transition-colors duration-300 group-hover:text-indigo-100">{event.name}</h3>
                         </div>
                         <StatusBadge status={getEventStatus(event)} />
                       </div>
 
-                      <div className="mt-5 flex flex-wrap gap-2 text-xs text-zinc-300">
+                      <div className="relative mt-5 flex flex-wrap gap-2 text-xs text-zinc-300">
                         <span className="rounded-xl bg-white/5 px-3 py-2">📅 {formatShortDate(event.date)}</span>
                         {event.time && <span className="rounded-xl bg-white/5 px-3 py-2">🕐 {event.time}</span>}
                         {event.location && <span className="max-w-full truncate rounded-xl bg-white/5 px-3 py-2">📍 {event.location}</span>}
@@ -803,10 +805,10 @@ export default function DashboardPage() {
 
                     <div className="p-6 sm:p-7">
                       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        <div className="rounded-2xl bg-zinc-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">Invités</p><p className="mt-2 text-2xl font-black">{total}</p></div>
-                        <div className="rounded-2xl bg-emerald-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
-                        <div className="rounded-2xl bg-amber-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
-                        <div className="rounded-2xl bg-indigo-50 p-4"><p className="text-[10px] font-bold uppercase tracking-wide text-indigo-600">Entrées</p><p className="mt-2 text-2xl font-black text-indigo-800">{checkedIn}</p></div>
+                        <div className="group/stat rounded-2xl bg-zinc-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">Invités</p><p className="mt-2 text-2xl font-black">{total}</p></div>
+                        <div className="group/stat rounded-2xl bg-emerald-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
+                        <div className="group/stat rounded-2xl bg-amber-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
+                        <div className="group/stat rounded-2xl bg-indigo-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-indigo-600">Entrées</p><p className="mt-2 text-2xl font-black text-indigo-800">{checkedIn}</p></div>
                       </div>
 
                       <div className="mt-7 space-y-5">
