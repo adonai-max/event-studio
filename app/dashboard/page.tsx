@@ -481,6 +481,19 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.07),_transparent_30%),radial-gradient(circle_at_90%_15%,_rgba(124,58,237,0.06),_transparent_26%),#f7f8fc] text-zinc-950">
+      <style jsx>{`
+        @keyframes eventStudioShift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        .event-studio-shift {
+          background-size: 200% 200%;
+          animation: eventStudioShift 10s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .event-studio-shift { animation: none; }
+        }
+      `}</style>
 
       <header
         className={[
@@ -625,7 +638,7 @@ export default function DashboardPage() {
 
       <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
 
-        <section className={["relative overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950 px-6 py-8 shadow-[0_25px_70px_rgba(15,23,42,0.18)] transition-all duration-700 ease-out sm:px-8 lg:px-10 lg:py-9 motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
+        <section className={["event-studio-shift relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(120deg,#09090b,#17134a,#2e1065,#09090b)] px-6 py-8 shadow-[0_25px_70px_rgba(15,23,42,0.18)] transition-all duration-700 ease-out sm:px-8 lg:px-10 lg:py-9 motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
           <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl motion-safe:animate-pulse" />
           <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-violet-600/15 blur-3xl motion-safe:animate-pulse" />
 
