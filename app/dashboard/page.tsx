@@ -98,14 +98,14 @@ function formatActivityDate(date: string | null) {
 function StatusBadge({ status }: { status: EventStatus }) {
   const styles = {
     gray: "border-zinc-200 bg-zinc-100 text-zinc-600",
-    blue: "border-blue-950 bg-blue-950 text-white",
+    blue: "border-sky-200 bg-sky-50 text-sky-800",
     green: "border-emerald-100 bg-emerald-50 text-emerald-700",
     purple: "border-purple-100 bg-purple-50 text-purple-700",
   };
 
   const dots = {
     gray: "bg-zinc-400",
-    blue: "bg-blue-700",
+    blue: "bg-sky-600",
     green: "bg-emerald-500",
     purple: "bg-purple-500",
   };
@@ -130,8 +130,8 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-950/15">
-      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-950/5 blur-2xl transition-all duration-500 group-hover:bg-blue-900/10" />
+    <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/15">
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-600/5 blur-2xl transition-all duration-500 group-hover:bg-sky-500/10" />
 
       <div className="relative flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -148,7 +148,7 @@ function StatCard({
           </p>
         </div>
 
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-950 via-blue-900 to-blue-700 text-lg font-black text-white ring-1 ring-blue-950 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-blue-950/50">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 text-lg font-black text-white ring-1 ring-sky-500 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-sky-500/25">
           {icon}
         </div>
       </div>
@@ -164,7 +164,7 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
         <span className="font-bold text-zinc-800">{value}%</span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-zinc-100">
-        <div className="h-full rounded-full bg-gradient-to-r from-blue-950 to-blue-800 transition-all duration-1000 ease-out" style={{ width: value + "%" }} />
+        <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-1000 ease-out" style={{ width: value + "%" }} />
       </div>
     </div>
   );
@@ -455,7 +455,7 @@ export default function DashboardPage() {
 
         let title = "Invité mis à jour";
         let icon = "↻";
-        let tone = "text-blue-950 bg-blue-950";
+        let tone = "text-sky-700 bg-blue-950";
 
         if (guest.checked_in) {
           title = "Entrée enregistrée";
@@ -498,22 +498,22 @@ export default function DashboardPage() {
       <header
         className={[
 
-          "sticky top-0 z-40 overflow-hidden border-b border-blue-950/50 bg-gradient-to-r from-white via-blue-950/95 to-blue-800/90 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
+          "sticky top-0 z-40 overflow-hidden border-b border-sky-200/50 bg-gradient-to-r from-white via-sky-600/95 to-sky-700/90 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
           headerScrolled
             ? "border-zinc-200/90 bg-white/95 shadow-[0_10px_35px_rgba(15,23,42,0.08)]"
             : "border-zinc-200/60 bg-white/75",
         ].join(" ")}
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-950/70 to-transparent motion-safe:animate-pulse motion-reduce:animate-none" />
-        <div className="pointer-events-none absolute -inset-x-24 top-0 h-16 bg-gradient-to-r from-transparent via-blue-950/10 to-blue-900/10 blur-2xl motion-safe:animate-[eventStudioShift_18s_ease-in-out_infinite] motion-reduce:animate-none" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-600/70 to-transparent motion-safe:animate-pulse motion-reduce:animate-none" />
+        <div className="pointer-events-none absolute -inset-x-24 top-0 h-16 bg-gradient-to-r from-transparent via-sky-500/10 to-sky-500/10 blur-2xl motion-safe:animate-[eventStudioShift_18s_ease-in-out_infinite] motion-reduce:animate-none" />
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="group/brand flex items-center gap-3">
-            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-950 via-blue-950 to-blue-800 text-xs font-black text-white shadow-sm ring-1 ring-blue-950/20 transition-all duration-500 group-hover/brand:-translate-y-0.5 group-hover/brand:scale-105 group-hover/brand:ring-blue-950/50 group-hover/brand:shadow-lg group-hover/brand:shadow-blue-950/30 motion-reduce:transition-none">
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-950 via-blue-950 to-blue-800 text-xs font-black text-white shadow-sm ring-1 ring-blue-950/20 transition-all duration-500 group-hover/brand:-translate-y-0.5 group-hover/brand:scale-105 group-hover/brand:ring-sky-500/50 group-hover/brand:shadow-lg group-hover/brand:shadow-blue-950/30 motion-reduce:transition-none">
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-700 group-hover/brand:translate-x-full group-hover/brand:opacity-100 motion-reduce:transition-none" />
               <span className="relative transition-transform duration-500 group-hover/brand:scale-110 group-hover/brand:rotate-3 motion-reduce:transition-none">ES</span>
             </div>
             <div className="hidden sm:block">
-              <p className="bg-gradient-to-r from-zinc-950 via-blue-950 to-blue-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all duration-500 group-hover/brand:from-blue-950 group-hover/brand:via-sky-700 group-hover/brand:to-blue-500">Event Studio</p>
+              <p className="bg-gradient-to-r from-zinc-950 via-blue-950 to-blue-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all duration-500 group-hover/brand:from-sky-700 group-hover/brand:via-sky-700 group-hover/brand:to-blue-500">Event Studio</p>
               <p className="text-[11px] font-medium text-zinc-400 transition-colors duration-300 group-hover/brand:text-blue-950">Centre de pilotage</p>
             </div>
           </Link>
@@ -522,7 +522,7 @@ export default function DashboardPage() {
             <button
               type="button"
               aria-label="Notifications"
-              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-blue-950/70 bg-blue-950 text-white shadow-md shadow-blue-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-800 hover:bg-blue-800 hover:text-white hover:shadow-lg hover:shadow-blue-800/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-blue-950/70 bg-gradient-to-br from-sky-600 to-blue-700 text-white shadow-md shadow-blue-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-600 hover:text-white hover:shadow-lg hover:shadow-blue-800/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -550,7 +550,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((open) => !open)}
-                className="group/profile flex items-center gap-3 rounded-2xl border border-blue-800/70 bg-gradient-to-r from-blue-950/95 via-blue-950/95 to-sky-900/95 p-1.5 shadow-md shadow-blue-950/20 transition-all duration-500 hover:-translate-y-0.5 hover:border-blue-800 hover:from-blue-950 hover:via-sky-900 hover:to-blue-900 hover:shadow-lg hover:shadow-blue-800/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group/profile flex items-center gap-3 rounded-2xl border border-blue-800/70 bg-gradient-to-r from-sky-900/95 via-blue-950/95 to-sky-900/95 p-1.5 shadow-md shadow-blue-950/20 transition-all duration-500 hover:-translate-y-0.5 hover:border-blue-800 hover:from-blue-950 hover:via-sky-900 hover:to-blue-900 hover:shadow-lg hover:shadow-blue-800/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 aria-label="Ouvrir le menu utilisateur"
                 aria-expanded={profileMenuOpen}
               >
@@ -602,7 +602,7 @@ export default function DashboardPage() {
                     <Link
                       href="/profile"
                       onClick={() => setProfileMenuOpen(false)}
-                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-blue-50 hover:text-blue-900"
+                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-sky-50 hover:text-sky-800"
                     >
                       <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-950 text-white transition-all duration-300 group-hover:scale-105">
                         👤
@@ -643,7 +643,7 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
 
         <section className={["event-studio-shift relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(120deg,#09090b,#17134a,#2e1065,#09090b)] px-6 py-8 shadow-[0_25px_70px_rgba(15,23,42,0.18)] transition-all duration-500 ease-out sm:px-8 lg:px-10 lg:py-9 motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
-          <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-blue-950/20 blur-3xl motion-safe:animate-pulse" />
+          <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-sky-500/10 blur-3xl motion-safe:animate-pulse" />
           <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-sky-600/15 blur-3xl motion-safe:animate-pulse" />
 
           <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
@@ -669,7 +669,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              <Link href="/events/new" className="group relative inline-flex w-fit items-center justify-center gap-2 overflow-hidden rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-blue-950 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+              <Link href="/events/new" className="group relative inline-flex w-fit items-center justify-center gap-2 overflow-hidden rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-sky-600 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
                 <span className="absolute inset-y-0 left-[-35%] w-1/4 skew-x-[-18deg] bg-white/60 opacity-0 blur-sm transition-all duration-700 group-hover:left-[115%] group-hover:opacity-100 motion-reduce:transition-none" />
                 <span className="relative text-lg text-blue-950 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">+</span>
                 <span className="relative">Créer un événement</span>
@@ -707,7 +707,7 @@ export default function DashboardPage() {
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-950">Agenda</p>
                 <h2 className="mt-1 text-xl font-black">Prochain événement</h2>
               </div>
-              {nextEvent && <Link href={"/events/" + nextEvent.id} className="text-xs font-bold text-blue-950 hover:text-blue-950">Ouvrir →</Link>}
+              {nextEvent && <Link href={"/events/" + nextEvent.id} className="text-xs font-bold text-blue-950 hover:text-sky-700">Ouvrir →</Link>}
             </div>
 
             {loading ? (
@@ -792,14 +792,14 @@ export default function DashboardPage() {
               <p className="mt-1 text-sm text-zinc-500">Retrouvez et pilotez tous vos événements.</p>
             </div>
 
-            {!loading && events.length > 0 && <Link href="/events/new" className="inline-flex w-fit items-center rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-900">+ Nouvel événement</Link>}
+            {!loading && events.length > 0 && <Link href="/events/new" className="inline-flex w-fit items-center rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-sky-50 hover:text-sky-800">+ Nouvel événement</Link>}
           </div>
 
           {loading ? (
             <div className="grid gap-6 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[2rem] bg-white" />)}</div>
           ) : events.length === 0 ? (
             <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-16 text-center shadow-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-blue-800">+</div>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-sky-700">+</div>
               <h3 className="mt-5 text-xl font-black">Votre espace est prêt</h3>
               <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p>
               <Link href="/events/new" className="mt-6 inline-flex rounded-xl bg-zinc-950 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-950">Créer mon premier événement</Link>
@@ -818,9 +818,9 @@ export default function DashboardPage() {
 
                 return (
                   <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-500 ease-out hover:-translate-y-1 hover:border-blue-300 hover:ring-blue-950 hover:shadow-2xl hover:shadow-blue-950/15 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
-                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-950 p-6 text-white sm:p-7">
-                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-950/20 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-blue-800/25 motion-reduce:transition-none" />
-                      <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-blue-800/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
+                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-700 p-6 text-white sm:p-7">
+                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-950/20 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-sky-500/15 motion-reduce:transition-none" />
+                      <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-sky-400/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
                       <div className="relative flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-950">{event.type || "Événement"}</p>
@@ -841,7 +841,7 @@ export default function DashboardPage() {
                         <div className="group/stat rounded-2xl bg-zinc-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-950 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">Invités</p><p className="mt-2 text-2xl font-black">{total}</p></div>
                         <div className="group/stat rounded-2xl bg-emerald-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
                         <div className="group/stat rounded-2xl bg-amber-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
-                        <div className="group/stat rounded-2xl bg-blue-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-blue-700">Entrées</p><p className="mt-2 text-2xl font-black text-blue-800">{checkedIn}</p></div>
+                        <div className="group/stat rounded-2xl bg-blue-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-2xl font-black text-blue-800">{checkedIn}</p></div>
                       </div>
 
                       <div className="mt-7 space-y-5">
