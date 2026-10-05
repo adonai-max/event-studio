@@ -497,12 +497,15 @@ export default function DashboardPage() {
 
       <header
         className={[
-          "sticky top-0 z-40 border-b backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
+
+          "sticky top-0 z-40 overflow-hidden border-b border-indigo-200/50 bg-gradient-to-r from-white via-indigo-50/85 to-violet-50/85 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
           headerScrolled
             ? "border-zinc-200/90 bg-white/95 shadow-[0_10px_35px_rgba(15,23,42,0.08)]"
             : "border-zinc-200/60 bg-white/75",
         ].join(" ")}
       >
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/70 to-transparent motion-safe:animate-pulse motion-reduce:animate-none" />
+        <div className="pointer-events-none absolute -inset-x-24 top-0 h-16 bg-gradient-to-r from-transparent via-indigo-400/10 to-violet-400/10 blur-2xl motion-safe:animate-[eventStudioShift_12s_ease-in-out_infinite] motion-reduce:animate-none" />
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="group/brand flex items-center gap-3">
             <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-950 via-indigo-950 to-violet-900 text-xs font-black text-white shadow-sm ring-1 ring-indigo-200/20 transition-all duration-500 group-hover/brand:-translate-y-0.5 group-hover/brand:scale-105 group-hover/brand:ring-indigo-300/50 group-hover/brand:shadow-lg group-hover/brand:shadow-indigo-300/30 motion-reduce:transition-none">
@@ -547,7 +550,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((open) => !open)}
-                className="group/profile flex items-center gap-3 rounded-2xl border border-transparent bg-white/40 p-1.5 shadow-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-white hover:shadow-lg hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group/profile flex items-center gap-3 rounded-2xl border border-indigo-100/70 bg-white/65 p-1.5 shadow-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-indigo-300/70 hover:bg-white/90 hover:shadow-lg hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 aria-label="Ouvrir le menu utilisateur"
                 aria-expanded={profileMenuOpen}
               >
