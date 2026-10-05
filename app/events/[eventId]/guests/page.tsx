@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../../lib/supabase";
-import EventNavigation from "../../../components/EventNavigation";
 
 type GuestType = "individual" | "couple";
 type GuestStatus = "pending" | "confirmed" | "declined";
@@ -622,8 +621,6 @@ export default function GuestsPage() {
   return (
     <main className="min-h-screen bg-[#f8fafc]">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-        <EventNavigation eventId={eventId} />
-
         <button
           type="button"
           onClick={() =>
