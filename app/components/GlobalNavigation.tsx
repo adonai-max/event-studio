@@ -14,14 +14,18 @@ export default function GlobalNavigation() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  const showNavigation =
-    pathname === "/dashboard" ||
-    pathname.startsWith("/dashboard/") ||
+  const isEventRoute =
     pathname === "/events" ||
-    pathname === "/profile" ||
-    pathname.startsWith("/profile/") ||
-    pathname === "/settings" ||
-    pathname.startsWith("/settings/");
+    pathname.startsWith("/events/");
+
+  const showNavigation =
+    !isEventRoute &&
+    (pathname === "/dashboard" ||
+      pathname.startsWith("/dashboard/") ||
+      pathname === "/profile" ||
+      pathname.startsWith("/profile/") ||
+      pathname === "/settings" ||
+      pathname.startsWith("/settings/"));
 
   if (!showNavigation) return null;
 
