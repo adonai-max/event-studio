@@ -130,8 +130,8 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-950/10">
-      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-indigo-500/5 blur-2xl transition-all duration-500 group-hover:bg-indigo-500/10" />
+    <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-950/10">
+      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-500/5 blur-2xl transition-all duration-500 group-hover:bg-blue-500/10" />
 
       <div className="relative flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -148,7 +148,7 @@ function StatCard({
           </p>
         </div>
 
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-violet-50 text-lg font-black text-indigo-600 ring-1 ring-indigo-100 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-indigo-200/50">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-sky-50 text-lg font-black text-blue-600 ring-1 ring-blue-100 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-blue-200/50">
           {icon}
         </div>
       </div>
@@ -164,7 +164,7 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
         <span className="font-bold text-zinc-800">{value}%</span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-zinc-100">
-        <div className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 transition-all duration-1000 ease-out" style={{ width: value + "%" }} />
+        <div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-500 transition-all duration-1000 ease-out" style={{ width: value + "%" }} />
       </div>
     </div>
   );
@@ -455,7 +455,7 @@ export default function DashboardPage() {
 
         let title = "Invité mis à jour";
         let icon = "↻";
-        let tone = "text-indigo-600 bg-indigo-50";
+        let tone = "text-blue-600 bg-blue-50";
 
         if (guest.checked_in) {
           title = "Entrée enregistrée";
@@ -488,7 +488,7 @@ export default function DashboardPage() {
         }
         .event-studio-shift {
           background-size: 200% 200%;
-          animation: eventStudioShift 10s ease-in-out infinite;
+          animation: eventStudioShift 14s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .event-studio-shift { animation: none; }
@@ -498,23 +498,23 @@ export default function DashboardPage() {
       <header
         className={[
 
-          "sticky top-0 z-40 overflow-hidden border-b border-indigo-200/50 bg-gradient-to-r from-white via-indigo-50/85 to-violet-50/85 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
+          "sticky top-0 z-40 overflow-hidden border-b border-blue-200/50 bg-gradient-to-r from-white via-blue-50/90 to-sky-50/80 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none",
           headerScrolled
             ? "border-zinc-200/90 bg-white/95 shadow-[0_10px_35px_rgba(15,23,42,0.08)]"
             : "border-zinc-200/60 bg-white/75",
         ].join(" ")}
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/70 to-transparent motion-safe:animate-pulse motion-reduce:animate-none" />
-        <div className="pointer-events-none absolute -inset-x-24 top-0 h-16 bg-gradient-to-r from-transparent via-indigo-400/10 to-violet-400/10 blur-2xl motion-safe:animate-[eventStudioShift_12s_ease-in-out_infinite] motion-reduce:animate-none" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/70 to-transparent motion-safe:animate-pulse motion-reduce:animate-none" />
+        <div className="pointer-events-none absolute -inset-x-24 top-0 h-16 bg-gradient-to-r from-transparent via-blue-400/10 to-sky-400/10 blur-2xl motion-safe:animate-[eventStudioShift_16s_ease-in-out_infinite] motion-reduce:animate-none" />
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="group/brand flex items-center gap-3">
-            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-950 via-indigo-950 to-violet-900 text-xs font-black text-white shadow-sm ring-1 ring-indigo-200/20 transition-all duration-500 group-hover/brand:-translate-y-0.5 group-hover/brand:scale-105 group-hover/brand:ring-indigo-300/50 group-hover/brand:shadow-lg group-hover/brand:shadow-indigo-300/30 motion-reduce:transition-none">
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-zinc-950 via-blue-950 to-sky-900 text-xs font-black text-white shadow-sm ring-1 ring-blue-200/20 transition-all duration-500 group-hover/brand:-translate-y-0.5 group-hover/brand:scale-105 group-hover/brand:ring-blue-300/50 group-hover/brand:shadow-lg group-hover/brand:shadow-blue-300/30 motion-reduce:transition-none">
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-700 group-hover/brand:translate-x-full group-hover/brand:opacity-100 motion-reduce:transition-none" />
               <span className="relative transition-transform duration-500 group-hover/brand:scale-110 group-hover/brand:rotate-3 motion-reduce:transition-none">ES</span>
             </div>
             <div className="hidden sm:block">
-              <p className="bg-gradient-to-r from-zinc-950 via-indigo-800 to-violet-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all duration-500 group-hover/brand:from-indigo-700 group-hover/brand:via-violet-700 group-hover/brand:to-fuchsia-600">Event Studio</p>
-              <p className="text-[11px] font-medium text-zinc-400 transition-colors duration-300 group-hover/brand:text-indigo-500">Centre de pilotage</p>
+              <p className="bg-gradient-to-r from-zinc-950 via-blue-800 to-sky-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all duration-500 group-hover/brand:from-blue-700 group-hover/brand:via-sky-700 group-hover/brand:to-cyan-600">Event Studio</p>
+              <p className="text-[11px] font-medium text-zinc-400 transition-colors duration-300 group-hover/brand:text-blue-500">Centre de pilotage</p>
             </div>
           </Link>
 
@@ -522,7 +522,7 @@ export default function DashboardPage() {
             <button
               type="button"
               aria-label="Notifications"
-              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/70 bg-indigo-950 text-indigo-100 shadow-md shadow-indigo-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-300 hover:bg-violet-900 hover:text-white hover:shadow-lg hover:shadow-violet-300/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/70 bg-blue-950 text-blue-100 shadow-md shadow-blue-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-900 hover:text-white hover:shadow-lg hover:shadow-sky-300/30 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -540,7 +540,7 @@ export default function DashboardPage() {
               </svg>
               <span
                 aria-hidden="true"
-                className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-violet-300 ring-2 ring-indigo-950 motion-safe:animate-pulse motion-reduce:animate-none"
+                className="absolute right-2.5 top-2 h-1.5 w-1.5 rounded-full bg-sky-300 ring-2 ring-blue-950 motion-safe:animate-pulse motion-reduce:animate-none"
               />
             </button>
 
@@ -550,13 +550,13 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setProfileMenuOpen((open) => !open)}
-                className="group/profile flex items-center gap-3 rounded-2xl border border-violet-200/70 bg-gradient-to-r from-indigo-950/95 via-indigo-900/95 to-violet-900/95 p-1.5 shadow-md shadow-indigo-950/20 transition-all duration-500 hover:-translate-y-0.5 hover:border-violet-300 hover:from-indigo-900 hover:via-violet-900 hover:to-fuchsia-900 hover:shadow-lg hover:shadow-violet-300/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group/profile flex items-center gap-3 rounded-2xl border border-sky-200/70 bg-gradient-to-r from-blue-950/95 via-blue-900/95 to-sky-900/95 p-1.5 shadow-md shadow-blue-950/20 transition-all duration-500 hover:-translate-y-0.5 hover:border-sky-300 hover:from-blue-900 hover:via-sky-900 hover:to-cyan-900 hover:shadow-lg hover:shadow-sky-300/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 aria-label="Ouvrir le menu utilisateur"
                 aria-expanded={profileMenuOpen}
               >
                 <div className="hidden text-right sm:block">
                   <p className="text-xs font-bold text-white">{userName}</p>
-                  <p className="max-w-[180px] truncate text-[11px] text-indigo-200/80">
+                  <p className="max-w-[180px] truncate text-[11px] text-blue-200/80">
                     {userEmail || "Organisateur"}
                   </p>
                 </div>
@@ -567,10 +567,10 @@ export default function DashboardPage() {
                     alt={`Photo de profil de ${userName}`}
                     width={40}
                     height={40}
-                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-indigo-200/70 transition-all duration-300 group-hover/profile:ring-violet-300 group-hover/profile:scale-105 motion-reduce:transition-none"
+                    className="h-10 w-10 rounded-full object-cover shadow-md ring-2 ring-blue-200/70 transition-all duration-300 group-hover/profile:ring-sky-300 group-hover/profile:scale-105 motion-reduce:transition-none"
                   />
                 ) : (
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:scale-105 group-hover/profile:ring-indigo-200 motion-reduce:transition-none">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-cyan-600 text-sm font-black text-white shadow-md ring-2 ring-white transition-all duration-300 group-hover/profile:scale-105 group-hover/profile:ring-blue-200 motion-reduce:transition-none">
                     {userName
                       .trim()
                       .split(/\s+/)
@@ -587,7 +587,7 @@ export default function DashboardPage() {
               </button>
 
               {profileMenuOpen && (
-                <div className="absolute right-0 top-full z-50 mt-3 w-72 origin-top-right overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 shadow-2xl shadow-indigo-950/10 backdrop-blur-xl motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200">
+                <div className="absolute right-0 top-full z-50 mt-3 w-72 origin-top-right overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/95 shadow-2xl shadow-blue-950/10 backdrop-blur-xl motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200">
                   <div className="border-b border-zinc-100 bg-zinc-50 px-4 py-4">
                     <p className="truncate text-sm font-black text-zinc-900">
                       {userName}
@@ -602,9 +602,9 @@ export default function DashboardPage() {
                     <Link
                       href="/profile"
                       onClick={() => setProfileMenuOpen(false)}
-                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-indigo-50 hover:text-indigo-700"
+                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-blue-50 hover:text-blue-700"
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-all duration-300 group-hover:scale-105">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-all duration-300 group-hover:scale-105">
                         👤
                       </span>
                       <span>Mon profil</span>
@@ -643,12 +643,12 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
 
         <section className={["event-studio-shift relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(120deg,#09090b,#17134a,#2e1065,#09090b)] px-6 py-8 shadow-[0_25px_70px_rgba(15,23,42,0.18)] transition-all duration-700 ease-out sm:px-8 lg:px-10 lg:py-9 motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
-          <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl motion-safe:animate-pulse" />
-          <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-violet-600/15 blur-3xl motion-safe:animate-pulse" />
+          <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-blue-600/20 blur-3xl motion-safe:animate-pulse" />
+          <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-sky-600/15 blur-3xl motion-safe:animate-pulse" />
 
           <div className="relative flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Tableau de bord</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300">Tableau de bord</p>
               <h1 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Bonjour {userName} 👋</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">Pilotez vos événements, vos invitations et vos invités depuis un seul espace.</p>
               <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold text-zinc-400">
@@ -661,7 +661,7 @@ export default function DashboardPage() {
             <div className="flex flex-col items-start gap-3">
               {nextEvent && (
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left backdrop-blur-sm">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-300">Prochain rendez-vous</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-300">Prochain rendez-vous</p>
                   <p className="mt-1 max-w-[240px] truncate text-sm font-bold text-white">{nextEvent.name}</p>
                   <p className="mt-1 text-xs text-zinc-400">
                     {getDaysUntil(nextEvent.date) === 0 ? "Aujourd’hui" : getDaysUntil(nextEvent.date) === 1 ? "Demain" : getDaysUntil(nextEvent.date) ? "Dans " + getDaysUntil(nextEvent.date) + " jours" : "Date à définir"}
@@ -669,9 +669,9 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              <Link href="/events/new" className="group relative inline-flex w-fit items-center justify-center gap-2 overflow-hidden rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+              <Link href="/events/new" className="group relative inline-flex w-fit items-center justify-center gap-2 overflow-hidden rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-blue-50 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
                 <span className="absolute inset-y-0 left-[-35%] w-1/4 skew-x-[-18deg] bg-white/60 opacity-0 blur-sm transition-all duration-700 group-hover:left-[115%] group-hover:opacity-100 motion-reduce:transition-none" />
-                <span className="relative text-lg text-indigo-600 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">+</span>
+                <span className="relative text-lg text-blue-600 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">+</span>
                 <span className="relative">Créer un événement</span>
               </Link>
             </div>
@@ -682,7 +682,7 @@ export default function DashboardPage() {
 
         <section className={["mt-10 transition-all duration-700 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
           <div className="mb-5">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Vue générale</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">Vue générale</p>
             <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
             <p className="mt-1 text-sm text-zinc-500">Une vision rapide de votre activité événementielle.</p>
           </div>
@@ -704,10 +704,10 @@ export default function DashboardPage() {
           <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-5 sm:px-7">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">Agenda</p>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">Agenda</p>
                 <h2 className="mt-1 text-xl font-black">Prochain événement</h2>
               </div>
-              {nextEvent && <Link href={"/events/" + nextEvent.id} className="text-xs font-bold text-indigo-600 hover:text-indigo-800">Ouvrir →</Link>}
+              {nextEvent && <Link href={"/events/" + nextEvent.id} className="text-xs font-bold text-blue-600 hover:text-blue-800">Ouvrir →</Link>}
             </div>
 
             {loading ? (
@@ -715,7 +715,7 @@ export default function DashboardPage() {
             ) : nextEvent ? (
               <div className="relative p-6 sm:p-7">
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                  <div className="flex h-24 w-24 shrink-0 flex-col items-center justify-center rounded-3xl bg-indigo-50 text-indigo-700">
+                  <div className="flex h-24 w-24 shrink-0 flex-col items-center justify-center rounded-3xl bg-blue-50 text-blue-700">
                     <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
                     <span className="mt-1 text-3xl font-black">{nextEvent.date ? new Date(nextEvent.date + "T12:00:00").getDate() : "—"}</span>
                   </div>
@@ -737,7 +737,7 @@ export default function DashboardPage() {
                 <div className="mt-7 grid grid-cols-3 gap-3 border-t border-zinc-100 pt-6">
                   <div><p className="text-xs text-zinc-400">Invités</p><p className="mt-1 text-lg font-black">{guests.filter((guest) => guest.event_id === nextEvent.id).length}</p></div>
                   <div><p className="text-xs text-zinc-400">Confirmés</p><p className="mt-1 text-lg font-black text-emerald-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.status === "confirmed").length}</p></div>
-                  <div><p className="text-xs text-zinc-400">Entrées</p><p className="mt-1 text-lg font-black text-indigo-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.checked_in).length}</p></div>
+                  <div><p className="text-xs text-zinc-400">Entrées</p><p className="mt-1 text-lg font-black text-blue-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.checked_in).length}</p></div>
                 </div>
               </div>
             ) : (
@@ -745,14 +745,14 @@ export default function DashboardPage() {
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 text-2xl">+</div>
                 <h3 className="mt-5 text-lg font-black">Aucun événement à venir</h3>
                 <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-500">Créez votre prochain événement pour commencer à construire votre expérience.</p>
-                <Link href="/events/new" className="mt-5 inline-flex rounded-xl bg-zinc-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700">Créer un événement</Link>
+                <Link href="/events/new" className="mt-5 inline-flex rounded-xl bg-zinc-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700">Créer un événement</Link>
               </div>
             )}
           </div>
 
           <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
             <div className="border-b border-zinc-100 px-6 py-5 sm:px-7">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">Suivi</p>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">Suivi</p>
               <h2 className="mt-1 text-xl font-black">Activité récente</h2>
             </div>
 
@@ -787,22 +787,22 @@ export default function DashboardPage() {
         <section className={["mt-12 transition-all duration-700 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Gestion</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">Gestion</p>
               <h2 className="mt-1 text-2xl font-black tracking-tight">Mes événements</h2>
               <p className="mt-1 text-sm text-zinc-500">Retrouvez et pilotez tous vos événements.</p>
             </div>
 
-            {!loading && events.length > 0 && <Link href="/events/new" className="inline-flex w-fit items-center rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">+ Nouvel événement</Link>}
+            {!loading && events.length > 0 && <Link href="/events/new" className="inline-flex w-fit items-center rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">+ Nouvel événement</Link>}
           </div>
 
           {loading ? (
             <div className="grid gap-6 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[2rem] bg-white" />)}</div>
           ) : events.length === 0 ? (
             <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-16 text-center shadow-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-2xl text-indigo-600">+</div>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-blue-600">+</div>
               <h3 className="mt-5 text-xl font-black">Votre espace est prêt</h3>
               <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p>
-              <Link href="/events/new" className="mt-6 inline-flex rounded-xl bg-zinc-950 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-indigo-700">Créer mon premier événement</Link>
+              <Link href="/events/new" className="mt-6 inline-flex rounded-xl bg-zinc-950 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-700">Créer mon premier événement</Link>
             </div>
           ) : (
             <div className="grid gap-6 xl:grid-cols-2">
@@ -817,14 +817,14 @@ export default function DashboardPage() {
                 const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
                 return (
-                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-700 ease-out hover:-translate-y-1.5 hover:border-indigo-200 hover:ring-indigo-100 hover:shadow-2xl hover:shadow-indigo-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
-                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 p-6 text-white sm:p-7">
-                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-violet-500/25 motion-reduce:transition-none" />
-                      <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-violet-500/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
+                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-700 ease-out hover:-translate-y-1.5 hover:border-blue-200 hover:ring-blue-100 hover:shadow-2xl hover:shadow-blue-950/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
+                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-950 p-6 text-white sm:p-7">
+                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-sky-500/25 motion-reduce:transition-none" />
+                      <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
                       <div className="relative flex items-start justify-between gap-4">
                         <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-300">{event.type || "Événement"}</p>
-                          <h3 className="mt-2 truncate text-2xl font-black tracking-tight transition-colors duration-300 group-hover:text-indigo-100">{event.name}</h3>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-300">{event.type || "Événement"}</p>
+                          <h3 className="mt-2 truncate text-2xl font-black tracking-tight transition-colors duration-300 group-hover:text-blue-100">{event.name}</h3>
                         </div>
                         <StatusBadge status={getEventStatus(event)} />
                       </div>
@@ -838,10 +838,10 @@ export default function DashboardPage() {
 
                     <div className="p-6 sm:p-7">
                       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        <div className="group/stat rounded-2xl bg-zinc-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">Invités</p><p className="mt-2 text-2xl font-black">{total}</p></div>
+                        <div className="group/stat rounded-2xl bg-zinc-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">Invités</p><p className="mt-2 text-2xl font-black">{total}</p></div>
                         <div className="group/stat rounded-2xl bg-emerald-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
                         <div className="group/stat rounded-2xl bg-amber-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
-                        <div className="group/stat rounded-2xl bg-indigo-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-indigo-600">Entrées</p><p className="mt-2 text-2xl font-black text-indigo-800">{checkedIn}</p></div>
+                        <div className="group/stat rounded-2xl bg-blue-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-blue-600">Entrées</p><p className="mt-2 text-2xl font-black text-blue-800">{checkedIn}</p></div>
                       </div>
 
                       <div className="mt-7 space-y-5">
@@ -857,14 +857,14 @@ export default function DashboardPage() {
                       <div className="relative mt-6 grid gap-2 sm:grid-cols-2">
                         <Link
                           href={"/events/" + event.id}
-                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                         >
                           <span>Ouvrir</span><span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
                         </Link>
 
                         <Link
                           href={"/events/" + event.id + "/edit"}
-                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-100 hover:shadow-md motion-reduce:transition-none"
+                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-center text-sm font-bold text-blue-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"
                         >
                           <span>Modifier</span><span className="transition-transform duration-300 group-hover:rotate-12">✏️</span>
                         </Link>
@@ -873,7 +873,7 @@ export default function DashboardPage() {
                           <button
                             type="button"
                             onClick={() => setEventMenuOpen((current) => current === event.id ? null : event.id)}
-                            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                             aria-expanded={eventMenuOpen === event.id}
                             aria-haspopup="menu"
                           >
@@ -883,9 +883,9 @@ export default function DashboardPage() {
 
                           {eventMenuOpen === event.id && (
                             <div className="absolute bottom-full left-0 z-30 mb-2 w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-1.5 shadow-2xl shadow-zinc-950/15 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/guests"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-700 transition hover:bg-indigo-50 hover:text-indigo-700">👥 Invités</Link>
-                              <button type="button" onClick={() => { setEventMenuOpen(null); void handleDuplicateEvent(event.id); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-zinc-700 transition hover:bg-violet-50 hover:text-violet-700">📑 Dupliquer</button>
-                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/control"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50">🎛️ Event Control</Link>
+                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/guests"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-700 transition hover:bg-blue-50 hover:text-blue-700">👥 Invités</Link>
+                              <button type="button" onClick={() => { setEventMenuOpen(null); void handleDuplicateEvent(event.id); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-zinc-700 transition hover:bg-sky-50 hover:text-sky-700">📑 Dupliquer</button>
+                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/control"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-blue-50">🎛️ Event Control</Link>
                               <button type="button" onClick={() => { setEventMenuOpen(null); void handleDeleteEvent(event.id, event.name); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50">🗑️ Supprimer</button>
                             </div>
                           )}
