@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import EventNavigation from "../../../components/EventNavigation";
 import { supabase } from "../../../../lib/supabase";
 
 type InvitationStyle =
@@ -844,8 +843,6 @@ export default function InvitationBuilderPage() {
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
-        <EventNavigation eventId={eventId} />
-
         <div className="mb-8">
           <p className="text-sm font-black uppercase tracking-[0.2em] text-indigo-600">
             Invitation Builder
