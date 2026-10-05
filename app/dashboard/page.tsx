@@ -168,6 +168,12 @@ export default function DashboardPage() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [motionReady, setMotionReady] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMotionReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -453,7 +459,7 @@ export default function DashboardPage() {
   }, [guests, events]);
 
   return (
-    <main className="min-h-screen bg-[#f7f8fc] text-zinc-950">
+    <main className="min-h-screen overflow-x-hidden bg-[#f7f8fc] text-zinc-950">
 
       <header className="sticky top-0 z-40 border-b border-zinc-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -569,7 +575,7 @@ export default function DashboardPage() {
 
       <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
 
-        <section className="relative overflow-hidden rounded-[2rem] bg-zinc-950 px-6 py-8 shadow-xl sm:px-8 lg:px-10 lg:py-9">
+        <section className={["relative overflow-hidden rounded-[2rem] bg-zinc-950 px-6 py-8 shadow-xl transition-all duration-700 ease-out sm:px-8 lg:px-10 lg:py-9",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
           <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl" />
           <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-violet-600/15 blur-3xl" />
 
@@ -589,7 +595,7 @@ export default function DashboardPage() {
 
         {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
 
-        <section className="mt-10">
+        <section className={["mt-10 transition-all duration-700 ease-out",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
           <div className="mb-5">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Vue générale</p>
             <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
@@ -608,7 +614,7 @@ export default function DashboardPage() {
           )}
         </section>
 
-        <section className="mt-10 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+        <section className={["mt-10 grid gap-6 transition-all duration-700 ease-out lg:grid-cols-[1.25fr_0.75fr]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
 
           <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-5 sm:px-7">
@@ -693,7 +699,7 @@ export default function DashboardPage() {
 
         </section>
 
-        <section className="mt-12">
+        <section className={["mt-12 transition-all duration-700 ease-out",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Gestion</p>
@@ -726,7 +732,7 @@ export default function DashboardPage() {
                 const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
                 return (
-                  <article key={event.id} className="group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/10">
+                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm transition-all duration-700 ease-out hover:-translate-y-1.5 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-950/10",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
                     <div className="relative border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 p-6 text-white sm:p-7">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
