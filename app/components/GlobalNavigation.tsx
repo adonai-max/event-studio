@@ -18,7 +18,6 @@ export default function GlobalNavigation() {
     pathname === "/dashboard" ||
     pathname.startsWith("/dashboard/") ||
     pathname === "/events" ||
-    pathname.startsWith("/events/") ||
     pathname === "/profile" ||
     pathname.startsWith("/profile/") ||
     pathname === "/settings" ||
