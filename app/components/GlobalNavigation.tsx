@@ -14,20 +14,9 @@ export default function GlobalNavigation() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-  const isEventRoute =
-    pathname === "/events" ||
-    pathname.startsWith("/events/");
-
-  const showNavigation =
-    !isEventRoute &&
-    (pathname === "/dashboard" ||
-      pathname.startsWith("/dashboard/") ||
-      pathname === "/profile" ||
-      pathname.startsWith("/profile/") ||
-      pathname === "/settings" ||
-      pathname.startsWith("/settings/"));
-
-  if (!showNavigation) return null;
+  // La barre globale Event Studio reste visible sur toutes les pages.
+  // Les pages d'événement peuvent conserver en plus leur navigation contextuelle.
+  const showNavigation = true;
 
   return (
     <header className="sticky top-0 z-[100] border-b border-sky-200/70 bg-white/95 shadow-sm backdrop-blur-xl transition-colors dark:border-sky-900/70 dark:bg-slate-950/95">
