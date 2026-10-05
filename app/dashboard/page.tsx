@@ -182,6 +182,7 @@ export default function DashboardPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [motionReady, setMotionReady] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
+  const [eventMenuOpen, setEventMenuOpen] = useState<string | null>(null);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setMotionReady(true));
@@ -818,55 +819,42 @@ export default function DashboardPage() {
                         <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
                       </div>
 
-                      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="relative mt-6 grid gap-2 sm:grid-cols-2">
                         <Link
                           href={"/events/" + event.id}
-                          className="rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                         >
-                          Ouvrir →
-                        </Link>
-
-                        <Link
-                          href={"/events/" + event.id + "/guests"}
-                          className="rounded-xl border border-zinc-200 px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                        >
-                          Invités
+                          <span>Ouvrir</span><span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
                         </Link>
 
                         <Link
                           href={"/events/" + event.id + "/edit"}
-                          className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-700 transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-100"
+                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-100 hover:shadow-md motion-reduce:transition-none"
                         >
-                          ✏️ Modifier
+                          <span>Modifier</span><span className="transition-transform duration-300 group-hover:rotate-12">✏️</span>
                         </Link>
 
-                        <button
-                          type="button"
-                          onClick={() =>
-                            void handleDuplicateEvent(event.id)
-                          }
-                          className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-center text-sm font-bold text-violet-700 transition-all hover:-translate-y-0.5 hover:border-violet-300 hover:bg-violet-100"
-                        >
-                          📑 Dupliquer
-                        </button>
+                        <div className="relative sm:col-span-2">
+                          <button
+                            type="button"
+                            onClick={() => setEventMenuOpen((current) => current === event.id ? null : event.id)}
+                            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                            aria-expanded={eventMenuOpen === event.id}
+                            aria-haspopup="menu"
+                          >
+                            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-white text-xs shadow-sm">•••</span>
+                            <span>Plus d’actions</span>
+                          </button>
 
-                        <Link
-                          href={"/events/" + event.id + "/control"}
-                          className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-center text-sm font-bold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-700 hover:to-violet-700 hover:shadow-lg hover:shadow-indigo-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                        >
-                          <span className="relative">Event Control</span>
-                          <span className="absolute inset-y-0 left-[-35%] w-1/4 skew-x-[-18deg] bg-white/20 blur-sm transition-all duration-700 group-hover:left-[115%] motion-reduce:transition-none" />
-                        </Link>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            void handleDeleteEvent(event.id, event.name)
-                          }
-                          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-red-300 hover:bg-red-100 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                        >
-                          🗑️ Supprimer
-                        </button>
+                          {eventMenuOpen === event.id && (
+                            <div className="absolute bottom-full left-0 z-30 mb-2 w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-1.5 shadow-2xl shadow-zinc-950/15 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/guests"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-700 transition hover:bg-indigo-50 hover:text-indigo-700">👥 Invités</Link>
+                              <button type="button" onClick={() => { setEventMenuOpen(null); void handleDuplicateEvent(event.id); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-zinc-700 transition hover:bg-violet-50 hover:text-violet-700">📑 Dupliquer</button>
+                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/control"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50">🎛️ Event Control</Link>
+                              <button type="button" onClick={() => { setEventMenuOpen(null); void handleDeleteEvent(event.id, event.name); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50">🗑️ Supprimer</button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </article>
