@@ -73,7 +73,7 @@ export default function EventPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-50">
+      <main className="min-h-[calc(100vh-72px)] bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.10),_transparent_30%),#f7f9fc]">
         <div className="mx-auto max-w-5xl px-6 py-16 text-center">
           <p className="text-zinc-500">
             Chargement de l&apos;événement...
@@ -110,16 +110,14 @@ export default function EventPage() {
 
   return (
     <main className="min-h-screen bg-zinc-50">
-      <div className="mx-auto max-w-6xl px-6 py-10 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
-        >
-          ← Retour au Dashboard
-        </button>
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white/90 px-5 py-4 shadow-sm backdrop-blur">
+          <div className="min-w-0"><p className="text-[10px] font-black uppercase tracking-[0.18em] text-sky-600">Espace événement</p><p className="mt-1 truncate text-sm font-bold text-zinc-900">{event.name}</p></div>
+          <button onClick={() => router.push("/dashboard")} className="rounded-xl border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700">← Tableau de bord</button>
+        </div>
 
-        <header className="mt-8">
+        <header className="mt-7">
           <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600">
             {event.type || "Événement"}
           </p>
