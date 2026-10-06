@@ -137,12 +137,13 @@ export default function EventStudioBar() {
             <button
               type="button"
               onClick={() => setProfileMenuOpen((open) => !open)}
-              className="group flex items-center gap-2 rounded-2xl border border-white/20 bg-blue-950/45 p-1.5 shadow-md shadow-blue-950/20 backdrop-blur-md transition-all duration-500 hover:-translate-y-0.5 hover:bg-blue-950/60 motion-reduce:transition-none"
-              aria-label="Ouvrir le profil"
+              className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-blue-950/45 p-1 shadow-md shadow-blue-950/20 backdrop-blur-md transition-all duration-500 hover:-translate-y-0.5 hover:bg-blue-950/60 motion-reduce:transition-none"
+              aria-label={`Profil de ${userName}`}
               aria-expanded={profileMenuOpen}
               aria-haspopup="menu"
+              title={userName}
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/15 text-xs font-black ring-1 ring-white/25">
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white/15 text-xs font-black ring-1 ring-white/25">
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -151,22 +152,9 @@ export default function EventStudioBar() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  "AD"
+                  <span aria-hidden="true">AD</span>
                 )}
               </div>
-
-              <div className="hidden min-w-0 text-left sm:block">
-                <p className="max-w-32 truncate text-xs font-black text-white">
-                  {userName}
-                </p>
-                <p className="max-w-32 truncate text-[10px] text-white/55">
-                  {userEmail || "Profil"}
-                </p>
-              </div>
-
-              <span className="hidden text-white/70 transition-transform duration-300 sm:block">
-                ▾
-              </span>
             </button>
 
             {profileMenuOpen && (
@@ -174,6 +162,15 @@ export default function EventStudioBar() {
                 role="menu"
                 className="absolute right-0 top-full z-[120] mt-2 w-64 overflow-hidden rounded-2xl border border-sky-100 bg-white p-2 text-slate-800 shadow-2xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
               >
+                <div className="border-b border-slate-100 px-3 py-2.5 dark:border-slate-800">
+                  <p className="text-xs font-black text-slate-900 dark:text-white">
+                    {userName}
+                  </p>
+                  <p className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-slate-400">
+                    {userEmail || "Profil"}
+                  </p>
+                </div>
+
                 <Link
                   href="/profile"
                   onClick={() => setProfileMenuOpen(false)}
