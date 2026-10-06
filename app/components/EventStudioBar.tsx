@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import { useTheme } from "../context/ThemeContext";
 
 export default function EventStudioBar() {
