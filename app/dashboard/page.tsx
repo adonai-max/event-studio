@@ -194,6 +194,28 @@ export default function DashboardPage() {
           </div>}
       </section>
 
+      {nextEvent && (() => {
+        const eventGuests = guests.filter(g => g.event_id === nextEvent.id);
+        const pending = eventGuests.filter(g => g.status === "pending").length;
+        const days = getDaysUntil(nextEvent.date);
+        const action = pending > 0
+          ? { label: "Relancer les invitations", href: "/events/" + nextEvent.id + "/guests", detail: pending + " en attente" }
+          : eventGuests.length === 0
+            ? { label: "Ajouter des invités", href: "/events/" + nextEvent.id + "/guests", detail: "Liste vide" }
+            : days !== null && days <= 7
+              ? { label: "Ouvrir Event Control", href: "/events/" + nextEvent.id + "/control", detail: "Préparer l’accueil" }
+              : { label: "Gérer l’événement", href: "/events/" + nextEvent.id, detail: "Tout est sous contrôle" };
+        return <section className="mb-3 overflow-hidden rounded-[18px] border border-sky-100 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)]">
+          <div className="flex flex-col gap-2.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-xs font-black text-sky-700 ring-1 ring-sky-100">✦</div>
+              <div className="min-w-0"><p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Priorité</p><p className="truncate text-[11px] font-bold text-zinc-800">{action.label} <span className="font-medium text-zinc-400">· {action.detail}</span></p></div>
+            </div>
+            <Link href={action.href} className="inline-flex shrink-0 items-center justify-center rounded-xl bg-zinc-950 px-3 py-2 text-[10px] font-black text-white transition hover:bg-sky-700">{action.label} →</Link>
+          </div>
+        </section>;
+      })()}
+
       <section className={`mt-5 grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"} transition-all duration-500`}>
         <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_7px_26px_rgba(15,23,42,0.045)]">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 sm:px-5"><div><p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Agenda</p><h2 className="mt-0.5 text-lg font-black">Prochain événement</h2></div>{nextEvent && <Link href={"/events/" + nextEvent.id} className="text-[11px] font-bold text-sky-700 hover:text-sky-900">Ouvrir →</Link>}</div>
