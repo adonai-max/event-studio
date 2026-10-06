@@ -195,8 +195,9 @@ export default function DashboardPage() {
       }
 
       const metadataName =
-        user.user_metadata?.full_name ||
-        user.user_metadata?.name ||
+        user.user_metadata?.first_name ||
+        user.user_metadata?.full_name?.trim().split(/\\s+/)[0] ||
+        user.user_metadata?.name?.trim().split(/\\s+/)[0] ||
         user.email?.split("@")[0];
 
       if (metadataName) {
