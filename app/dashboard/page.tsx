@@ -125,6 +125,46 @@ export default function DashboardPage() {
     return { id:g.id, title:checked ? "Entrée enregistrée" : confirmed ? "Invitation confirmée" : declined ? "Invitation refusée" : "Invitation en attente", eventName:event?.name || "Événement", date, icon:checked ? "✓" : confirmed ? "✓" : declined ? "×" : "…", tone:checked || confirmed ? "text-emerald-600 bg-emerald-50" : declined ? "text-red-600 bg-red-50" : "text-amber-600 bg-amber-50" };
   }), [guests, events]);
 
+  const attentionItems = useMemo(() => {
+    const items: { title: string; detail: string; href: string; tone: "amber" | "blue" | "emerald" }[] = [];
+    if (!events.length) return items;
+
+    const upcoming = events
+      .filter(e => e.date && new Date(e.date + "T23:59:59") >= new Date())
+      .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    const pendingCount = guests.filter(g => g.status === "pending").length;
+    const zeroGuestEvent = upcoming.find(e => guests.filter(g => g.event_id === e.id).length === 0);
+
+    if (pendingCount > 0) {
+      items.push({
+        title: pendingCount + " invitation" + (pendingCount > 1 ? "s" : "") + " en attente",
+        detail: "Relancez vos invités pour accélérer les confirmations.",
+        href: nextEvent ? "/events/" + nextEvent.id + "/guests" : "/dashboard",
+        tone: "amber",
+      });
+    }
+    if (nextEvent) {
+      const days = getDaysUntil(nextEvent.date);
+      if (days !== null && days <= 7) {
+        items.push({
+          title: days === 0 ? "Votre événement est aujourd’hui" : "Événement dans " + days + " jour" + (days > 1 ? "s" : ""),
+          detail: nextEvent.name,
+          href: "/events/" + nextEvent.id + "/control",
+          tone: "blue",
+        });
+      }
+    }
+    if (zeroGuestEvent && items.length < 3) {
+      items.push({
+        title: "Aucun invité pour « " + zeroGuestEvent.name + " »",
+        detail: "Ajoutez votre première liste d’invités.",
+        href: "/events/" + zeroGuestEvent.id + "/guests",
+        tone: "emerald",
+      });
+    }
+    return items.slice(0, 3);
+  }, [events, guests, nextEvent]);
+
   return <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.06),_transparent_28%),radial-gradient(circle_at_90%_15%,_rgba(14,165,233,0.07),_transparent_25%),#f7f9fc] text-zinc-950">
     <style jsx>{`@keyframes eventStudioShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.event-studio-shift{background-size:200% 200%;animation:eventStudioShift 16s ease-in-out infinite}@media(prefers-reduced-motion:reduce){.event-studio-shift{animation:none}}`}</style>
     <div className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-5 sm:py-5 lg:px-8 lg:py-7">
@@ -176,6 +216,35 @@ export default function DashboardPage() {
           <div className="p-3 sm:p-4">{loading ? <div className="space-y-2.5">{[1,2,3,4].map(i=><div key={i} className="h-10 animate-pulse rounded-xl bg-zinc-100" />)}</div> : recentActivity.length ? <div className="space-y-1">{recentActivity.map(a=><div key={a.id} className="flex items-center gap-2 rounded-xl px-1.5 py-2 transition hover:bg-zinc-50"><div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black ${a.tone}`}>{a.icon}</div><div className="min-w-0 flex-1"><p className="truncate text-[11px] font-bold text-zinc-800">{a.title}</p><p className="truncate text-[10px] text-zinc-400">{a.eventName}</p></div><span className="shrink-0 text-[9px] text-zinc-400">{formatActivityDate(a.date)}</span></div>)}</div> : <div className="py-8 text-center"><p className="text-xs font-bold text-zinc-600">Aucune activité récente</p><p className="mt-1 text-[10px] text-zinc-400">Les actions sur vos invités apparaîtront ici.</p></div>}</div>
         </div>
       </section>
+
+      {attentionItems.length > 0 && <section className="mt-4">
+        <div className="overflow-hidden rounded-[18px] border border-zinc-200/70 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)]">
+          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2.5 sm:px-5">
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Pilotage intelligent</p>
+              <h2 className="mt-0.5 text-sm font-black">À surveiller</h2>
+            </div>
+            <span className="rounded-full bg-zinc-100 px-2 py-1 text-[9px] font-bold text-zinc-500">{attentionItems.length} point{attentionItems.length > 1 ? "s" : ""}</span>
+          </div>
+          <div className="grid gap-1.5 p-2 sm:grid-cols-2 lg:grid-cols-3">
+            {attentionItems.map((item) => {
+              const tone = item.tone === "amber"
+                ? "bg-amber-50 text-amber-700 ring-amber-100"
+                : item.tone === "blue"
+                  ? "bg-sky-50 text-sky-700 ring-sky-100"
+                  : "bg-emerald-50 text-emerald-700 ring-emerald-100";
+              return <Link key={item.title} href={item.href} className="group flex min-w-0 items-center gap-2.5 rounded-xl px-2.5 py-2 transition hover:bg-zinc-50">
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[10px] font-black ring-1 ${tone}`}>!</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[10px] font-black text-zinc-800">{item.title}</span>
+                  <span className="mt-0.5 block truncate text-[9px] text-zinc-400">{item.detail}</span>
+                </span>
+                <span className="shrink-0 text-[11px] font-black text-zinc-300 transition group-hover:text-sky-600">→</span>
+              </Link>;
+            })}
+          </div>
+        </div>
+      </section>}
 
       <section className={`mt-6 transition-all duration-500 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
         <div className="mb-3 flex items-end justify-between gap-3"><div><p className="text-[9px] font-black uppercase tracking-[0.2em] text-sky-700">Gestion</p><h2 className="mt-0.5 text-lg font-black">Mes événements</h2><p className="mt-0.5 text-[11px] text-zinc-400">Retrouvez et pilotez vos événements.</p></div>{!loading&&events.length>0&&<Link href="/events/new" className="hidden rounded-xl border border-zinc-200 bg-white px-3 py-2 text-[11px] font-bold text-zinc-700 shadow-sm transition hover:border-sky-200 hover:text-sky-700 sm:inline-flex">+ Nouvel événement</Link>}</div>
