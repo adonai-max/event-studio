@@ -135,7 +135,7 @@ export default function DashboardPage() {
           <div className="min-w-0">
             <p className="text-[9px] font-black uppercase tracking-[0.22em] text-sky-300">Centre de pilotage</p>
             <h1 className="mt-1.5 text-2xl font-black tracking-tight text-white sm:text-3xl">Bonjour {userName} <span className="text-sky-300">👋</span></h1>
-            <p className="mt-1.5 max-w-xl text-xs leading-5 text-zinc-300 sm:text-sm">Vos événements, vos invités et vos entrées, réunis dans un espace de pilotage simple.</p>
+            <p className="mt-1.5 max-w-xl text-xs leading-5 text-zinc-300 sm:text-sm">Tout ce qui mérite votre attention, en un seul regard.</p>
           </div>
           <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-zinc-950 shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-sky-500 hover:text-white sm:w-auto">+ Créer un événement</Link>
         </div>
