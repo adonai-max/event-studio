@@ -496,13 +496,13 @@ export default function DashboardPage() {
 
       {/* La navigation globale est fournie par le RootLayout. */}
 
-      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
+      <div className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-5 sm:py-5 lg:px-8 lg:py-7">
 
-        <section className={["event-studio-shift relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[linear-gradient(120deg,#09090b,#17134a,#2e1065,#09090b)] px-5 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:px-6 sm:py-7 transition-all duration-500 ease-out sm:px-8 lg:px-10 lg:py-9 motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
-          <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-sky-500/10 blur-3xl motion-safe:animate-pulse" />
-          <div className="absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-sky-600/15 blur-3xl motion-safe:animate-pulse" />
+        <section className={["event-studio-shift relative overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(120deg,#09090b,#17134a,#2e1065,#09090b)] px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:px-6 sm:py-7 lg:px-8 lg:py-8 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
+          <div className="pointer-events-none absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-sky-500/10 blur-3xl motion-safe:animate-pulse" />
+          <div className="pointer-events-none absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-sky-600/15 blur-3xl motion-safe:animate-pulse" />
 
-          <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative flex min-w-0 flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Tableau de bord</p>
               <h1 className="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">Bonjour {userName} 👋</h1>
@@ -514,9 +514,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex flex-col items-start gap-3">
+            <div className="w-full min-w-0 flex flex-col items-start gap-3 lg:w-auto">
               {nextEvent && (
-                <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left backdrop-blur-sm">                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-700">Prochain rendez-vous</p>
+                <div className="w-full max-w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left backdrop-blur-sm sm:max-w-[280px]">                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-700">Prochain rendez-vous</p>
                   <p className="mt-1 max-w-[240px] truncate text-sm font-bold text-white">{nextEvent.name}</p>
                   <p className="mt-1 text-xs text-zinc-400">
                     {getDaysUntil(nextEvent.date) === 0 ? "Aujourd’hui" : getDaysUntil(nextEvent.date) === 1 ? "Demain" : getDaysUntil(nextEvent.date) ? "Dans " + getDaysUntil(nextEvent.date) + " jours" : "Date à définir"}
@@ -524,7 +524,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              <Link href="/events/new" className="group relative inline-flex w-fit items-center justify-center gap-2 overflow-hidden rounded-xl bg-white px-4 py-3 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-sky-600 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+              <Link href="/events/new" className="group relative inline-flex w-full items-center justify-center gap-2 sm:w-fit overflow-hidden rounded-xl bg-white px-4 py-3 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-sky-600 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
                 <span className="absolute inset-y-0 left-[-35%] w-1/4 skew-x-[-18deg] bg-white/60 opacity-0 blur-sm transition-all duration-700 group-hover:left-[115%] group-hover:opacity-100 motion-reduce:transition-none" />
                 <span className="relative text-lg text-blue-950 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">+</span>
                 <span className="relative">Créer un événement</span>
@@ -554,10 +554,10 @@ export default function DashboardPage() {
           )}
         </section>
 
-        <section className={["mt-10 grid gap-6 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[1.25fr_0.75fr]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
+        <section className={["mt-7 grid gap-3 sm:gap-4 lg:mt-8 lg:grid lg:gap-5 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
 
           <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 sm:px-5">
+            <div className="flex min-w-0 items-center justify-between gap-3 border-b border-zinc-100 px-3 py-3 sm:px-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Agenda</p>
                 <h2 className="mt-1 text-xl font-black">Prochain événement</h2>
@@ -569,7 +569,7 @@ export default function DashboardPage() {
               <div className="p-7"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div>
             ) : nextEvent ? (
               <div className="relative p-4 sm:p-5">
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-3xl bg-gradient-to-br from-sky-600 to-blue-700 text-white">
                     <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
                     <span className="mt-1 text-2xl font-black">{nextEvent.date ? new Date(nextEvent.date + "T12:00:00").getDate() : "—"}</span>
@@ -581,7 +581,7 @@ export default function DashboardPage() {
                       {nextEvent.type && <span className="text-xs font-medium text-zinc-400">{nextEvent.type}</span>}
                     </div>
                     <h3 className="mt-2 truncate text-xl font-black">{nextEvent.name}</h3>
-                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-500">
+                    <div className="mt-3 flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-xs text-zinc-500 sm:text-sm">
                       <span>📅 {formatDate(nextEvent.date)}</span>
                       {nextEvent.time && <span>🕐 {nextEvent.time}</span>}
                       {nextEvent.location && <span className="truncate">📍 {nextEvent.location}</span>}
@@ -660,7 +660,7 @@ export default function DashboardPage() {
               <Link href="/events/new" className="mt-6 inline-flex rounded-xl bg-zinc-950 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-950">Créer mon premier événement</Link>
             </div>
           ) : (
-            <div className="grid gap-6 xl:grid-cols-2">
+            <div className="grid min-w-0 gap-4 xl:grid-cols-2">
               {events.map((event) => {
                 const eventGuests = guests.filter((guest) => guest.event_id === event.id);
                 const total = eventGuests.length;
@@ -676,7 +676,7 @@ export default function DashboardPage() {
                     <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-700 p-4 text-white sm:p-5">
                       <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-sky-500/15 motion-reduce:transition-none" />
                       <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-sky-400/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
-                      <div className="relative flex items-start justify-between gap-4">
+                      <div className="relative flex min-w-0 items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-700">{event.type || "Événement"}</p>
                           <h3 className="mt-2 truncate text-2xl font-black tracking-tight transition-colors duration-300 group-hover:text-sky-700">{event.name}</h3>
@@ -684,7 +684,7 @@ export default function DashboardPage() {
                         <StatusBadge status={getEventStatus(event)} />
                       </div>
 
-                      <div className="relative mt-4 flex flex-wrap gap-2 text-xs text-zinc-300">
+                      <div className="relative mt-4 flex min-w-0 flex-wrap gap-2 text-xs text-zinc-300">
                         <span className="rounded-xl bg-white/10 px-3 py-2">📅 {formatShortDate(event.date)}</span>
                         {event.time && <span className="rounded-xl bg-white/10 px-3 py-2">🕐 {event.time}</span>}
                         {event.location && <span className="max-w-full truncate rounded-xl bg-white/10 px-3 py-2">📍 {event.location}</span>}
@@ -709,7 +709,7 @@ export default function DashboardPage() {
                         <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
                       </div>
 
-                      <div className="relative mt-5 grid gap-2 sm:grid-cols-2">
+                      <div className="relative mt-4 grid gap-2 sm:grid-cols-2">
                         <Link
                           href={"/events/" + event.id}
                           className="group inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-blue-50 hover:text-blue-900 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
