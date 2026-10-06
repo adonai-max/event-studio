@@ -27,11 +27,7 @@ function getSystemTheme(): "light" | "dark" {
     : "light";
 }
 
-function getInitialTheme(): Theme {
-  if (typeof window === "undefined") {
-    return "system";
-  }
-
+function getSavedTheme(): Theme {
   const savedTheme = window.localStorage.getItem(THEME_KEY);
 
   if (
@@ -60,17 +56,20 @@ export function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  // Keep the first render identical on server and client.
+  const [theme, setThemeState] = useState<Theme>("system");
 
   useEffect(() => {
-    applyTheme(theme);
+    const savedTheme = getSavedTheme();
+    setThemeState(savedTheme);
+    applyTheme(savedTheme);
 
     const mediaQuery = window.matchMedia(
       "(prefers-color-scheme: dark)",
     );
 
     function handleSystemThemeChange() {
-      if (theme === "system") {
+      if (savedTheme === "system") {
         applyTheme("system");
       }
     }
@@ -78,11 +77,12 @@ export function ThemeProvider({
     mediaQuery.addEventListener("change", handleSystemThemeChange);
 
     return () => {
-      mediaQuery.removeEventListener(
-        "change",
-        handleSystemThemeChange,
-      );
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
     };
+  }, []);
+
+  useEffect(() => {
+    applyTheme(theme);
   }, [theme]);
 
   function setTheme(nextTheme: Theme) {
