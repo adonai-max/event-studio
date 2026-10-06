@@ -49,7 +49,7 @@ export default function EventStudioBar() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-16 z-[90] overflow-visible border-b border-sky-400/30 bg-gradient-to-r from-sky-300 via-sky-600 to-blue-700 text-white shadow-[0_10px_30px_rgba(14,116,144,0.18)]">
+    <header className="sticky top-0 z-[90] overflow-visible border-b border-sky-400/30 bg-gradient-to-r from-sky-300 via-sky-600 to-blue-700 text-white shadow-[0_10px_30px_rgba(14,116,144,0.18)]">
       <style jsx>{`
         @keyframes eventStudioBarShift {
           0%, 100% { background-position: 0% 50%; }
