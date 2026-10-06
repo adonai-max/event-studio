@@ -198,13 +198,41 @@ export default function DashboardPage() {
         const eventGuests = guests.filter(g => g.event_id === nextEvent.id);
         const pending = eventGuests.filter(g => g.status === "pending").length;
         const days = getDaysUntil(nextEvent.date);
-        const action = pending > 0
-          ? { label: "Relancer les invitations", href: "/events/" + nextEvent.id + "/guests", detail: pending + " en attente" }
-          : eventGuests.length === 0
-            ? { label: "Ajouter des invités", href: "/events/" + nextEvent.id + "/guests", detail: "Liste vide" }
-            : days !== null && days <= 7
-              ? { label: "Ouvrir Event Control", href: "/events/" + nextEvent.id + "/control", detail: "Préparer l’accueil" }
-              : { label: "Gérer l’événement", href: "/events/" + nextEvent.id, detail: "Tout est sous contrôle" };
+        const confirmed = eventGuests.filter(g => g.status === "confirmed").length;
+        const checked = eventGuests.filter(g => g.checked_in).length;
+        const confirmationRate = eventGuests.length ? Math.round((confirmed / eventGuests.length) * 100) : 0;
+        const checkInRate = confirmed ? Math.round((checked / confirmed) * 100) : 0;
+        let action;
+
+        if (pending > 0) {
+          action = {
+            label: "Relancer les invitations",
+            href: "/events/" + nextEvent.id + "/guests",
+            detail: pending + " en attente",
+          };
+        } else if (eventGuests.length === 0) {
+          action = {
+            label: "Ajouter des invités",
+            href: "/events/" + nextEvent.id + "/guests",
+            detail: "Liste vide",
+          };
+        } else if (days !== null && days <= 7) {
+          action = {
+            label: "Ouvrir Event Control",
+            href: "/events/" + nextEvent.id + "/control",
+            detail: days === 0
+              ? "Événement aujourd’hui"
+              : "J-" + days,
+          };
+        } else {
+          action = {
+            label: "Gérer l’événement",
+            href: "/events/" + nextEvent.id,
+            detail: days !== null
+              ? "J-" + days + " · " + confirmationRate + "% confirmés"
+              : "Tout est sous contrôle",
+          };
+        }
         return <section className="mb-3 overflow-hidden rounded-[18px] border border-sky-100 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)]">
           <div className="flex flex-col gap-2.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div className="flex min-w-0 items-center gap-3">
@@ -239,7 +267,35 @@ export default function DashboardPage() {
                   <span className="text-[9px] font-black uppercase tracking-[0.14em] text-zinc-400">Préparation</span>
                   <span className={`text-[10px] font-black ${readiness >= 80 ? "text-emerald-600" : readiness >= 50 ? "text-amber-600" : "text-zinc-500"}`}>{readiness}%</span>
                 </div>
-                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200"><div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600" style={{width: readiness + "%"}} /></div>
+
+                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200">
+                  <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600" style={{width: readiness + "%"}} />
+                </div>
+
+                <div className="mt-2 grid grid-cols-3 gap-1.5">
+                  <div className="rounded-lg border border-zinc-100 bg-white px-2 py-1.5">
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400">Invités</p>
+                    <p className="mt-0.5 text-sm font-black text-zinc-800">{eventGuests.length}</p>
+                  </div>
+
+                  <div className="rounded-lg border border-zinc-100 bg-white px-2 py-1.5">
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400">Confirmés</p>
+                    <p className="mt-0.5 text-sm font-black text-emerald-600">{confirmed}</p>
+                  </div>
+
+                  <div className="rounded-lg border border-zinc-100 bg-white px-2 py-1.5">
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400">Entrées</p>
+                    <p className="mt-0.5 text-sm font-black text-sky-600">{checked}</p>
+                  </div>
+                </div>
+
+                <div className="mt-2 flex items-center justify-between rounded-lg border border-zinc-100 bg-white px-2.5 py-2">
+                  <span className="text-[8px] font-black uppercase tracking-[0.12em] text-zinc-400">État</span>
+                  <span className={`inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.1em] ${readiness >= 80 ? "text-emerald-600" : readiness >= 50 ? "text-amber-600" : "text-zinc-500"}`}>
+                    <span>{readiness >= 80 ? "✓" : "○"}</span>
+                    {readiness >= 80 ? "Prêt" : readiness >= 50 ? "À surveiller" : "En préparation"}
+                  </span>
+                </div>
               </div>;
             })()}
             <Link href={"/events/" + nextEvent.id} className="mt-4 inline-flex rounded-xl bg-zinc-950 px-3.5 py-2.5 text-[11px] font-bold text-white transition hover:bg-sky-700">Gérer l’événement →</Link>
@@ -287,11 +343,11 @@ export default function DashboardPage() {
         !events.length ? <div className="rounded-[20px] border border-dashed border-zinc-300 bg-white px-5 py-12 text-center shadow-sm"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-xl text-sky-700">+</div><h3 className="mt-3 text-base font-black">Votre espace est prêt</h3><p className="mx-auto mt-1.5 max-w-md text-xs leading-5 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p><Link href="/events/new" className="mt-4 inline-flex rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white">Créer mon premier événement</Link></div> :
         <div className="grid min-w-0 gap-2.5 xl:grid-cols-2">{events.map((event,index) => {
           const eventGuests=guests.filter(g=>g.event_id===event.id), total=eventGuests.length, confirmed=eventGuests.filter(g=>g.status==="confirmed").length, pending=eventGuests.filter(g=>g.status==="pending").length, checkedIn=eventGuests.filter(g=>g.checked_in).length, declined=eventGuests.filter(g=>g.status==="declined").length;
-          const confirmationRate=total?Math.round(confirmed/total*100):0, checkInRate=confirmed?Math.round(checkedIn/confirmed*100):0;
+          const confirmationRate=total?Math.round(confirmed/total*100):0, checkInRate=confirmed?Math.round(checkedIn/confirmed*100):0, eventDays=getDaysUntil(event.date);
           return <article key={event.id} style={{transitionDelay:`${Math.min(index,5)*60}ms`}} className={`group overflow-hidden rounded-[18px] border border-zinc-200/70 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)] transition duration-500 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-500/5 ${motionReady?"translate-y-0 opacity-100":"translate-y-3 opacity-0"}`}>
             <div className="flex min-w-0 items-center gap-3 border-b border-zinc-100 px-3.5 py-3 sm:px-4">
               <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl bg-zinc-950 text-white"><span className="text-[7px] font-bold uppercase text-sky-300">{event.date?new Intl.DateTimeFormat("fr-FR",{month:"short"}).format(new Date(event.date+"T12:00:00")):"—"}</span><span className="text-sm font-black">{event.date?new Date(event.date+"T12:00:00").getDate():"—"}</span></div>
-              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(event)} />{event.type&&<span className="text-[9px] font-semibold text-zinc-400">{event.type}</span>}</div><h3 className="mt-1 truncate text-sm font-black text-zinc-900">{event.name}</h3><p className="mt-0.5 truncate text-[10px] text-zinc-400">{event.location||formatDate(event.date)}</p></div>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(event)} />{event.type&&<span className="text-[9px] font-semibold text-zinc-400">{event.type}</span>}</div><h3 className="mt-1 truncate text-sm font-black text-zinc-900">{event.name}</h3><p className="mt-0.5 truncate text-[10px] text-zinc-400">{event.location ? event.location : formatDate(event.date)}</p>{eventDays !== null && <span className={`mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[8px] font-black ${eventDays <= 40 ? "bg-red-50 text-red-600" : "bg-sky-50 text-sky-600"}`}>{eventDays === 0 ? "AUJOURD’HUI" : "J-" + eventDays}</span>}</div>
               <Link href={"/events/"+event.id} className="hidden shrink-0 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-sky-700 transition hover:bg-sky-50 sm:inline-flex">Ouvrir →</Link>
             </div>
             <div className="px-3.5 py-3 sm:px-4">
