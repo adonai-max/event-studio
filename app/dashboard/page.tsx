@@ -5,166 +5,58 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
 type EventItem = {
-  id: string;
-  name: string;
-  type: string | null;
-  date: string | null;
-  time: string | null;
-  location: string | null;
-  description: string | null;
-  created_at: string;
+  id: string; name: string; type: string | null; date: string | null; time: string | null;
+  location: string | null; description: string | null; created_at: string;
 };
-
 type GuestItem = {
-  id: string;
-  event_id: string;
-  status: "pending" | "confirmed" | "declined";
-  checked_in: boolean;
-  created_at: string | null;
-  updated_at: string | null;
+  id: string; event_id: string; status: "pending" | "confirmed" | "declined";
+  checked_in: boolean; created_at: string | null; updated_at: string | null;
 };
-
-type EventStatus = {
-  label: string;
-  tone: "gray" | "blue" | "green" | "purple";
-};
+type EventStatus = { label: string; tone: "gray" | "blue" | "green" | "purple" };
 
 function getEventStatus(event: EventItem): EventStatus {
   if (!event.date) return { label: "Brouillon", tone: "gray" };
-
-  const eventDate = new Date(event.date + "T23:59:59");
-  const now = new Date();
-
+  const eventDate = new Date(event.date + "T23:59:59"), now = new Date();
   if (eventDate < now) return { label: "Terminé", tone: "purple" };
-
-  const diff = eventDate.getTime() - now.getTime();
-  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-  if (days <= 7) return { label: "Actif", tone: "green" };
-
-  return { label: "Programmé", tone: "blue" };
+  return { label: Math.ceil((eventDate.getTime() - now.getTime()) / 86400000) <= 7 ? "Actif" : "Programmé",
+    tone: Math.ceil((eventDate.getTime() - now.getTime()) / 86400000) <= 7 ? "green" : "blue" };
 }
-
 function formatDate(date: string | null) {
   if (!date) return "Date à définir";
-
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(date + "T12:00:00"));
+  return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(new Date(date + "T12:00:00"));
 }
-
 function formatShortDate(date: string | null) {
   if (!date) return "—";
-
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "short",
-  }).format(new Date(date + "T12:00:00"));
+  return new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "short" }).format(new Date(date + "T12:00:00"));
 }
-
 function getDaysUntil(date: string | null) {
   if (!date) return null;
-
-  const target = new Date(date + "T23:59:59");
-  const now = new Date();
-  const diff = target.getTime() - now.getTime();
-
-  if (diff < 0) return 0;
-
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  const diff = new Date(date + "T23:59:59").getTime() - Date.now();
+  return diff < 0 ? 0 : Math.ceil(diff / 86400000);
 }
-
 function formatActivityDate(date: string | null) {
   if (!date) return "";
-
-  const parsed = new Date(date);
-  const diff = Date.now() - parsed.getTime();
-
-  if (diff < 60 * 1000) return "À l’instant";
-  if (diff < 60 * 60 * 1000) return "Il y a " + Math.floor(diff / (60 * 1000)) + " min";
-  if (diff < 24 * 60 * 60 * 1000) return "Il y a " + Math.floor(diff / (60 * 60 * 1000)) + " h";
-
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "numeric",
-    month: "short",
-  }).format(parsed);
+  const diff = Date.now() - new Date(date).getTime();
+  if (diff < 60000) return "À l’instant";
+  if (diff < 3600000) return "Il y a " + Math.floor(diff / 60000) + " min";
+  if (diff < 86400000) return "Il y a " + Math.floor(diff / 3600000) + " h";
+  return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(date));
 }
-
 function StatusBadge({ status }: { status: EventStatus }) {
-  const styles = {
-    gray: "border-zinc-200 bg-zinc-100 text-zinc-600",
-    blue: "border-sky-200 bg-sky-50 text-sky-800",
-    green: "border-emerald-100 bg-emerald-50 text-emerald-700",
-    purple: "border-purple-100 bg-purple-50 text-purple-700",
-  };
-
-  const dots = {
-    gray: "bg-zinc-400",
-    blue: "bg-sky-600",
-    green: "bg-emerald-500",
-    purple: "bg-purple-500",
-  };
-
-  return (
-    <span className={["inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold", styles[status.tone]].join(" ")}>
-      <span className={["h-1.5 w-1.5 rounded-full", dots[status.tone], status.tone === "green" ? "animate-pulse" : ""].join(" ")} />
-      {status.label}
-    </span>
-  );
+  const styles = { gray: "bg-zinc-100 text-zinc-600", blue: "bg-sky-50 text-sky-700", green: "bg-emerald-50 text-emerald-700", purple: "bg-violet-50 text-violet-700" };
+  const dots = { gray: "bg-zinc-400", blue: "bg-sky-500", green: "bg-emerald-500", purple: "bg-violet-500" };
+  return <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold ${styles[status.tone]}`}><span className={`h-1.5 w-1.5 rounded-full ${dots[status.tone]} ${status.tone === "green" ? "animate-pulse" : ""}`} />{status.label}</span>;
 }
-
-function StatCard({
-  icon,
-  label,
-  value,
-  detail,
-}: {
-  icon: string;
-  label: string;
-  value: number;
-  detail: string;
-}) {
-  return (
-    <div className="group relative overflow-hidden rounded-[14px] border border-zinc-200/70 bg-white px-3 py-2.5 shadow-[0_3px_14px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md hover:shadow-sky-500/10">
-      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-600/5 blur-2xl transition-all duration-500 group-hover:bg-sky-500/10" />
-
-      <div className="relative flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-zinc-400">
-            {label}
-          </p>
-
-          <p className="mt-1 text-lg font-black tracking-tight text-zinc-950 sm:text-xl">
-            {value}
-          </p>
-
-          <p className="mt-0.5 truncate text-[10px] font-medium text-zinc-400">
-            {detail}
-          </p>
-        </div>
-
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sm font-black text-sky-700 ring-1 ring-sky-100 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-sky-500/20">
-          {icon}
-        </div>
-      </div>
+function StatCard({ icon, label, value, detail }: { icon: string; label: string; value: number; detail: string }) {
+  return <div className="group rounded-2xl border border-zinc-200/70 bg-white/90 p-3 shadow-[0_4px_18px_rgba(15,23,42,0.035)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-500/5">
+    <div className="flex items-center gap-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sm font-black text-sky-700 ring-1 ring-sky-100">{icon}</div>
+      <div className="min-w-0"><p className="truncate text-[9px] font-bold uppercase tracking-[0.14em] text-zinc-400">{label}</p><p className="mt-0.5 text-xl font-black tracking-tight text-zinc-950">{value}</p><p className="truncate text-[10px] text-zinc-400">{detail}</p></div>
     </div>
-  );
+  </div>;
 }
-
 function ProgressBar({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between text-xs">
-        <span className="font-medium text-zinc-500">{label}</span>
-        <span className="font-bold text-zinc-800">{value}%</span>
-      </div>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-zinc-100">
-        <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-1000 ease-out" style={{ width: value + "%" }} />
-      </div>
-    </div>
-  );
+  return <div><div className="flex justify-between text-[11px]"><span className="font-medium text-zinc-500">{label}</span><span className="font-bold text-zinc-800">{value}%</span></div><div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-1000" style={{ width: value + "%" }} /></div></div>;
 }
 
 export default function DashboardPage() {
@@ -176,577 +68,139 @@ export default function DashboardPage() {
   const [motionReady, setMotionReady] = useState(false);
   const [eventMenuOpen, setEventMenuOpen] = useState<string | null>(null);
 
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setMotionReady(true));
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
+  useEffect(() => { const frame = requestAnimationFrame(() => setMotionReady(true)); return () => cancelAnimationFrame(frame); }, []);
   useEffect(() => {
     const loadDashboard = async () => {
-      setLoading(true);
-      setErrorMessage("");
-
+      setLoading(true); setErrorMessage("");
       const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        setErrorMessage("Vous devez être connecté pour voir votre Dashboard.");
-        setLoading(false);
-        return;
-      }
-
-      const metadataName =
-        user.user_metadata?.first_name ||
-        user.user_metadata?.full_name?.trim().split(/\\s+/)[0] ||
-        user.user_metadata?.name?.trim().split(/\\s+/)[0] ||
-        user.email?.split("@")[0];
-
-      if (metadataName) {
-        setUserName(metadataName);
-      }
-
-      const { data: eventsData, error: eventsError } = await supabase
-        .from("events")
-        .select("id, name, type, date, time, location, description, created_at")
-        .eq("owner_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (eventsError) {
-        console.error("❌ Erreur chargement événements Dashboard :", eventsError);
-        setErrorMessage("Impossible de charger vos événements.");
-        setLoading(false);
-        return;
-      }
-
-      const loadedEvents = eventsData ?? [];
-      setEvents(loadedEvents);
-
-      if (loadedEvents.length === 0) {
-        setGuests([]);
-        setLoading(false);
-        return;
-      }
-
-      const eventIds = loadedEvents.map((event) => event.id);
-
-      const { data: guestsData, error: guestsError } = await supabase
-        .from("guests")
-        .select("id, event_id, status, checked_in, created_at, updated_at")
-        .in("event_id", eventIds)
-        .order("updated_at", { ascending: false });
-
-      if (guestsError) {
-        console.error("❌ Erreur chargement invités Dashboard :", guestsError);
-        setErrorMessage("Les événements sont chargés, mais les statistiques des invités sont indisponibles.");
-        setGuests([]);
-        setLoading(false);
-        return;
-      }
-      setGuests(guestsData ?? []);
-      setLoading(false);
+      if (userError || !user) { setErrorMessage("Vous devez être connecté pour voir votre Dashboard."); setLoading(false); return; }
+      const metadataName = user.user_metadata?.first_name || user.user_metadata?.full_name?.trim().split(/\s+/)[0] || user.user_metadata?.name?.trim().split(/\s+/)[0] || user.email?.split("@")[0];
+      if (metadataName) setUserName(metadataName);
+      const { data: eventsData, error: eventsError } = await supabase.from("events").select("id, name, type, date, time, location, description, created_at").eq("owner_id", user.id).order("created_at", { ascending: false });
+      if (eventsError) { console.error(eventsError); setErrorMessage("Impossible de charger vos événements."); setLoading(false); return; }
+      const loadedEvents = eventsData ?? []; setEvents(loadedEvents);
+      if (!loadedEvents.length) { setGuests([]); setLoading(false); return; }
+      const { data: guestsData, error: guestsError } = await supabase.from("guests").select("id, event_id, status, checked_in, created_at, updated_at").in("event_id", loadedEvents.map(e => e.id)).order("updated_at", { ascending: false });
+      if (guestsError) { console.error(guestsError); setErrorMessage("Les événements sont chargés, mais les statistiques des invités sont indisponibles."); setGuests([]); setLoading(false); return; }
+      setGuests(guestsData ?? []); setLoading(false);
     };
-
     void loadDashboard();
   }, []);
 
   async function handleDuplicateEvent(eventId: string) {
     setErrorMessage("");
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      setErrorMessage(
-        "Votre session a expiré. Veuillez vous reconnecter.",
-      );
-      return;
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) { setErrorMessage("Votre session a expiré. Veuillez vous reconnecter."); return; }
+    const { data: originalEvent, error: eventError } = await supabase.from("events").select("name, type, date, time, location, description, owner_id").eq("id", eventId).eq("owner_id", user.id).single();
+    if (eventError || !originalEvent) { setErrorMessage("Impossible de récupérer l’événement à dupliquer."); return; }
+    const { data: duplicatedEvent, error: duplicateError } = await supabase.from("events").insert({ owner_id: user.id, name: originalEvent.name + " — Copie", type: originalEvent.type, date: originalEvent.date, time: originalEvent.time, location: originalEvent.location, description: originalEvent.description }).select("id, name, type, date, time, location, description, created_at").single();
+    if (duplicateError || !duplicatedEvent) { setErrorMessage("Impossible de créer la copie de l’événement."); return; }
+    const { data: originalGuests, error: guestsError } = await supabase.from("guests").select("type, first_name_1, last_name_1, first_name_2, last_name_2, whatsapp, status, slug").eq("event_id", eventId);
+    if (guestsError) { setEvents(c => [duplicatedEvent, ...c]); setErrorMessage("Événement dupliqué, mais les invités n’ont pas pu être copiés."); return; }
+    if (originalGuests?.length) {
+      const duplicatedGuests = originalGuests.map(guest => ({ event_id: duplicatedEvent.id, type: guest.type, first_name_1: guest.first_name_1, last_name_1: guest.last_name_1, first_name_2: guest.first_name_2, last_name_2: guest.last_name_2, whatsapp: guest.whatsapp, status: "pending", slug: guest.slug + "-copy-" + Math.random().toString(36).slice(2, 8), checked_in: false, checked_in_at: null }));
+      const { error } = await supabase.from("guests").insert(duplicatedGuests);
+      if (error) { setEvents(c => [duplicatedEvent, ...c]); setErrorMessage("Événement dupliqué, mais les invités n’ont pas pu être copiés."); return; }
     }
-
-    const { data: originalEvent, error: eventError } = await supabase
-      .from("events")
-      .select(
-        "name, type, date, time, location, description, owner_id",
-      )
-      .eq("id", eventId)
-      .eq("owner_id", user.id)
-      .single();
-
-    if (eventError || !originalEvent) {
-      setErrorMessage(
-        "Impossible de récupérer l&apos;événement à dupliquer.",
-      );
-      return;
-    }
-
-    const { data: duplicatedEvent, error: duplicateError } =
-      await supabase
-        .from("events")
-        .insert({
-          owner_id: user.id,
-          name: originalEvent.name + " — Copie",
-          type: originalEvent.type,
-          date: originalEvent.date,
-          time: originalEvent.time,
-          location: originalEvent.location,
-          description: originalEvent.description,
-        })
-        .select(
-          "id, name, type, date, time, location, description, created_at",
-        )
-        .single();
-
-    if (duplicateError || !duplicatedEvent) {
-      console.error(
-        "Erreur duplication événement:",
-        duplicateError,
-      );
-      setErrorMessage(
-        "Impossible de créer la copie de l&apos;événement.",
-      );
-      return;
-    }
-
-    const { data: originalGuests, error: guestsError } =
-      await supabase
-        .from("guests")
-        .select(
-          "type, first_name_1, last_name_1, first_name_2, last_name_2, whatsapp, status, slug",
-        )
-        .eq("event_id", eventId);
-
-    if (guestsError) {
-      console.error(
-        "Erreur récupération invités à dupliquer:",
-        guestsError,
-      );
-      setEvents((current) => [duplicatedEvent, ...current]);
-      setErrorMessage(
-        "Événement dupliqué, mais les invités n&apos;ont pas pu être copiés.",
-      );
-      return;
-    }
-
-    if (originalGuests && originalGuests.length > 0) {
-      const duplicatedGuests = originalGuests.map((guest) => ({
-        event_id: duplicatedEvent.id,
-        type: guest.type,
-        first_name_1: guest.first_name_1,
-        last_name_1: guest.last_name_1,
-        first_name_2: guest.first_name_2,
-        last_name_2: guest.last_name_2,
-        whatsapp: guest.whatsapp,
-        status: "pending",
-        slug:
-          guest.slug +
-          "-copy-" +
-          Math.random().toString(36).slice(2, 8),
-        checked_in: false,
-        checked_in_at: null,
-      }));
-
-      const { error: insertGuestsError } = await supabase
-        .from("guests")
-        .insert(duplicatedGuests);
-
-      if (insertGuestsError) {
-        console.error(
-          "Erreur création invités dupliqués:",
-          insertGuestsError,
-        );
-        setEvents((current) => [duplicatedEvent, ...current]);
-        setErrorMessage(
-          "Événement dupliqué, mais les invités n&apos;ont pas pu être copiés.",
-        );
-        return;
-      }
-    }
-
-    setEvents((current) => [duplicatedEvent, ...current]);
+    setEvents(c => [duplicatedEvent, ...c]);
   }
-
   async function handleDeleteEvent(eventId: string, eventName: string) {
-    const confirmed = window.confirm(
-      'Supprimer l&apos;événement "' + eventName + '" ? Cette action est irréversible.',
-    );
-
-    if (!confirmed) return;
-
+    if (!window.confirm('Supprimer l’événement "' + eventName + '" ? Cette action est irréversible.')) return;
     setErrorMessage("");
-
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      setErrorMessage(
-        "Votre session a expiré. Veuillez vous reconnecter.",
-      );
-      return;
-    }
-
-    const { error } = await supabase
-      .from("events")
-      .delete()
-      .eq("id", eventId)
-      .eq("owner_id", user.id);
-
-    if (error) {
-      console.error("Erreur suppression événement:", error);
-      setErrorMessage(
-        "Impossible de supprimer cet événement. Veuillez réessayer.",
-      );
-      return;
-    }
-
-    setEvents((current) =>
-      current.filter((item) => item.id !== eventId),
-    );
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) { setErrorMessage("Votre session a expiré. Veuillez vous reconnecter."); return; }
+    const { error } = await supabase.from("events").delete().eq("id", eventId).eq("owner_id", user.id);
+    if (error) { setErrorMessage("Impossible de supprimer cet événement. Veuillez réessayer."); return; }
+    setEvents(c => c.filter(item => item.id !== eventId));
   }
 
   const globalStats = useMemo(() => {
-    const total = guests.length;
-    const confirmed = guests.filter((guest) => guest.status === "confirmed").length;
-    const checkedIn = guests.filter((guest) => guest.checked_in).length;
-    const confirmationRate = total > 0 ? Math.round((confirmed / total) * 100) : 0;
-    const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
-
-    return { total, confirmed, checkedIn, confirmationRate, checkInRate };
+    const total = guests.length, confirmed = guests.filter(g => g.status === "confirmed").length, checkedIn = guests.filter(g => g.checked_in).length;
+    return { total, confirmed, checkedIn, confirmationRate: total ? Math.round(confirmed / total * 100) : 0, checkInRate: confirmed ? Math.round(checkedIn / confirmed * 100) : 0 };
   }, [guests]);
+  const nextEvent = useMemo(() => events.filter(e => !e.date || new Date(e.date + "T23:59:59") >= new Date()).sort((a,b) => !a.date ? 1 : !b.date ? -1 : a.date.localeCompare(b.date))[0] ?? null, [events]);
+  const recentActivity = useMemo(() => guests.filter(g => g.updated_at || g.created_at).slice(0, 5).map(g => {
+    const event = events.find(e => e.id === g.event_id); const date = g.updated_at || g.created_at;
+    const checked = g.checked_in, confirmed = g.status === "confirmed", declined = g.status === "declined";
+    return { id:g.id, title:checked ? "Entrée enregistrée" : confirmed ? "Invitation confirmée" : declined ? "Invitation refusée" : "Invitation en attente", eventName:event?.name || "Événement", date, icon:checked ? "✓" : confirmed ? "✓" : declined ? "×" : "…", tone:checked || confirmed ? "text-emerald-600 bg-emerald-50" : declined ? "text-red-600 bg-red-50" : "text-amber-600 bg-amber-50" };
+  }), [guests, events]);
 
-  const nextEvent = useMemo(() => {
-    const now = new Date();
+  return <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.06),_transparent_28%),radial-gradient(circle_at_90%_15%,_rgba(14,165,233,0.07),_transparent_25%),#f7f9fc] text-zinc-950">
+    <style jsx>{`@keyframes eventStudioShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.event-studio-shift{background-size:200% 200%;animation:eventStudioShift 16s ease-in-out infinite}@media(prefers-reduced-motion:reduce){.event-studio-shift{animation:none}}`}</style>
+    <div className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-5 sm:py-5 lg:px-8 lg:py-7">
 
-    return events
-      .filter((event) => !event.date || new Date(event.date + "T23:59:59") >= now)
-      .sort((a, b) => {
-        if (!a.date) return 1;
-        if (!b.date) return -1;
-        return a.date.localeCompare(b.date);
-      })[0] ?? null;
-  }, [events]);
-
-  const recentActivity = useMemo(() => {
-    return guests
-      .filter((guest) => guest.updated_at || guest.created_at)
-      .slice(0, 6)
-      .map((guest) => {
-        const event = events.find((item) => item.id === guest.event_id);
-        const date = guest.updated_at || guest.created_at;
-
-        let title = "Invité mis à jour";
-        let icon = "↻";
-        let tone = "text-sky-700 bg-sky-50";
-
-        if (guest.checked_in) {
-          title = "Entrée enregistrée";
-          icon = "✓";
-          tone = "text-emerald-600 bg-emerald-50";
-        } else if (guest.status === "confirmed") {
-          title = "Invitation confirmée";
-          icon = "✓";
-          tone = "text-emerald-600 bg-emerald-50";
-        } else if (guest.status === "declined") {
-          title = "Invitation refusée";
-          icon = "×";
-          tone = "text-red-600 bg-red-50";
-        } else {
-          title = "Invitation en attente";
-          icon = "…";
-          tone = "text-amber-600 bg-amber-50";
-        }
-
-        return { id: guest.id, title, eventName: event?.name || "Événement", date, icon, tone };
-      });
-  }, [guests, events]);
-
-  return (
-    <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.08),_transparent_30%),radial-gradient(circle_at_90%_15%,_rgba(30,64,175,0.08),_transparent_28%),#f7f9fc] text-zinc-950">
-      <style jsx>{`
-        @keyframes eventStudioShift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        .event-studio-shift {
-          background-size: 200% 200%;
-          animation: eventStudioShift 16s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .event-studio-shift { animation: none; }
-        }
-      `}</style>
-
-      {/* La navigation globale est fournie par le RootLayout. */}
-
-      <div className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-5 sm:py-5 lg:px-8 lg:py-7">
-
-        <section className={["event-studio-shift relative overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(115deg,#07111f,#0b1730,#123b70,#07111f)] px-4 py-5 shadow-[0_20px_55px_rgba(15,23,42,0.13)] sm:px-6 sm:py-6 lg:px-7 lg:py-7 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
-          <div className="pointer-events-none absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-sky-500/10 blur-3xl motion-safe:animate-pulse" />
-          <div className="pointer-events-none absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-sky-600/15 blur-3xl motion-safe:animate-pulse" />
-
-          <div className="relative flex min-w-0 flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-sky-300">Centre de pilotage</p>
-              <h1 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">Bonjour {userName} 👋</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">Pilotez vos événements, vos invitations et vos invités depuis un seul espace.</p>
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-zinc-400">
-                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">Création</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">RSVP</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Event Control</span>
-              </div>
-            </div>
-
-            <div className="w-full min-w-0 flex flex-col items-start gap-3 lg:w-auto">
-              {nextEvent && (
-                <div className="w-full max-w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left backdrop-blur-sm sm:max-w-[280px]">                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-700">Prochain rendez-vous</p>
-                  <p className="mt-1 max-w-[240px] truncate text-sm font-bold text-white">{nextEvent.name}</p>
-                  <p className="mt-1 text-xs text-zinc-400">
-                    {getDaysUntil(nextEvent.date) === 0 ? "Aujourd’hui" : getDaysUntil(nextEvent.date) === 1 ? "Demain" : getDaysUntil(nextEvent.date) ? "Dans " + getDaysUntil(nextEvent.date) + " jours" : "Date à définir"}
-                  </p>
-                </div>
-              )}
-
-              <Link href="/events/new" className="group relative inline-flex w-full items-center justify-center gap-2 sm:w-fit overflow-hidden rounded-xl bg-white px-4 py-3 text-sm font-black text-zinc-950 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-sky-600 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                <span className="absolute inset-y-0 left-[-35%] w-1/4 skew-x-[-18deg] bg-white/60 opacity-0 blur-sm transition-all duration-700 group-hover:left-[115%] group-hover:opacity-100 motion-reduce:transition-none" />
-                <span className="relative text-lg text-blue-950 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">+</span>
-                <span className="relative">Créer un événement</span>
-              </Link>
-            </div>
+      <section className={`event-studio-shift relative overflow-hidden rounded-[22px] bg-[linear-gradient(115deg,#07111f,#0b1730,#123b70,#07111f)] px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.12)] transition-all duration-500 sm:px-6 sm:py-6 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-[9px] font-black uppercase tracking-[0.22em] text-sky-300">Centre de pilotage</p>
+            <h1 className="mt-1.5 text-2xl font-black tracking-tight text-white sm:text-3xl">Bonjour {userName} <span className="text-sky-300">👋</span></h1>
+            <p className="mt-1.5 max-w-xl text-xs leading-5 text-zinc-300 sm:text-sm">Vos événements, vos invités et vos entrées, réunis dans un espace de pilotage simple.</p>
           </div>
-        </section>
+          <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-zinc-950 shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-sky-500 hover:text-white sm:w-auto">+ Créer un événement</Link>
+        </div>
+      </section>
 
-        {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
+      {errorMessage && <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">{errorMessage}</div>}
 
-        <section className={["mt-6 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
-          <div className="mb-4">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Vue générale</p>
-            <h2 className="mt-0.5 text-xl font-black tracking-tight">Vos indicateurs</h2>
-            <p className="mt-1 text-[10px] font-semibold text-zinc-400">Activité globale</p>
-          </div>
+      <section className={`mt-5 transition-all duration-500 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+        <div className="mb-2.5 flex items-end justify-between"><div><p className="text-[9px] font-black uppercase tracking-[0.2em] text-sky-700">Vue générale</p><h2 className="mt-0.5 text-base font-black tracking-tight">Vos indicateurs</h2></div><span className="text-[10px] font-semibold text-zinc-400">En temps réel</span></div>
+        {loading ? <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{[1,2,3,4].map(i => <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200/60" />)}</div> :
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+            <StatCard icon="◈" label="Événements" value={events.length} detail="Créés par vous" />
+            <StatCard icon="◎" label="Invités" value={globalStats.total} detail="Tous événements" />
+            <StatCard icon="✓" label="Confirmés" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
+            <StatCard icon="↗" label="Entrées" value={globalStats.checkedIn} detail={globalStats.checkInRate + "% des confirmés"} />
+          </div>}
+      </section>
 
-          {loading ? (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-white" />)}</div>
-          ) : (
-            <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-              <StatCard icon="▦" label="Événements" value={events.length} detail="Créés par vous" />
-              <StatCard icon="◎" label="Invités" value={globalStats.total} detail="Sur vos événements" />
-              <StatCard icon="✓" label="Confirmés" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
-              <StatCard icon="→" label="Entrées" value={globalStats.checkedIn} detail={globalStats.checkInRate + "% des confirmés"} />
+      <section className={`mt-5 grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"} transition-all duration-500`}>
+        <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_7px_26px_rgba(15,23,42,0.045)]">
+          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 sm:px-5"><div><p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Agenda</p><h2 className="mt-0.5 text-lg font-black">Prochain événement</h2></div>{nextEvent && <Link href={"/events/" + nextEvent.id} className="text-[11px] font-bold text-sky-700 hover:text-sky-900">Ouvrir →</Link>}</div>
+          {loading ? <div className="p-5"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div> : nextEvent ? <div className="p-4 sm:p-5">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-blue-700 text-white"><span className="text-[9px] font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR",{month:"short"}).format(new Date(nextEvent.date+"T12:00:00")) : "Date"}</span><span className="text-xl font-black">{nextEvent.date ? new Date(nextEvent.date+"T12:00:00").getDate() : "—"}</span></div>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(nextEvent)} />{nextEvent.type && <span className="text-[10px] font-semibold text-zinc-400">{nextEvent.type}</span>}</div><h3 className="mt-1.5 truncate text-lg font-black">{nextEvent.name}</h3><div className="mt-2 flex min-w-0 flex-wrap gap-x-3 gap-y-1 text-[11px] text-zinc-500"><span>📅 {formatDate(nextEvent.date)}</span>{nextEvent.time && <span>🕐 {nextEvent.time}</span>}{nextEvent.location && <span className="truncate">📍 {nextEvent.location}</span>}</div></div>
             </div>
-          )}
-        </section>
-
-        <section className={["mt-6 grid gap-3 lg:grid-cols-[1.35fr_0.65fr] lg:gap-4 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
-
-          <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
-            <div className="flex min-w-0 items-center justify-between gap-3 border-b border-zinc-100 px-3 py-3 sm:px-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Agenda</p>
-                <h2 className="mt-1 text-xl font-black">Prochain événement</h2>
-              </div>
-              {nextEvent && <Link href={"/events/" + nextEvent.id} className="text-xs font-bold text-sky-700 hover:text-sky-800">Ouvrir →</Link>}
+            <div className="mt-4 grid grid-cols-3 gap-2 border-t border-zinc-100 pt-3.5">
+              <div><p className="text-[10px] text-zinc-400">Invités</p><p className="mt-0.5 text-base font-black">{guests.filter(g=>g.event_id===nextEvent.id).length}</p></div>
+              <div><p className="text-[10px] text-zinc-400">Confirmés</p><p className="mt-0.5 text-base font-black text-emerald-600">{guests.filter(g=>g.event_id===nextEvent.id&&g.status==="confirmed").length}</p></div>
+              <div><p className="text-[10px] text-zinc-400">Entrées</p><p className="mt-0.5 text-base font-black text-sky-700">{guests.filter(g=>g.event_id===nextEvent.id&&g.checked_in).length}</p></div>
             </div>
+            <Link href={"/events/" + nextEvent.id} className="mt-4 inline-flex rounded-xl bg-zinc-950 px-3.5 py-2.5 text-[11px] font-bold text-white transition hover:bg-sky-700">Gérer l’événement →</Link>
+          </div> : <div className="px-5 py-10 text-center"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-xl text-sky-700">+</div><h3 className="mt-3 text-base font-black">Aucun événement à venir</h3><p className="mx-auto mt-1.5 max-w-sm text-xs leading-5 text-zinc-500">Créez votre prochain événement pour commencer.</p><Link href="/events/new" className="mt-4 inline-flex rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white">Créer un événement</Link></div>}
+        </div>
 
-            {loading ? (
-              <div className="p-7"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div>
-            ) : nextEvent ? (
-              <div className="relative p-4 sm:p-5">
-                <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-blue-700 text-white">
-                    <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
-                    <span className="mt-1 text-2xl font-black">{nextEvent.date ? new Date(nextEvent.date + "T12:00:00").getDate() : "—"}</span>
-                  </div>
+        <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_7px_26px_rgba(15,23,42,0.045)]">
+          <div className="border-b border-zinc-100 px-4 py-3 sm:px-5"><p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Suivi</p><h2 className="mt-0.5 text-lg font-black">Activité récente</h2></div>
+          <div className="p-3 sm:p-4">{loading ? <div className="space-y-2.5">{[1,2,3,4].map(i=><div key={i} className="h-10 animate-pulse rounded-xl bg-zinc-100" />)}</div> : recentActivity.length ? <div className="space-y-1">{recentActivity.map(a=><div key={a.id} className="flex items-center gap-2 rounded-xl px-1.5 py-2 transition hover:bg-zinc-50"><div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black ${a.tone}`}>{a.icon}</div><div className="min-w-0 flex-1"><p className="truncate text-[11px] font-bold text-zinc-800">{a.title}</p><p className="truncate text-[10px] text-zinc-400">{a.eventName}</p></div><span className="shrink-0 text-[9px] text-zinc-400">{formatActivityDate(a.date)}</span></div>)}</div> : <div className="py-8 text-center"><p className="text-xs font-bold text-zinc-600">Aucune activité récente</p><p className="mt-1 text-[10px] text-zinc-400">Les actions sur vos invités apparaîtront ici.</p></div>}</div>
+        </div>
+      </section>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <StatusBadge status={getEventStatus(nextEvent)} />
-                      {nextEvent.type && <span className="text-xs font-medium text-zinc-400">{nextEvent.type}</span>}
-                    </div>
-                    <h3 className="mt-2 truncate text-lg font-black sm:text-xl">{nextEvent.name}</h3>
-                    <div className="mt-3 flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-xs text-zinc-500 sm:text-sm">
-                      <span>📅 {formatDate(nextEvent.date)}</span>
-                      {nextEvent.time && <span>🕐 {nextEvent.time}</span>}
-                      {nextEvent.location && <span className="truncate">📍 {nextEvent.location}</span>}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-3 gap-2 border-t border-zinc-100 pt-4">
-                  <div><p className="text-xs text-zinc-400">Invités</p><p className="mt-1 text-lg font-black">{guests.filter((guest) => guest.event_id === nextEvent.id).length}</p></div>
-                  <div><p className="text-xs text-zinc-400">Confirmés</p><p className="mt-1 text-lg font-black text-emerald-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.status === "confirmed").length}</p></div>
-                  <div><p className="text-xs text-zinc-400">Entrées</p><p className="mt-1 text-lg font-black text-sky-700">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.checked_in).length}</p></div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-8 text-center sm:p-12">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 text-2xl">+</div>
-                <h3 className="mt-5 text-lg font-black">Aucun événement à venir</h3>
-                <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-zinc-500">Créez votre prochain événement pour commencer à construire votre expérience.</p>
-                <Link href="/events/new" className="mt-5 inline-flex rounded-xl bg-zinc-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-950">Créer un événement</Link>
-              </div>
-            )}
-          </div>
-
-          <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
-            <div className="border-b border-zinc-100 px-4 py-3 sm:px-5">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Suivi</p>
-              <h2 className="mt-1 text-xl font-black">Activité récente</h2>
+      <section className={`mt-6 transition-all duration-500 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+        <div className="mb-3 flex items-end justify-between gap-3"><div><p className="text-[9px] font-black uppercase tracking-[0.2em] text-sky-700">Gestion</p><h2 className="mt-0.5 text-lg font-black">Mes événements</h2><p className="mt-0.5 text-[11px] text-zinc-400">Retrouvez et pilotez vos événements.</p></div>{!loading&&events.length>0&&<Link href="/events/new" className="hidden rounded-xl border border-zinc-200 bg-white px-3 py-2 text-[11px] font-bold text-zinc-700 shadow-sm transition hover:border-sky-200 hover:text-sky-700 sm:inline-flex">+ Nouvel événement</Link>}</div>
+        {loading ? <div className="grid gap-3 xl:grid-cols-2">{[1,2].map(i=><div key={i} className="h-56 animate-pulse rounded-[20px] bg-white" />)}</div> :
+        !events.length ? <div className="rounded-[20px] border border-dashed border-zinc-300 bg-white px-5 py-12 text-center shadow-sm"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-xl text-sky-700">+</div><h3 className="mt-3 text-base font-black">Votre espace est prêt</h3><p className="mx-auto mt-1.5 max-w-md text-xs leading-5 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p><Link href="/events/new" className="mt-4 inline-flex rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white">Créer mon premier événement</Link></div> :
+        <div className="grid min-w-0 gap-2.5 xl:grid-cols-2">{events.map((event,index) => {
+          const eventGuests=guests.filter(g=>g.event_id===event.id), total=eventGuests.length, confirmed=eventGuests.filter(g=>g.status==="confirmed").length, pending=eventGuests.filter(g=>g.status==="pending").length, checkedIn=eventGuests.filter(g=>g.checked_in).length, declined=eventGuests.filter(g=>g.status==="declined").length;
+          const confirmationRate=total?Math.round(confirmed/total*100):0, checkInRate=confirmed?Math.round(checkedIn/confirmed*100):0;
+          return <article key={event.id} style={{transitionDelay:`${Math.min(index,5)*60}ms`}} className={`group overflow-hidden rounded-[18px] border border-zinc-200/70 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)] transition duration-500 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-500/5 ${motionReady?"translate-y-0 opacity-100":"translate-y-3 opacity-0"}`}>
+            <div className="flex min-w-0 items-center gap-3 border-b border-zinc-100 px-3.5 py-3 sm:px-4">
+              <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl bg-zinc-950 text-white"><span className="text-[7px] font-bold uppercase text-sky-300">{event.date?new Intl.DateTimeFormat("fr-FR",{month:"short"}).format(new Date(event.date+"T12:00:00")):"—"}</span><span className="text-sm font-black">{event.date?new Date(event.date+"T12:00:00").getDate():"—"}</span></div>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(event)} />{event.type&&<span className="text-[9px] font-semibold text-zinc-400">{event.type}</span>}</div><h3 className="mt-1 truncate text-sm font-black text-zinc-900">{event.name}</h3><p className="mt-0.5 truncate text-[10px] text-zinc-400">{event.location||formatDate(event.date)}</p></div>
+              <Link href={"/events/"+event.id} className="hidden shrink-0 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-sky-700 transition hover:bg-sky-50 sm:inline-flex">Ouvrir →</Link>
             </div>
-
-            <div className="p-4 sm:p-5">
-              {loading ? (
-                <div className="space-y-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-12 animate-pulse rounded-xl bg-zinc-100" />)}</div>
-              ) : recentActivity.length === 0 ? (
-                <div className="py-8 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-400">•</div>
-                  <p className="mt-4 text-sm font-bold text-zinc-700">Aucune activité récente</p>
-                  <p className="mt-1 text-xs leading-5 text-zinc-400">Les actions sur vos invités apparaîtront ici.</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="group flex items-center gap-2 rounded-xl p-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-50 hover:shadow-sm motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                      <div className={["flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none", activity.tone].join(" ")}>{activity.icon}</div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-bold text-zinc-800">{activity.title}</p>
-                        <p className="truncate text-xs text-zinc-400">{activity.eventName}</p>
-                      </div>
-                      <span className="shrink-0 text-[10px] font-medium text-zinc-400">{formatActivityDate(activity.date)}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="px-3.5 py-3 sm:px-4">
+              <div className="grid grid-cols-4 gap-1.5"><div className="rounded-xl bg-zinc-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-zinc-400">Invités</p><p className="mt-0.5 text-sm font-black">{total}</p></div><div className="rounded-xl bg-emerald-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-emerald-500">Confirmés</p><p className="mt-0.5 text-sm font-black text-emerald-700">{confirmed}</p></div><div className="rounded-xl bg-amber-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-amber-500">Attente</p><p className="mt-0.5 text-sm font-black text-amber-700">{pending}</p></div><div className="rounded-xl bg-sky-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-sky-500">Entrées</p><p className="mt-0.5 text-sm font-black text-sky-700">{checkedIn}</p></div></div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2"><ProgressBar label="Confirmation" value={confirmationRate}/><ProgressBar label="Entrée" value={checkInRate}/></div>
+              <div className="mt-3 flex items-center justify-between border-t border-zinc-100 pt-2.5"><span className="text-[10px] text-zinc-400">{declined} refusée{declined>1?"s":""}</span><div className="flex items-center gap-1.5"><Link href={"/events/"+event.id+"/edit"} className="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-[10px] font-bold text-zinc-600 transition hover:border-sky-200 hover:text-sky-700">Modifier</Link><button type="button" onClick={()=>setEventMenuOpen(eventMenuOpen===event.id?null:event.id)} className="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-[10px] font-bold text-zinc-600 transition hover:bg-zinc-50" aria-expanded={eventMenuOpen===event.id}>•••</button></div></div>
+              {eventMenuOpen===event.id&&<div className="mt-2 grid grid-cols-3 gap-1.5 border-t border-zinc-100 pt-2"><Link onClick={()=>setEventMenuOpen(null)} href={"/events/"+event.id+"/guests"} className="rounded-lg bg-zinc-50 px-2 py-2 text-center text-[9px] font-bold text-zinc-600 hover:bg-sky-50 hover:text-sky-700">Invités</Link><button type="button" onClick={()=>{setEventMenuOpen(null);void handleDuplicateEvent(event.id)}} className="rounded-lg bg-zinc-50 px-2 py-2 text-[9px] font-bold text-zinc-600 hover:bg-sky-50 hover:text-sky-700">Dupliquer</button><Link onClick={()=>setEventMenuOpen(null)} href={"/events/"+event.id+"/control"} className="rounded-lg bg-sky-50 px-2 py-2 text-center text-[9px] font-bold text-sky-700 hover:bg-sky-100">Event Control</Link><button type="button" onClick={()=>{setEventMenuOpen(null);void handleDeleteEvent(event.id,event.name)}} className="col-span-3 rounded-lg bg-red-50 px-2 py-2 text-[9px] font-bold text-red-600 hover:bg-red-100">Supprimer</button></div>}
             </div>
-          </div>
+          </article>;
+        })}</div>}
+      </section>
 
-        </section>
-
-        <section className={["mt-7 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Gestion</p>
-              <h2 className="mt-1 text-2xl font-black tracking-tight">Mes événements</h2>
-              <p className="mt-1 text-sm text-zinc-500">Retrouvez et pilotez tous vos événements.</p>
-            </div>
-
-            {!loading && events.length > 0 && <Link href="/events/new" className="inline-flex w-fit items-center rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-zinc-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800">+ Nouvel événement</Link>}
-          </div>
-
-          {loading ? (
-            <div className="grid gap-3 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[20px] bg-white" />)}</div>
-          ) : events.length === 0 ? (
-            <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-16 text-center shadow-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-sky-700">+</div>
-              <h3 className="mt-5 text-xl font-black">Votre espace est prêt</h3>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p>
-              <Link href="/events/new" className="mt-6 inline-flex rounded-xl bg-zinc-950 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-blue-950">Créer mon premier événement</Link>
-            </div>
-          ) : (
-            <div className="grid min-w-0 gap-4 xl:grid-cols-2">
-              {events.map((event) => {
-                const eventGuests = guests.filter((guest) => guest.event_id === event.id);
-                const total = eventGuests.length;
-                const confirmed = eventGuests.filter((guest) => guest.status === "confirmed").length;
-                const pending = eventGuests.filter((guest) => guest.status === "pending").length;
-                const declined = eventGuests.filter((guest) => guest.status === "declined").length;
-                const checkedIn = eventGuests.filter((guest) => guest.checked_in).length;
-                const confirmationRate = total > 0 ? Math.round((confirmed / total) * 100) : 0;
-                const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
-
-                return (
-                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-500 ease-out hover:-translate-y-1 hover:border-sky-300 hover:ring-sky-500 hover:shadow-2xl hover:shadow-sky-500/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
-                    <div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-sky-800 p-4 text-white sm:p-5">
-                      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-sky-500/15 motion-reduce:transition-none" />
-                      <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-sky-400/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
-                      <div className="relative flex min-w-0 items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-700">{event.type || "Événement"}</p>
-                          <h3 className="mt-2 truncate text-2xl font-black tracking-tight transition-colors duration-300 group-hover:text-sky-700">{event.name}</h3>
-                        </div>
-                        <StatusBadge status={getEventStatus(event)} />
-                      </div>
-
-                      <div className="relative mt-3 flex min-w-0 flex-wrap gap-1.5 text-[11px] text-zinc-300">
-                        <span className="rounded-lg bg-white/10 px-2.5 py-1.5">📅 {formatShortDate(event.date)}</span>
-                        {event.time && <span className="rounded-xl bg-white/10 px-3 py-2">🕐 {event.time}</span>}
-                        {event.location && <span className="max-w-full truncate rounded-xl bg-white/10 px-3 py-2">📍 {event.location}</span>}
-                      </div>
-                    </div>
-
-                    <div className="p-4 sm:p-5">
-                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                        <div className="group/stat rounded-lg bg-zinc-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-500">Invités</p><p className="mt-2 text-base font-black leading-none text-zinc-900">{total}</p></div>
-                        <div className="group/stat rounded-lg bg-emerald-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-base font-black leading-none text-emerald-800">{confirmed}</p></div>
-                        <div className="group/stat rounded-lg bg-amber-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-base font-black leading-none text-amber-800">{pending}</p></div>
-                        <div className="group/stat rounded-lg bg-blue-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-base font-black leading-none text-sky-800">{checkedIn}</p></div>
-                      </div>
-
-                      <div className="mt-4 space-y-3">
-                        <ProgressBar label="Taux de confirmation" value={confirmationRate} />
-                        <ProgressBar label="Taux d’entrée" value={checkInRate} />
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-4">
-                        <div><p className="text-xs text-zinc-400">Refusées</p><p className="mt-1 text-sm font-bold text-red-600">{declined}</p></div>
-                        <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
-                      </div>
-
-                      <div className="relative mt-4 grid gap-2 sm:grid-cols-2">
-                        <Link
-                          href={"/events/" + event.id}
-                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-center text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-blue-50 hover:text-blue-900 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                        >
-                          <span>Ouvrir</span><span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                        </Link>
-
-                        <Link
-                          href={"/events/" + event.id + "/edit"}
-                          className="group inline-flex items-center justify-center gap-2 rounded-xl border border-sky-600 bg-gradient-to-r from-sky-600 to-blue-700 px-4 py-3 text-center text-sm font-bold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-700 hover:shadow-md motion-reduce:transition-none"
-                        >
-                          <span>Modifier</span><span className="transition-transform duration-300 group-hover:rotate-12">✏️</span>
-                        </Link>
-
-                        <div className="relative sm:col-span-2">
-                          <button
-                            type="button"
-                            onClick={() => setEventMenuOpen((current) => current === event.id ? null : event.id)}
-                            className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-bold text-zinc-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-800 hover:bg-blue-50 hover:text-blue-900 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                            aria-expanded={eventMenuOpen === event.id}
-                            aria-haspopup="menu"
-                          >
-                            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-white text-xs shadow-sm">•••</span>
-                            <span>Plus d’actions</span>
-                          </button>
-
-                          {eventMenuOpen === event.id && (
-                            <div className="absolute bottom-full left-0 z-30 mb-2 w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white p-1.5 shadow-2xl shadow-zinc-950/15 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/guests"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-700 transition hover:bg-blue-50 hover:text-blue-900">👥 Invités</Link>
-                              <button type="button" onClick={() => { setEventMenuOpen(null); void handleDuplicateEvent(event.id); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-zinc-700 transition hover:bg-blue-50 hover:text-blue-900">📑 Dupliquer</button>
-                              <Link onClick={() => setEventMenuOpen(null)} href={"/events/" + event.id + "/control"} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sky-700 transition hover:bg-sky-50">🎛️ Event Control</Link>
-                              <button type="button" onClick={() => { setEventMenuOpen(null); void handleDeleteEvent(event.id, event.name); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50">🗑️ Supprimer</button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </section>
-
-        <footer className="mt-10 border-t border-zinc-200 py-7 text-center">
-          <div className="mb-3 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-300">
-            <span className="h-px w-8 bg-zinc-200" />
-            Event Studio
-            <span className="h-px w-8 bg-zinc-200" />
-          </div>
-          <p className="text-xs font-medium text-zinc-400">Event Studio · Centre de pilotage événementiel</p>
-        </footer>
-
-      </div>
-    </main>
-  );
+      <footer className="mt-7 border-t border-zinc-200/80 py-5 text-center"><p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-300">Event Studio</p><p className="mt-1 text-[10px] text-zinc-400">Centre de pilotage événementiel</p></footer>
+    </div>
+  </main>;
 }
