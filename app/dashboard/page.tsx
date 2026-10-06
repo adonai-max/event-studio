@@ -130,25 +130,25 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-zinc-200/80 bg-white p-3 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/15">
+    <div className="group relative overflow-hidden rounded-lg border border-zinc-200/80 bg-white px-2.5 py-2 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md hover:shadow-sky-500/10">
       <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-600/5 blur-2xl transition-all duration-500 group-hover:bg-sky-500/10" />
 
-      <div className="relative flex items-center justify-between gap-3">
+      <div className="relative flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-400">
+          <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400">
             {label}
           </p>
 
-          <p className="mt-2 text-xl font-black tracking-tight text-zinc-950 sm:text-2xl">
+          <p className="mt-1 text-lg font-black tracking-tight text-zinc-950 sm:text-xl">
             {value}
           </p>
 
-          <p className="mt-1 truncate text-xs font-medium text-zinc-400">
+          <p className="mt-0.5 truncate text-[10px] font-medium text-zinc-400">
             {detail}
           </p>
         </div>
 
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 text-lg font-black text-white ring-1 ring-sky-500 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-sky-500/25">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 text-sm font-black text-white ring-1 ring-sky-500/70 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-sky-500/20">
           {icon}
         </div>
       </div>
@@ -536,7 +536,7 @@ export default function DashboardPage() {
         {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
 
         <section className={["mt-7 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
-          <div className="mb-5">
+          <div className="mb-3.5">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Vue générale</p>
             <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
             <p className="mt-1 text-sm text-zinc-500">Une vision rapide de votre activité événementielle.</p>
