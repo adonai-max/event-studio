@@ -15,7 +15,8 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [organization, setOrganization] = useState("");
@@ -39,7 +40,10 @@ export default function ProfilePage() {
 
       const metadata = user.user_metadata ?? {};
 
-      setFullName(metadata.full_name ?? metadata.name ?? "");
+      const metadataFirstName = metadata.first_name ?? metadata.full_name?.trim().split(/\s+/)[0] ?? metadata.name?.trim().split(/\s+/)[0] ?? "";
+      const metadataLastName = metadata.last_name ?? metadata.full_name?.trim().split(/\s+/).slice(1).join(" ") ?? "";
+      setFirstName(metadataFirstName);
+      setLastName(metadataLastName);
       setEmail(user.email ?? "");
       setPhone(metadata.phone ?? "");
       setOrganization(metadata.organization ?? "");
@@ -182,7 +186,9 @@ export default function ProfilePage() {
 
     const { error } = await supabase.auth.updateUser({
       data: {
-        full_name: fullName.trim(),
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        full_name: (firstName.trim() + " " + lastName.trim()).trim(),
         phone: phone.trim(),
         organization: organization.trim(),
         description: description.trim(),
@@ -201,7 +207,7 @@ export default function ProfilePage() {
   }
 
   const initials =
-    fullName
+    (firstName + " " + lastName)
       .trim()
       .split(/\s+/)
       .filter(Boolean)
@@ -286,7 +292,7 @@ export default function ProfilePage() {
                 </p>
 
                 <h2 className="mt-1 text-2xl font-black">
-                  {fullName || "Utilisateur Event Studio"}
+                  {firstName || "Utilisateur Event Studio"}
                 </h2>
 
                 <p className="mt-1 text-sm text-zinc-300">
@@ -306,12 +312,10 @@ export default function ProfilePage() {
               </div>
 
               <div className="space-y-5">
-                <Field
-                  label="Nom complet"
-                  value={fullName}
-                  onChange={setFullName}
-                  placeholder="Adonaï Nkwambe"
-                />
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Field label="Prénom" value={firstName} onChange={setFirstName} placeholder="Adonaï" />
+                  <Field label="Nom" value={lastName} onChange={setLastName} placeholder="Nkwambe" />
+                </div>
 
                 <div>
                   <label className="mb-2 block text-sm font-bold text-zinc-800">
