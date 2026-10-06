@@ -200,13 +200,26 @@ export default function DashboardPage() {
           {loading ? <div className="p-5"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div> : nextEvent ? <div className="p-4 sm:p-5">
             <div className="flex items-center gap-3.5">
               <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-blue-700 text-white"><span className="text-[9px] font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR",{month:"short"}).format(new Date(nextEvent.date+"T12:00:00")) : "Date"}</span><span className="text-xl font-black">{nextEvent.date ? new Date(nextEvent.date+"T12:00:00").getDate() : "—"}</span></div>
-              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(nextEvent)} />{nextEvent.type && <span className="text-[10px] font-semibold text-zinc-400">{nextEvent.type}</span>}</div><h3 className="mt-1.5 truncate text-lg font-black">{nextEvent.name}</h3><div className="mt-2 flex min-w-0 flex-wrap gap-x-3 gap-y-1 text-[11px] text-zinc-500"><span>📅 {formatDate(nextEvent.date)}</span>{nextEvent.time && <span>🕐 {nextEvent.time}</span>}{nextEvent.location && <span className="truncate">📍 {nextEvent.location}</span>}</div></div>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(nextEvent)} />{nextEvent.type && <span className="text-[10px] font-semibold text-zinc-400">{nextEvent.type}</span>}{getDaysUntil(nextEvent.date) !== null && <span className="rounded-full bg-zinc-100 px-2 py-1 text-[9px] font-black text-zinc-500">{getDaysUntil(nextEvent.date) === 0 ? "Aujourd’hui" : "J-" + getDaysUntil(nextEvent.date)}</span>}</div><h3 className="mt-1.5 truncate text-lg font-black">{nextEvent.name}</h3><div className="mt-2 flex min-w-0 flex-wrap gap-x-3 gap-y-1 text-[11px] text-zinc-500"><span>📅 {formatDate(nextEvent.date)}</span>{nextEvent.time && <span>🕐 {nextEvent.time}</span>}{nextEvent.location && <span className="truncate">📍 {nextEvent.location}</span>}</div></div>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2 border-t border-zinc-100 pt-3.5">
               <div><p className="text-[10px] text-zinc-400">Invités</p><p className="mt-0.5 text-base font-black">{guests.filter(g=>g.event_id===nextEvent.id).length}</p></div>
               <div><p className="text-[10px] text-zinc-400">Confirmés</p><p className="mt-0.5 text-base font-black text-emerald-600">{guests.filter(g=>g.event_id===nextEvent.id&&g.status==="confirmed").length}</p></div>
               <div><p className="text-[10px] text-zinc-400">Entrées</p><p className="mt-0.5 text-base font-black text-sky-700">{guests.filter(g=>g.event_id===nextEvent.id&&g.checked_in).length}</p></div>
             </div>
+            {(() => {
+              const eventGuests = guests.filter(g => g.event_id === nextEvent.id);
+              const confirmed = eventGuests.filter(g => g.status === "confirmed").length;
+              const checked = eventGuests.filter(g => g.checked_in).length;
+              const readiness = eventGuests.length === 0 ? 0 : Math.round((confirmed / eventGuests.length) * 70 + (confirmed ? checked / confirmed : 0) * 30);
+              return <div className="mt-3 rounded-xl bg-zinc-50 px-3 py-2.5">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[9px] font-black uppercase tracking-[0.14em] text-zinc-400">Préparation</span>
+                  <span className={`text-[10px] font-black ${readiness >= 80 ? "text-emerald-600" : readiness >= 50 ? "text-amber-600" : "text-zinc-500"}`}>{readiness}%</span>
+                </div>
+                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200"><div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600" style={{width: readiness + "%"}} /></div>
+              </div>;
+            })()}
             <Link href={"/events/" + nextEvent.id} className="mt-4 inline-flex rounded-xl bg-zinc-950 px-3.5 py-2.5 text-[11px] font-bold text-white transition hover:bg-sky-700">Gérer l’événement →</Link>
           </div> : <div className="px-5 py-10 text-center"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-xl text-sky-700">+</div><h3 className="mt-3 text-base font-black">Aucun événement à venir</h3><p className="mx-auto mt-1.5 max-w-sm text-xs leading-5 text-zinc-500">Créez votre prochain événement pour commencer.</p><Link href="/events/new" className="mt-4 inline-flex rounded-xl bg-zinc-950 px-4 py-2.5 text-xs font-bold text-white">Créer un événement</Link></div>}
         </div>
