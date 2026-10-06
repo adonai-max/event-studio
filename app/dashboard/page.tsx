@@ -130,16 +130,16 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/15">
+    <div className="group relative overflow-hidden rounded-xl border border-zinc-200/80 bg-white p-3 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/15">
       <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-600/5 blur-2xl transition-all duration-500 group-hover:bg-sky-500/10" />
 
-      <div className="relative flex items-start justify-between gap-4">
+      <div className="relative flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-400">
             {label}
           </p>
 
-          <p className="mt-3 text-xl font-black tracking-tight text-zinc-950 sm:text-3xl">
+          <p className="mt-2 text-xl font-black tracking-tight text-zinc-950 sm:text-2xl">
             {value}
           </p>
 
@@ -148,7 +148,7 @@ function StatCard({
           </p>
         </div>
 
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 text-lg font-black text-white ring-1 ring-sky-500 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-sky-500/25">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 text-lg font-black text-white ring-1 ring-sky-500 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-lg group-hover:shadow-sky-500/25">
           {icon}
         </div>
       </div>
@@ -545,7 +545,7 @@ export default function DashboardPage() {
           {loading ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-white" />)}</div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard icon="▦" label="Événements" value={events.length} detail="Créés par vous" />
               <StatCard icon="◎" label="Invités" value={globalStats.total} detail="Sur vos événements" />
               <StatCard icon="✓" label="Confirmés" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
@@ -556,8 +556,8 @@ export default function DashboardPage() {
 
         <section className={["mt-10 grid gap-6 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[1.25fr_0.75fr]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
 
-          <div className="overflow-hidden rounded-[1.5rem] border border-zinc-200/80 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4 sm:px-6">
+          <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 sm:px-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Agenda</p>
                 <h2 className="mt-1 text-xl font-black">Prochain événement</h2>
@@ -568,9 +568,9 @@ export default function DashboardPage() {
             {loading ? (
               <div className="p-7"><div className="h-36 animate-pulse rounded-2xl bg-zinc-100" /></div>
             ) : nextEvent ? (
-              <div className="relative p-5 sm:p-6">
+              <div className="relative p-4 sm:p-5">
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                  <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-3xl bg-gradient-to-br from-sky-600 to-blue-700 text-white">
+                  <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-3xl bg-gradient-to-br from-sky-600 to-blue-700 text-white">
                     <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
                     <span className="mt-1 text-2xl font-black">{nextEvent.date ? new Date(nextEvent.date + "T12:00:00").getDate() : "—"}</span>
                   </div>
@@ -580,7 +580,7 @@ export default function DashboardPage() {
                       <StatusBadge status={getEventStatus(nextEvent)} />
                       {nextEvent.type && <span className="text-xs font-medium text-zinc-400">{nextEvent.type}</span>}
                     </div>
-                    <h3 className="mt-3 truncate text-2xl font-black">{nextEvent.name}</h3>
+                    <h3 className="mt-2 truncate text-xl font-black">{nextEvent.name}</h3>
                     <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-500">
                       <span>📅 {formatDate(nextEvent.date)}</span>
                       {nextEvent.time && <span>🕐 {nextEvent.time}</span>}
@@ -589,7 +589,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-3 gap-2 border-t border-zinc-100 pt-6">
+                <div className="mt-4 grid grid-cols-3 gap-2 border-t border-zinc-100 pt-4">
                   <div><p className="text-xs text-zinc-400">Invités</p><p className="mt-1 text-lg font-black">{guests.filter((guest) => guest.event_id === nextEvent.id).length}</p></div>
                   <div><p className="text-xs text-zinc-400">Confirmés</p><p className="mt-1 text-lg font-black text-emerald-600">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.status === "confirmed").length}</p></div>
                   <div><p className="text-xs text-zinc-400">Entrées</p><p className="mt-1 text-lg font-black text-sky-700">{guests.filter((guest) => guest.event_id === nextEvent.id && guest.checked_in).length}</p></div>
@@ -605,13 +605,13 @@ export default function DashboardPage() {
             )}
           </div>
 
-          <div className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-sm">
-            <div className="border-b border-zinc-100 px-6 py-5 sm:px-7">
+          <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm">
+            <div className="border-b border-zinc-100 px-4 py-3 sm:px-5">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Suivi</p>
               <h2 className="mt-1 text-xl font-black">Activité récente</h2>
             </div>
 
-            <div className="p-5 sm:p-6">
+            <div className="p-4 sm:p-5">
               {loading ? (
                 <div className="space-y-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-12 animate-pulse rounded-xl bg-zinc-100" />)}</div>
               ) : recentActivity.length === 0 ? (
@@ -623,8 +623,8 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-2">
                   {recentActivity.map((activity) => (
-                    <div key={activity.id} className="group flex items-center gap-3 rounded-2xl p-3 transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-50 hover:shadow-sm motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                      <div className={["flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none", activity.tone].join(" ")}>{activity.icon}</div>
+                    <div key={activity.id} className="group flex items-center gap-2 rounded-xl p-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-zinc-50 hover:shadow-sm motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                      <div className={["flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none", activity.tone].join(" ")}>{activity.icon}</div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-bold text-zinc-800">{activity.title}</p>
                         <p className="truncate text-xs text-zinc-400">{activity.eventName}</p>
@@ -651,7 +651,7 @@ export default function DashboardPage() {
           </div>
 
           {loading ? (
-            <div className="grid gap-4 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[2rem] bg-white" />)}</div>
+            <div className="grid gap-3 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[2rem] bg-white" />)}</div>
           ) : events.length === 0 ? (
             <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-16 text-center shadow-sm">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-sky-700">+</div>
@@ -672,8 +672,8 @@ export default function DashboardPage() {
                 const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
                 return (
-                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-[1.5rem] border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-500 ease-out hover:-translate-y-1 hover:border-sky-300 hover:ring-sky-500 hover:shadow-2xl hover:shadow-sky-500/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
-                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-700 p-5 text-white sm:p-6">
+                  <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-500 ease-out hover:-translate-y-1 hover:border-sky-300 hover:ring-sky-500 hover:shadow-2xl hover:shadow-sky-500/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
+                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-700 p-4 text-white sm:p-5">
                       <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-sky-500/15 motion-reduce:transition-none" />
                       <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-sky-400/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
                       <div className="relative flex items-start justify-between gap-4">
@@ -691,12 +691,12 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="p-5 sm:p-6">
+                    <div className="p-4 sm:p-5">
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                        <div className="group/stat rounded-xl bg-zinc-50 p-3 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-500">Invités</p><p className="mt-2 text-2xl font-black text-zinc-900">{total}</p></div>
-                        <div className="group/stat rounded-xl bg-emerald-50 p-3 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
-                        <div className="group/stat rounded-xl bg-amber-50 p-3 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
-                        <div className="group/stat rounded-xl bg-blue-50 p-3 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-2xl font-black text-2xl font-black text-sky-800">{checkedIn}</p></div>
+                        <div className="group/stat rounded-lg bg-zinc-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-500">Invités</p><p className="mt-2 text-2xl font-black text-zinc-900">{total}</p></div>
+                        <div className="group/stat rounded-lg bg-emerald-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
+                        <div className="group/stat rounded-lg bg-amber-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
+                        <div className="group/stat rounded-lg bg-blue-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-2xl font-black text-2xl font-black text-sky-800">{checkedIn}</p></div>
                       </div>
 
                       <div className="mt-5 space-y-4">
