@@ -31,12 +31,13 @@ export default function EventStudioBar() {
 
       if (!active || !user) return;
 
-      const metadataName =
-        user.user_metadata?.full_name ||
-        user.user_metadata?.name ||
+      const firstName =
+        user.user_metadata?.first_name ||
+        user.user_metadata?.full_name?.trim().split(/\\s+/)[0] ||
+        user.user_metadata?.name?.trim().split(/\\s+/)[0] ||
         user.email?.split("@")[0];
 
-      setUserName(metadataName || "Adonaï");
+      setUserName(firstName || "Adonaï");
       setUserEmail(user.email ?? "");
       setAvatarUrl(user.user_metadata?.avatar_url ?? "");
     };
