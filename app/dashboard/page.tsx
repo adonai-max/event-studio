@@ -130,12 +130,12 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-zinc-200/80 bg-white px-2.5 py-2 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md hover:shadow-sky-500/10">
+    <div className="group relative overflow-hidden rounded-xl border border-zinc-200/70 bg-white/95 px-3 py-2.5 shadow-[0_4px_18px_rgba(15,23,42,0.05)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md hover:shadow-sky-500/10">
       <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-600/5 blur-2xl transition-all duration-500 group-hover:bg-sky-500/10" />
 
       <div className="relative flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400">
+          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-zinc-400">
             {label}
           </p>
 
@@ -148,7 +148,7 @@ function StatCard({
           </p>
         </div>
 
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sky-700 via-sky-600 to-blue-700 text-sm font-black text-white ring-1 ring-sky-500/70 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-sky-500/20">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sm font-black text-sky-700 ring-1 ring-sky-100 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-sky-500/20">
           {icon}
         </div>
       </div>
@@ -535,8 +535,8 @@ export default function DashboardPage() {
 
         {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
 
-        <section className={["mt-7 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
-          <div className="mb-3.5">
+        <section className={["mt-8 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
+          <div className="mb-4">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Vue générale</p>
             <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
             <p className="mt-1 text-sm text-zinc-500">Une vision rapide de votre activité événementielle.</p>
@@ -545,7 +545,7 @@ export default function DashboardPage() {
           {loading ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-white" />)}</div>
           ) : (
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
               <StatCard icon="▦" label="Événements" value={events.length} detail="Créés par vous" />
               <StatCard icon="◎" label="Invités" value={globalStats.total} detail="Sur vos événements" />
               <StatCard icon="✓" label="Confirmés" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
@@ -556,7 +556,7 @@ export default function DashboardPage() {
 
         <section className={["mt-7 grid gap-3 sm:gap-4 lg:mt-8 lg:grid lg:gap-5 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
 
-          <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/95 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
             <div className="flex min-w-0 items-center justify-between gap-3 border-b border-zinc-100 px-3 py-3 sm:px-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Agenda</p>
@@ -570,7 +570,7 @@ export default function DashboardPage() {
             ) : nextEvent ? (
               <div className="relative p-4 sm:p-5">
                 <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-3xl bg-gradient-to-br from-sky-600 to-blue-700 text-white">
+                  <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-blue-700 text-white">
                     <span className="text-xs font-bold uppercase">{nextEvent.date ? new Intl.DateTimeFormat("fr-FR", { month: "short" }).format(new Date(nextEvent.date + "T12:00:00")) : "Date"}</span>
                     <span className="mt-1 text-2xl font-black">{nextEvent.date ? new Date(nextEvent.date + "T12:00:00").getDate() : "—"}</span>
                   </div>
@@ -580,7 +580,7 @@ export default function DashboardPage() {
                       <StatusBadge status={getEventStatus(nextEvent)} />
                       {nextEvent.type && <span className="text-xs font-medium text-zinc-400">{nextEvent.type}</span>}
                     </div>
-                    <h3 className="mt-2 truncate text-xl font-black">{nextEvent.name}</h3>
+                    <h3 className="mt-2 truncate text-lg font-black sm:text-xl">{nextEvent.name}</h3>
                     <div className="mt-3 flex min-w-0 flex-wrap gap-x-4 gap-y-2 text-xs text-zinc-500 sm:text-sm">
                       <span>📅 {formatDate(nextEvent.date)}</span>
                       {nextEvent.time && <span>🕐 {nextEvent.time}</span>}
@@ -673,7 +673,7 @@ export default function DashboardPage() {
 
                 return (
                   <article key={event.id} style={{ transitionDelay: `${Math.min(events.indexOf(event), 5) * 70}ms` }} className={["group relative overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm ring-1 ring-transparent transition-all duration-500 ease-out hover:-translate-y-1 hover:border-sky-300 hover:ring-sky-500 hover:shadow-2xl hover:shadow-sky-500/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",motionReady ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"].join(" ")}>
-                    <div className="relative overflow-hidden border-b border-zinc-100 bg-gradient-to-br from-zinc-950 via-zinc-900 to-blue-700 p-4 text-white sm:p-5">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-zinc-950 via-zinc-900 to-sky-800 p-4 text-white sm:p-5">
                       <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-500/10 blur-3xl transition-all duration-700 group-hover:scale-125 group-hover:bg-sky-500/15 motion-reduce:transition-none" />
                       <div className="pointer-events-none absolute -bottom-20 -left-10 h-32 w-32 rounded-full bg-sky-400/10 blur-3xl transition-all duration-700 group-hover:translate-x-4 motion-reduce:transition-none" />
                       <div className="relative flex min-w-0 items-start justify-between gap-3">
@@ -684,8 +684,8 @@ export default function DashboardPage() {
                         <StatusBadge status={getEventStatus(event)} />
                       </div>
 
-                      <div className="relative mt-4 flex min-w-0 flex-wrap gap-2 text-xs text-zinc-300">
-                        <span className="rounded-xl bg-white/10 px-3 py-2">📅 {formatShortDate(event.date)}</span>
+                      <div className="relative mt-3 flex min-w-0 flex-wrap gap-1.5 text-[11px] text-zinc-300">
+                        <span className="rounded-lg bg-white/10 px-2.5 py-1.5">📅 {formatShortDate(event.date)}</span>
                         {event.time && <span className="rounded-xl bg-white/10 px-3 py-2">🕐 {event.time}</span>}
                         {event.location && <span className="max-w-full truncate rounded-xl bg-white/10 px-3 py-2">📍 {event.location}</span>}
                       </div>
@@ -699,12 +699,12 @@ export default function DashboardPage() {
                         <div className="group/stat rounded-lg bg-blue-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-2xl font-black text-2xl font-black text-sky-800">{checkedIn}</p></div>
                       </div>
 
-                      <div className="mt-5 space-y-4">
+                      <div className="mt-4 space-y-3">
                         <ProgressBar label="Taux de confirmation" value={confirmationRate} />
                         <ProgressBar label="Taux d’entrée" value={checkInRate} />
                       </div>
 
-                      <div className="mt-5 flex items-center justify-between border-t border-zinc-100 pt-5">
+                      <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-4">
                         <div><p className="text-xs text-zinc-400">Refusées</p><p className="mt-1 text-sm font-bold text-red-600">{declined}</p></div>
                         <div className="text-right"><p className="text-xs text-zinc-400">Créé le</p><p className="mt-1 text-xs font-bold text-zinc-700">{new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(event.created_at))}</p></div>
                       </div>
