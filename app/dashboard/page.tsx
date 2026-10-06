@@ -1,9 +1,6 @@
 "use client";
 
-import Image from "next/image";
-
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
@@ -130,7 +127,7 @@ function StatCard({
   detail: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-zinc-200/70 bg-white/95 px-3 py-2.5 shadow-[0_4px_18px_rgba(15,23,42,0.05)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md hover:shadow-sky-500/10">
+    <div className="group relative overflow-hidden rounded-[14px] border border-zinc-200/70 bg-white px-3 py-2.5 shadow-[0_3px_14px_rgba(15,23,42,0.04)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md hover:shadow-sky-500/10">
       <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-sky-600/5 blur-2xl transition-all duration-500 group-hover:bg-sky-500/10" />
 
       <div className="relative flex items-center justify-between gap-2">
@@ -171,29 +168,17 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [guests, setGuests] = useState<GuestItem[]>([]);
   const [userName, setUserName] = useState("Adonaï");
-  const [userEmail, setUserEmail] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [motionReady, setMotionReady] = useState(false);
-  const [headerScrolled, setHeaderScrolled] = useState(false);
   const [eventMenuOpen, setEventMenuOpen] = useState<string | null>(null);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setMotionReady(true));
     return () => cancelAnimationFrame(frame);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => setHeaderScrolled(window.scrollY > 10);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -217,9 +202,6 @@ export default function DashboardPage() {
       if (metadataName) {
         setUserName(metadataName);
       }
-
-      setUserEmail(user.email ?? "");
-      setAvatarUrl(user.user_metadata?.avatar_url ?? "");
 
       const { data: eventsData, error: eventsError } = await supabase
         .from("events")
@@ -498,15 +480,15 @@ export default function DashboardPage() {
 
       <div className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-5 sm:py-5 lg:px-8 lg:py-7">
 
-        <section className={["event-studio-shift relative overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(120deg,#09090b,#17134a,#2e1065,#09090b)] px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:px-6 sm:py-7 lg:px-8 lg:py-8 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
+        <section className={["event-studio-shift relative overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(115deg,#07111f,#0b1730,#123b70,#07111f)] px-4 py-5 shadow-[0_20px_55px_rgba(15,23,42,0.13)] sm:px-6 sm:py-6 lg:px-7 lg:py-7 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"].join(" ")}>
           <div className="pointer-events-none absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-sky-500/10 blur-3xl motion-safe:animate-pulse" />
           <div className="pointer-events-none absolute bottom-[-130px] left-1/3 h-80 w-80 rounded-full bg-sky-600/15 blur-3xl motion-safe:animate-pulse" />
 
           <div className="relative flex min-w-0 flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Tableau de bord</p>
-              <h1 className="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">Bonjour {userName} 👋</h1>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-400">Pilotez vos événements, vos invitations et vos invités depuis un seul espace.</p>
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-sky-300">Centre de pilotage</p>
+              <h1 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">Bonjour {userName} 👋</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">Pilotez vos événements, vos invitations et vos invités depuis un seul espace.</p>
               <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-zinc-400">
                 <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">Création</span>
                 <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">RSVP</span>
@@ -535,15 +517,15 @@ export default function DashboardPage() {
 
         {errorMessage && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm font-medium text-red-700">{errorMessage}</div>}
 
-        <section className={["mt-8 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
+        <section className={["mt-6 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")}>
           <div className="mb-4">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Vue générale</p>
-            <h2 className="mt-1 text-2xl font-black tracking-tight">Vos indicateurs</h2>
-            <p className="mt-1 text-sm text-zinc-500">Une vision rapide de votre activité événementielle.</p>
+            <h2 className="mt-0.5 text-xl font-black tracking-tight">Vos indicateurs</h2>
+            <p className="mt-1 text-[10px] font-semibold text-zinc-400">Activité globale</p>
           </div>
 
           {loading ? (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-white" />)}</div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-white" />)}</div>
           ) : (
             <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
               <StatCard icon="▦" label="Événements" value={events.length} detail="Créés par vous" />
@@ -554,9 +536,9 @@ export default function DashboardPage() {
           )}
         </section>
 
-        <section className={["mt-7 grid gap-3 sm:gap-4 lg:mt-8 lg:grid lg:gap-5 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
+        <section className={["mt-6 grid gap-3 lg:grid-cols-[1.35fr_0.65fr] lg:gap-4 transition-all duration-500 ease-out motion-reduce:transition-none lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "120ms" }}>
 
-          <div className="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/95 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+          <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
             <div className="flex min-w-0 items-center justify-between gap-3 border-b border-zinc-100 px-3 py-3 sm:px-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Agenda</p>
@@ -605,7 +587,7 @@ export default function DashboardPage() {
             )}
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-[20px] border border-zinc-200/70 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.045)]">
             <div className="border-b border-zinc-100 px-4 py-3 sm:px-5">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Suivi</p>
               <h2 className="mt-1 text-xl font-black">Activité récente</h2>
@@ -639,7 +621,7 @@ export default function DashboardPage() {
 
         </section>
 
-        <section className={["mt-8 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
+        <section className={["mt-7 transition-all duration-500 ease-out motion-reduce:transition-none",motionReady ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"].join(" ")} style={{ transitionDelay: "220ms" }}>
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Gestion</p>
@@ -651,7 +633,7 @@ export default function DashboardPage() {
           </div>
 
           {loading ? (
-            <div className="grid gap-3 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[2rem] bg-white" />)}</div>
+            <div className="grid gap-3 xl:grid-cols-2">{[1, 2].map((item) => <div key={item} className="h-96 animate-pulse rounded-[20px] bg-white" />)}</div>
           ) : events.length === 0 ? (
             <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-16 text-center shadow-sm">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-sky-700">+</div>
@@ -693,10 +675,10 @@ export default function DashboardPage() {
 
                     <div className="p-4 sm:p-5">
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                        <div className="group/stat rounded-lg bg-zinc-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-500">Invités</p><p className="mt-2 text-2xl font-black text-zinc-900">{total}</p></div>
-                        <div className="group/stat rounded-lg bg-emerald-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-2xl font-black text-emerald-800">{confirmed}</p></div>
-                        <div className="group/stat rounded-lg bg-amber-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-2xl font-black text-amber-800">{pending}</p></div>
-                        <div className="group/stat rounded-lg bg-blue-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-2xl font-black text-2xl font-black text-sky-800">{checkedIn}</p></div>
+                        <div className="group/stat rounded-lg bg-zinc-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-50 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-zinc-500">Invités</p><p className="mt-2 text-base font-black leading-none text-zinc-900">{total}</p></div>
+                        <div className="group/stat rounded-lg bg-emerald-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-emerald-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-emerald-600">Confirmés</p><p className="mt-2 text-base font-black leading-none text-emerald-800">{confirmed}</p></div>
+                        <div className="group/stat rounded-lg bg-amber-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-amber-600">En attente</p><p className="mt-2 text-base font-black leading-none text-amber-800">{pending}</p></div>
+                        <div className="group/stat rounded-lg bg-blue-50 p-2.5 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-100 hover:shadow-md motion-reduce:transition-none"><p className="text-[10px] font-bold uppercase tracking-wide text-sky-700">Entrées</p><p className="mt-2 text-base font-black leading-none text-sky-800">{checkedIn}</p></div>
                       </div>
 
                       <div className="mt-4 space-y-3">
