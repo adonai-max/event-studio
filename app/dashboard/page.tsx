@@ -495,7 +495,7 @@ export default function DashboardPage() {
         }
       `}</style>
 
-      {/* La navigation globale est fournie par le RootLayout. */}eader>
+      {/* La navigation globale est fournie par le RootLayout. */}
 
       <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8 lg:py-10">
 
