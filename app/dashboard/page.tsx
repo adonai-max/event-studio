@@ -166,7 +166,7 @@ export default function DashboardPage() {
   }, [events, guests, nextEvent]);
 
   return <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.06),_transparent_28%),radial-gradient(circle_at_90%_15%,_rgba(14,165,233,0.07),_transparent_25%),#f7f9fc] text-zinc-950">
-    <style jsx>{`@keyframes eventStudioShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.event-studio-shift{background-size:200% 200%;animation:eventStudioShift 16s ease-in-out infinite}@keyframes countdownAlert{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(239,68,68,.16),0 4px 14px rgba(239,68,68,.08)}50%{transform:scale(1.045);box-shadow:0 0 0 5px rgba(239,68,68,.05),0 7px 20px rgba(239,68,68,.16)}}.countdown-alert{animation:countdownAlert 2.2s ease-in-out infinite}.countdown-dot{animation:countdownDot 1.15s ease-in-out infinite}@keyframes countdownDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}@media(prefers-reduced-motion:reduce){.event-studio-shift,.countdown-alert,.countdown-dot{animation:none}}`}</style>
+    <style jsx>{`@keyframes eventStudioShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.event-studio-shift{background-size:200% 200%;animation:eventStudioShift 16s ease-in-out infinite}@keyframes countdownAlert{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(239,68,68,.16),0 4px 14px rgba(239,68,68,.08)}50%{transform:scale(1.045);box-shadow:0 0 0 5px rgba(239,68,68,.05),0 7px 20px rgba(239,68,68,.16)}}.countdown-alert{animation:countdownAlert 2.2s ease-in-out infinite}.countdown-dot{animation:countdownDot 1.15s ease-in-out infinite}@keyframes countdownDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}@media(prefers-reduced-motion:reduce){.event-studio-shift,.countdown-alert,.countdown-dot{animation:none}}.priority-card{animation:priorityGlow 3.8s ease-in-out infinite}.priority-pulse{animation:priorityPulse 1.8s ease-in-out infinite}.watch-pulse{animation:watchPulse 2.4s ease-in-out infinite}@keyframes priorityGlow{0%,100%{box-shadow:0 6px 24px rgba(245,158,11,.08)}50%{box-shadow:0 8px 30px rgba(245,158,11,.18)}}@keyframes priorityPulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 rgba(245,158,11,.18)}50%{opacity:.55;transform:scale(.72);box-shadow:0 0 0 4px rgba(245,158,11,.08)}}@keyframes watchPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}@media(prefers-reduced-motion:reduce){.priority-card,.priority-pulse,.watch-pulse{animation:none}`}</style>
     <div className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-5 sm:py-5 lg:px-8 lg:py-7">
 
       <section className={`event-studio-shift relative overflow-hidden rounded-[22px] bg-[linear-gradient(115deg,#07111f,#0b1730,#123b70,#07111f)] px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.12)] transition-all duration-500 sm:px-6 sm:py-6 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
@@ -233,11 +233,11 @@ export default function DashboardPage() {
               : "Tout est sous contrôle",
           };
         }
-        return <section className="mb-3 overflow-hidden rounded-[18px] border border-sky-100 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)]">
+        return <section className="mb-3 overflow-hidden rounded-[18px] border border-amber-200/80 bg-gradient-to-r from-amber-50/80 via-white to-orange-50/50 shadow-[0_6px_24px_rgba(245,158,11,0.10)] priority-card">
           <div className="flex flex-col gap-2.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-xs font-black text-sky-700 ring-1 ring-sky-100">✦</div>
-              <div className="min-w-0"><p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Priorité</p><p className="truncate text-[11px] font-bold text-zinc-800">{action.label} <span className="font-medium text-zinc-400">· {action.detail}</span></p></div>
+              <div className="min-w-0"><p className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-amber-600"><span className="priority-pulse h-1.5 w-1.5 rounded-full bg-amber-500" />Priorité</p><p className="truncate text-[11px] font-black text-amber-950">{action.label} <span className="font-medium text-amber-700/70">· {action.detail}</span></p></div>
             </div>
             <Link href={action.href} className="inline-flex shrink-0 items-center justify-center rounded-xl bg-zinc-950 px-3 py-2 text-[10px] font-black text-white transition hover:bg-sky-700">{action.label} →</Link>
           </div>
@@ -313,7 +313,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2.5 sm:px-5">
             <div>
               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-sky-700">Pilotage intelligent</p>
-              <h2 className="mt-0.5 text-sm font-black">À surveiller</h2>
+              <h2 className="mt-0.5 flex items-center gap-2 text-sm font-black text-amber-900"><span className="watch-pulse h-2 w-2 rounded-full bg-amber-500" />À surveiller</h2>
             </div>
             <span className="rounded-full bg-zinc-100 px-2 py-1 text-[9px] font-bold text-zinc-500">{attentionItems.length} point{attentionItems.length > 1 ? "s" : ""}</span>
           </div>
