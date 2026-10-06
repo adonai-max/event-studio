@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabase";
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,9 @@ export default function RegisterPage() {
       password,
       options: {
         data: {
-          full_name: fullName,
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          full_name: (firstName.trim() + " " + lastName.trim()).trim(),
         },
       },
     });
@@ -73,21 +76,26 @@ export default function RegisterPage() {
         <form onSubmit={handleRegister} className="space-y-5">
           <div>
             <label
-              htmlFor="fullName"
+              htmlFor="firstName"
               className="mb-2 block text-sm font-medium text-zinc-700"
             >
               Nom complet
             </label>
 
             <input
-              id="fullName"
+              id="firstName"
               type="text"
-              value={fullName}
-              onChange={(event) => setFullName(event.target.value)}
-              placeholder="Votre nom complet"
+              value={firstName}
+              onChange={(event) => setFirstName(event.target.value)}
+              placeholder="Votre prénom"
               required
               className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
             />
+          </div>
+
+          <div>
+            <label htmlFor="lastName" className="mb-2 block text-sm font-medium text-zinc-700">Nom</label>
+            <input id="lastName" type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} placeholder="Votre nom" required className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" />
           </div>
 
           <div>
