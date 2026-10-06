@@ -14,12 +14,17 @@ export default function EventStudioBar() {
   const [userEmail, setUserEmail] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [themeHydrated, setThemeHydrated] = useState(false);
 
   const isDark =
     theme === "dark" ||
     (theme === "system" &&
-      typeof window !== "undefined" &&
+      themeHydrated &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  useEffect(() => {
+    setThemeHydrated(true);
+  }, []);
 
   useEffect(() => {
     let active = true;
