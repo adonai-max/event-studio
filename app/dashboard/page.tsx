@@ -304,7 +304,6 @@ export default function DashboardPage() {
         })}</div>}
       </section>
 
-      <footer className="mt-7 border-t border-zinc-200/80 py-5 text-center"><p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-300">Event Studio</p><p className="mt-1 text-[10px] text-zinc-400">Centre de pilotage événementiel</p></footer>
     </div>
   </main>;
 }
