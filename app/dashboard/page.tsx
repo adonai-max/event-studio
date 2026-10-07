@@ -233,16 +233,20 @@ export default function DashboardPage() {
               : "Tout est sous contrôle",
           };
         }
-        return <section className="mb-3 overflow-hidden rounded-[18px] border border-amber-200/80 bg-gradient-to-r from-amber-50/80 via-white to-orange-50/50 shadow-[0_6px_24px_rgba(245,158,11,0.10)] priority-card">
-          <div className="flex flex-col gap-2.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-xs font-black text-sky-700 ring-1 ring-sky-100">✦</div>
-              <div className="min-w-0"><p className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-amber-600"><span className="priority-pulse h-1.5 w-1.5 rounded-full bg-amber-500" />Priorité</p><p className="truncate text-[11px] font-black text-amber-950">{action.label} <span className="font-medium text-amber-700/70">· {action.detail}</span></p></div>
+        return <section className="mb-2 overflow-hidden rounded-[16px] border border-amber-200/70 bg-gradient-to-r from-amber-50/70 via-white to-orange-50/40 shadow-[0_4px_16px_rgba(245,158,11,0.07)] priority-card">
+          <div className="flex min-h-[48px] items-center justify-between gap-2 px-3 py-2 sm:px-4">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-[11px] font-black text-sky-700 ring-1 ring-sky-100">✦</div>
+              <div className="min-w-0">
+                <p className="flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.16em] text-amber-600">
+                  <span className="priority-pulse h-1.5 w-1.5 rounded-full bg-amber-500" />Priorité
+                </p>
+                <p className="truncate text-[10px] font-black text-amber-950 sm:text-[11px]">{action.label} <span className="font-medium text-amber-700/70">· {action.detail}</span></p>
+              </div>
             </div>
-            <Link href={action.href} className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-zinc-900 bg-zinc-950 px-3 py-2 text-[10px] font-black text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-700 hover:bg-sky-700 hover:shadow-md hover:shadow-sky-500/15">
-  <span>Ouvrir</span>
-  <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-</Link>
+            <Link href={action.href} className="group inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-zinc-900 bg-zinc-950 px-2.5 py-1.5 text-[9px] font-black text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-700 hover:bg-sky-700 hover:shadow-md hover:shadow-sky-500/10">
+              <span>Ouvrir</span><span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+            </Link>
           </div>
         </section>;
       })()}
