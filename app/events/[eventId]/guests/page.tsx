@@ -578,7 +578,7 @@ export default function GuestsPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#f8fafc]">
+      <main className="min-h-screen bg-[#f8fafc] event-page-motion">
         <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-6">
           <div className="text-center">
             <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-indigo-600" />
@@ -593,7 +593,7 @@ export default function GuestsPage() {
 
   if (errorMessage && !eventName) {
     return (
-      <main className="min-h-screen bg-[#f8fafc]">
+      <main className="min-h-screen bg-[#f8fafc] event-page-motion">
         <div className="mx-auto max-w-5xl px-6 py-16">
           <div className="rounded-[28px] border border-red-200 bg-white p-8 shadow-sm">
             <div className="text-4xl">⚠️</div>
@@ -620,7 +620,7 @@ export default function GuestsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
+    <main className="min-h-screen bg-[#f8fafc] event-page-motion">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <EventNavigation eventId={eventId} eventName={eventName} />
 
