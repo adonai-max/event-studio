@@ -62,7 +62,7 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .nav-item{position:relative;z-index:1;display:flex;will-change:transform;min-width:0;align-items:center;justify-content:center;gap:.62rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,245,249,.78));overflow:hidden;transform:translateZ(0);transition:transform 420ms cubic-bezier(.16,1,.3,1),background 260ms ease,border-color 260ms ease,box-shadow 320ms ease;transform-origin:center center}
         .nav-item::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 22%,rgba(255,255,255,.9) 48%,transparent 72%);transform:translateX(-125%);transition:transform 800ms cubic-bezier(.22,1,.36,1)}
         .nav-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-5px;height:3px;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#2563eb,#818cf8);opacity:0;transform:scaleX(.35);transition:opacity 250ms ease,transform 350ms cubic-bezier(.22,1,.36,1)}
-        .nav-item:hover{z-index:50;animation:tabWonder .65s cubic-bezier(.16,1,.3,1) both;background:linear-gradient(145deg,#ffffff 0%,#effaff 55%,#e0f2fe 100%);border-color:rgba(14,165,233,.72);box-shadow:0 20px 42px rgba(14,165,233,.24),0 0 0 3px rgba(56,189,248,.08),inset 0 1px 0 #fff}
+        .nav-item:hover{z-index:50;animation:tabWonderLoop 1.15s cubic-bezier(.22,1,.36,1) infinite;background:linear-gradient(145deg,#ffffff 0%,#effaff 55%,#e0f2fe 100%);border-color:rgba(14,165,233,.72);box-shadow:0 20px 42px rgba(14,165,233,.24),0 0 0 3px rgba(56,189,248,.08),inset 0 1px 0 #fff}
         .nav-item:hover::before{transform:translateX(125%)}
         .nav-item:hover .truncate{transform:translateX(2px) scale(1.035);transition:transform 260ms cubic-bezier(.22,1,.36,1)}
         .nav-item:focus-visible{outline:2px solid rgba(37,99,235,.55);outline-offset:2px}
@@ -73,7 +73,7 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .nav-item:hover .nav-icon{animation:iconWonder .55s cubic-bezier(.16,1,.3,1) both;background:rgba(14,165,233,.12);color:#0369a1!important;box-shadow:0 5px 12px rgba(14,165,233,.12)}
         .nav-item-active .nav-icon{background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff!important;box-shadow:0 8px 18px rgba(37,99,235,.28);animation:iconFloat 2.4s ease-in-out infinite}
         .back-button{position:relative;display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(186,230,253,.95);padding:.46rem .78rem .46rem .5rem;border-radius:1rem;background:linear-gradient(145deg,#ffffff,#f0f9ff);color:#0f3f67!important;box-shadow:0 8px 20px rgba(15,23,42,.07),inset 0 1px 0 rgba(255,255,255,.95);white-space:nowrap;overflow:hidden;transition:transform 280ms cubic-bezier(.22,1,.36,1),box-shadow 280ms ease,border-color 220ms ease,background 220ms ease}
-        .back-button::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.9) 48%,transparent 70%);transform:translateX(-120%);transition:transform 650ms cubic-bezier(.16,1,.3,1)}\n        .back-button:hover{transform:translateX(-3px);color:#075985!important;background:linear-gradient(145deg,#fff,#e0f2fe);border-color:rgba(14,165,233,.48);box-shadow:0 12px 26px rgba(37,99,235,.14),inset 0 1px 0 #fff}\n        .back-button:hover::before{transform:translateX(120%)}
+        .back-button::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.9) 48%,transparent 70%);transform:translateX(-120%);transition:transform 650ms cubic-bezier(.16,1,.3,1)}\n        .back-button:hover{animation:backWonder 1s cubic-bezier(.22,1,.36,1) infinite;color:#075985!important;background:linear-gradient(145deg,#fff,#e0f2fe);border-color:rgba(14,165,233,.48);box-shadow:0 12px 26px rgba(37,99,235,.14),inset 0 1px 0 #fff}\n        .back-button:hover::before{transform:translateX(120%)}
         .back-icon{display:inline-flex;width:2rem;height:2rem;align-items:center;justify-content:center;border-radius:.72rem;background:linear-gradient(135deg,#e0f2fe,#dbeafe);color:#2563eb;box-shadow:inset 0 0 0 1px rgba(147,197,253,.55),0 4px 10px rgba(37,99,235,.1);transition:transform 300ms cubic-bezier(.22,1,.36,1),background 220ms ease,box-shadow 220ms ease}
         .back-icon svg{width:1.08rem;height:1.08rem;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform 300ms cubic-bezier(.22,1,.36,1)}\n        .back-button:hover .back-icon{transform:translateX(-2px) scale(1.05);background:linear-gradient(135deg,#bae6fd,#bfdbfe);box-shadow:inset 0 0 0 1px rgba(96,165,250,.5),0 6px 14px rgba(37,99,235,.15)}\n        .back-button:hover .back-icon svg{transform:translateX(-2px)}
         .dashboard-link:hover{transform:translateY(-2px);color:#1d4ed8!important;background:rgba(219,234,254,.8);box-shadow:0 8px 18px rgba(37,99,235,.1)}
@@ -98,6 +98,8 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         :global(.event-page-motion input:focus),:global(.event-page-motion textarea:focus),:global(.event-page-motion select:focus){transform:translateY(-1px)}
         @keyframes navReveal{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
         @keyframes tabWonder{0%{transform:translate3d(0,0,0) scale(1)}45%{transform:translate3d(0,-9px,0) scale(1.09) rotateX(1deg)}70%{transform:translate3d(0,-6px,0) scale(1.07)}100%{transform:translate3d(0,-7px,0) scale(1.08)}}
+        @keyframes tabWonderLoop{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-7px,0) scale(1.07)}}
+        @keyframes backWonder{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-4px,-2px,0) scale(1.045)}}
         @keyframes ambientDrift{from{transform:translate3d(-1%,-1%,0) scale(1)}to{transform:translate3d(2%,2%,0) scale(1.04)}}
         @keyframes lightSweep{0%,18%{transform:translateX(-170%) skewX(-18deg);opacity:0}35%{opacity:.78}62%,100%{transform:translateX(470%) skewX(-18deg);opacity:0}}
         @keyframes navActive{0%{opacity:0;transform:scaleX(.35)}60%{opacity:1;transform:scaleX(1.06)}100%{opacity:1;transform:scaleX(1)}}
@@ -115,8 +117,9 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
           .back-button{padding:.5rem .62rem}
         }
         @media (prefers-reduced-motion:reduce){
-          .event-navigation-wrap,.event-navigation::before,.event-navigation::after,.nav-item,.nav-icon,.back-button,.dashboard-link,.event-name,:global(.event-page-motion),:global(.event-page-motion .event-motion-card),:global(.event-page-motion section),:global(.event-page-motion article){animation:none!important;transition:none!important}
-          .nav-item:hover,.back-button:hover,.dashboard-link:hover,:global(.event-page-motion .event-motion-card:hover),:global(.event-page-motion .event-motion-interactive:hover){transform:none}
+          .event-navigation-wrap,.event-navigation::before,.event-navigation::after,.event-name,:global(.event-page-motion),:global(.event-page-motion .event-motion-card),:global(.event-page-motion section),:global(.event-page-motion article){animation:none!important;transition:none!important}
+          /* Interactive navigation motion stays enabled: these controls are intentionally animated. */
+          .nav-item,.nav-icon,.back-button,.dashboard-link{transition:transform 220ms ease,background 220ms ease,box-shadow 220ms ease,border-color 220ms ease!important}
         }
       `}</style>
 
