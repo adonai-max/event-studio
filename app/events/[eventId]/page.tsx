@@ -104,6 +104,13 @@ export default function EventPage() {
   }
 
   const eventDetails = details(event);
+  const eventInitials =
+    event.name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((word) => word[0]?.toUpperCase())
+      .join("") || "ES";
 
   return (
     <main className="event-page-motion min-h-screen overflow-hidden bg-[radial-gradient(circle_at_8%_5%,rgba(14,165,233,.15),transparent_27%),radial-gradient(circle_at_92%_10%,rgba(99,102,241,.14),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#f7f8fc_48%,#f8fafc_100%)]">
@@ -153,13 +160,20 @@ export default function EventPage() {
               </div>
             </div>
 
-            <div className="flex flex-col justify-between gap-6 rounded-[26px] border border-white/10 bg-white/[.06] p-5 backdrop-blur-xl">
+            <div className="overview-command-panel flex flex-col justify-between gap-6 rounded-[28px] border border-white/10 bg-white/[.06] p-5 backdrop-blur-xl">
               <div>
-                <p className="text-[9px] font-black uppercase tracking-[.2em] text-slate-500">Votre prochaine action</p>
-                <div className="mt-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-2xl text-slate-950 shadow-lg">✦</div>
-                <h2 className="mt-5 text-xl font-black">Donnez vie à l'événement</h2>
+                <div className="overview-command-visual">
+                  <div className="overview-command-ring overview-command-ring-one" />
+                  <div className="overview-command-ring overview-command-ring-two" />
+                  <span>{eventInitials}</span>
+                </div>
+                <div className="mt-5 flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,.9)]" />
+                  <p className="text-[9px] font-black uppercase tracking-[.2em] text-slate-400">Espace événement</p>
+                </div>
+                <h2 className="mt-3 text-xl font-black">Votre événement prend forme</h2>
                 <p className="mt-2 text-sm leading-6 text-slate-400">
-                  Commencez par l'invitation, puis préparez vos invités et le contrôle d'accès.
+                  Construisez l'expérience de vos invités, de la première invitation jusqu'au contrôle d'accès.
                 </p>
               </div>
               <button
@@ -169,6 +183,22 @@ export default function EventPage() {
                 Modifier l'événement
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="overview-focus-strip event-motion-card mt-7 overflow-hidden rounded-[24px] border border-slate-200/80 bg-white/80 shadow-[0_14px_40px_rgba(15,23,42,.05)] backdrop-blur">
+          <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white shadow-lg shadow-slate-900/15">✦</div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-[.2em] text-sky-600">Fil conducteur</p>
+                <p className="mt-0.5 text-sm font-bold text-slate-800">Créez → organisez → contrôlez</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.12em] text-slate-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+              Une expérience, trois espaces
             </div>
           </div>
         </section>
@@ -317,6 +347,54 @@ export default function EventPage() {
         .overview-sheen {
           animation: overviewSheen 8s ease-in-out infinite;
         }
+.overview-command-panel {
+          position: relative;
+        }
+        .overview-command-visual {
+          position: relative;
+          display: flex;
+          width: 132px;
+          height: 132px;
+          align-items: center;
+          justify-content: center;
+          margin: 2px auto 0;
+          overflow: hidden;
+          border-radius: 38px;
+          border: 1px solid rgba(125,211,252,.18);
+          background: radial-gradient(circle at 50% 35%,rgba(56,189,248,.22),transparent 42%),rgba(2,6,23,.34);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 45px rgba(0,0,0,.16);
+        }
+        .overview-command-visual span {
+          position: relative;
+          z-index: 2;
+          font-size: 31px;
+          font-weight: 950;
+          letter-spacing: -.06em;
+          color: #fff;
+          text-shadow: 0 0 28px rgba(56,189,248,.35);
+        }
+        .overview-command-ring {
+          position: absolute;
+          border: 1px solid rgba(125,211,252,.18);
+          border-radius: 9999px;
+        }
+        .overview-command-ring-one {
+          inset: 14px;
+          animation: overviewRing 8s linear infinite;
+        }
+        .overview-command-ring-two {
+          inset: 30px;
+          border-color: rgba(129,140,248,.22);
+          animation: overviewRing 6s linear infinite reverse;
+        }
+        .overview-focus-strip {
+          transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+        }
+        .overview-focus-strip:hover {
+          transform: translateY(-2px);
+          border-color: rgba(125,211,252,.45);
+          box-shadow: 0 18px 45px rgba(15,23,42,.08);
+        }
         .overview-glass {
           transition: transform .25s ease, background .25s ease, border-color .25s ease;
         }
@@ -397,9 +475,14 @@ export default function EventPage() {
           55% { opacity: .75; }
           75%, 100% { transform: translateX(520%) rotate(12deg); opacity: 0; }
         }
+        @keyframes overviewRing {
+          from { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.05); }
+          to { transform: rotate(360deg) scale(1); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .overview-orb, .overview-sheen { animation: none; }
-          .overview-action, .overview-icon, .overview-detail, .overview-glass { transition: none; }
+          .overview-orb, .overview-sheen, .overview-command-ring-one, .overview-command-ring-two { animation: none; }
+          .overview-action, .overview-icon, .overview-detail, .overview-glass, .overview-focus-strip { transition: none; }
         }
       `}</style>
     </main>
