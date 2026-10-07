@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
+import EventNavigation from "@/app/components/EventNavigation";
 
 type EventItem = {
   id: string;
@@ -111,6 +112,8 @@ export default function EventPage() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+
+                <EventNavigation eventId={event.id} eventName={event.name} />
 
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white/90 px-5 py-4 shadow-sm backdrop-blur">
           <div className="min-w-0"><p className="text-[10px] font-black uppercase tracking-[0.18em] text-sky-600">Espace événement</p><p className="mt-1 truncate text-sm font-bold text-zinc-900">{event.name}</p></div>

@@ -1,105 +1,333 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type EventNavigationProps = {
-  eventId: string;
+  eventId?: string;
+  eventName?: string;
+  backHref?: string;
 };
 
 export default function EventNavigation({
   eventId,
+  eventName,
+  backHref = "/dashboard",
 }: EventNavigationProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
-  const basePath = `/events/${eventId}`;
+  const tabs = eventId
+    ? [
+        {
+          href: "/events/" + eventId,
+          label: "Vue événement",
+          icon: "⌂",
+          exact: true,
+        },
+        {
+          href: "/events/" + eventId + "/invitation",
+          label: "Invitation",
+          icon: "✦",
+          exact: false,
+        },
+        {
+          href: "/events/" + eventId + "/guests",
+          label: "Invités",
+          icon: "◎",
+          exact: false,
+        },
+        {
+          href: "/events/" + eventId + "/control",
+          label: "Event Control",
+          icon: "⌁",
+          exact: false,
+        },
+      ]
+    : [];
 
-  const tabs = [
-    {
-      href: basePath,
-      label: "Vue générale",
-      icon: "🏠",
-    },
-    {
-      href: `${basePath}/invitation`,
-      label: "Invitation",
-      icon: "💌",
-    },
-    {
-      href: `${basePath}/guests`,
-      label: "Invités",
-      icon: "👥",
-    },
-    {
-      href: `${basePath}/control`,
-      label: "Event Control",
-      icon: "🎛️",
-    },
-  ];
+  const isActive = (tab: (typeof tabs)[number]) =>
+    tab.exact ? pathname === tab.href : pathname.startsWith(tab.href);
+
+  function handleBack() {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(backHref);
+    }
+  }
 
   return (
-    <nav className="mb-8 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
-      <div className="flex flex-col gap-4 border-b border-zinc-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+    <div className="event-navigation-wrap">
+      <style jsx>{`
+        .event-navigation-wrap {
+          position: relative;
+          z-index: 20;
+          margin-bottom: 1.25rem;
+        }
+
+        .event-navigation {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(148, 163, 184, 0.20);
+          background:
+            linear-gradient(
+              135deg,
+              rgba(255,255,255,.96),
+              rgba(248,250,252,.90)
+            );
+          box-shadow:
+            0 12px 35px rgba(15,23,42,.07),
+            inset 0 1px 0 rgba(255,255,255,.90);
+          backdrop-filter: blur(18px);
+        }
+
+        .event-navigation::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            radial-gradient(
+              circle at 10% 0%,
+              rgba(56,189,248,.10),
+              transparent 30%
+            ),
+            radial-gradient(
+              circle at 90% 100%,
+              rgba(37,99,235,.08),
+              transparent 30%
+            );
+        }
+
+        .nav-scroll {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: .4rem;
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+
+        .nav-scroll::-webkit-scrollbar {
+          display: none;
+        }
+
+        .nav-item {
+          position: relative;
+          display: inline-flex;
+          flex: 0 0 auto;
+          align-items: center;
+          gap: .5rem;
+          border-radius: .9rem;
+          color: rgb(100 116 139);
+          transition:
+            transform 260ms cubic-bezier(.22,1,.36,1),
+            color 260ms ease,
+            background 260ms ease,
+            box-shadow 260ms ease;
+        }
+
+        .nav-item:hover {
+          transform: translateY(-1px);
+          color: rgb(15 23 42);
+          background: rgba(14,165,233,.06);
+        }
+
+        .nav-item-active {
+          color: rgb(3 105 161);
+          background:
+            linear-gradient(
+              135deg,
+              rgba(224,242,254,.92),
+              rgba(239,246,255,.82)
+            );
+          box-shadow:
+            0 6px 18px rgba(14,165,233,.08),
+            inset 0 1px 0 rgba(255,255,255,.9);
+        }
+
+        .nav-item-active::after {
+          content: "";
+          position: absolute;
+          left: 18%;
+          right: 18%;
+          bottom: 0;
+          height: 2px;
+          border-radius: 999px;
+          background: linear-gradient(
+            90deg,
+            rgb(56 189 248),
+            rgb(37 99 235),
+            rgb(29 78 216)
+          );
+          box-shadow: 0 0 12px rgba(37,99,235,.38);
+          animation: navActive .35s cubic-bezier(.22,1,.36,1) both;
+        }
+
+        .nav-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.65rem;
+          height: 1.65rem;
+          border-radius: .55rem;
+          font-size: .78rem;
+          background: rgba(148,163,184,.10);
+          transition:
+            transform 260ms ease,
+            background 260ms ease,
+            box-shadow 260ms ease;
+        }
+
+        .nav-item:hover .nav-icon {
+          transform: scale(1.08);
+          background: rgba(14,165,233,.10);
+        }
+
+        .nav-item-active .nav-icon {
+          background: linear-gradient(
+            135deg,
+            rgb(14 165 233),
+            rgb(37 99 235)
+          );
+          color: white;
+          box-shadow: 0 5px 12px rgba(37,99,235,.20);
+        }
+
+        .back-button {
+          display: inline-flex;
+          align-items: center;
+          gap: .45rem;
+          flex: 0 0 auto;
+          border-radius: .8rem;
+          color: rgb(71 85 105);
+          transition:
+            transform 240ms ease,
+            color 240ms ease,
+            background 240ms ease;
+        }
+
+        .back-button:hover {
+          transform: translateX(-2px);
+          color: rgb(3 105 161);
+          background: rgba(14,165,233,.07);
+        }
+
+        .dashboard-link {
+          display: inline-flex;
+          align-items: center;
+          gap: .45rem;
+          flex: 0 0 auto;
+          border-radius: .8rem;
+          color: rgb(71 85 105);
+          transition:
+            transform 240ms ease,
+            color 240ms ease,
+            background 240ms ease;
+        }
+
+        .dashboard-link:hover {
+          transform: translateY(-1px);
+          color: rgb(3 105 161);
+          background: rgba(14,165,233,.07);
+        }
+
+        @keyframes navActive {
+          from {
+            opacity: 0;
+            transform: scaleX(.45);
+          }
+          to {
+            opacity: 1;
+            transform: scaleX(1);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .nav-item,
+          .nav-icon,
+          .back-button,
+          .dashboard-link {
+            transition: none;
+          }
+
+          .nav-item:hover,
+          .back-button:hover,
+          .dashboard-link:hover {
+            transform: none;
+          }
+
+          .nav-item-active::after {
+            animation: none;
+          }
+        }
+      `}</style>
+
+      <div className="event-navigation rounded-[20px] px-2 py-2 sm:px-3">
+        <div className="relative flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="back-button px-3 py-2.5 text-[11px] font-bold"
+            aria-label="Retour à la page précédente"
+            title="Retour à la page précédente"
+          >
+            <span className="text-base">←</span>
+            <span className="hidden sm:inline">Retour</span>
+          </button>
+
+          <div className="h-6 w-px shrink-0 bg-zinc-200" />
+
+          <nav
+            className="nav-scroll min-w-0 flex-1 px-0.5 py-0.5"
+            aria-label="Navigation de l'événement"
+          >
+            {tabs.map((tab) => {
+              const active = isActive(tab);
+
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  className={[
+                    "nav-item px-2.5 py-2 sm:px-3.5 sm:py-2.5",
+                    active ? "nav-item-active font-black" : "font-semibold",
+                  ].join(" ")}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <span className="nav-icon" aria-hidden="true">
+                    {tab.icon}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px]">
+                    {tab.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="hidden h-6 w-px shrink-0 bg-zinc-200 md:block" />
+
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950"
+            className="dashboard-link hidden px-3 py-2.5 text-[11px] font-bold md:inline-flex"
+            title="Retour au Dashboard"
           >
-            <span className="text-lg">←</span>
-            Retour au tableau de bord
+            <span aria-hidden="true">⌂</span>
+            Dashboard
           </Link>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-sm">
-            ES
+        {eventName && (
+          <div className="mt-1 flex items-center gap-2 border-t border-zinc-100 px-2.5 pt-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-sky-500 shadow-[0_0_0_3px_rgba(14,165,233,.08)]" />
+            <span className="truncate text-[9px] font-bold uppercase tracking-[0.16em] text-zinc-400">
+              {eventName}
+            </span>
           </div>
-
-          <div>
-            <p className="text-sm font-bold text-zinc-900">
-              Event Studio
-            </p>
-            <p className="text-xs text-zinc-500">
-              Gestion de votre événement
-            </p>
-          </div>
-        </div>
+        )}
       </div>
-
-      <div className="overflow-x-auto">
-        <div className="flex min-w-max gap-1 px-3 py-3 sm:px-5">
-          {tabs.map((tab) => {
-            const isActive =
-              tab.href === basePath
-                ? pathname === basePath
-                : pathname.startsWith(tab.href);
-
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                className={[
-                  "group inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold transition-all",
-                  isActive
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950",
-                ].join(" ")}
-              >
-                <span
-                  className={[
-                    "text-base transition-transform",
-                    isActive ? "" : "group-hover:scale-110",
-                  ].join(" ")}
-                >
-                  {tab.icon}
-                </span>
-
-                <span>{tab.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </nav>
+    </div>
   );
 }

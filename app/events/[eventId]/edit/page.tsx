@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../../../lib/supabase";
+import EventNavigation from "@/app/components/EventNavigation";
 
 type EventForm = {
   name: string;
@@ -147,6 +148,7 @@ export default function EditEventPage() {
     return (
       <main className="min-h-screen bg-slate-50 px-6 py-12">
         <div className="mx-auto max-w-4xl">
+        <EventNavigation eventId={eventId} />
           <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
             <div className="h-8 w-64 animate-pulse rounded-lg bg-zinc-200" />
 

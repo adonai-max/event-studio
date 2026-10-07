@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import QRScanner from "../../../../components/QRScanner";
+import EventNavigation from "@/app/components/EventNavigation";
 import { supabase } from "../../../../lib/supabase";
 
 type GuestType = "individual" | "couple";
@@ -504,6 +505,8 @@ export default function EventControlPage() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
+        <EventNavigation eventId={eventId} eventName={event.name} />
+
         <div className="mb-5 sm:mb-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
