@@ -187,15 +187,7 @@ export default function EditEventPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8 event-page-motion">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6">
-          <Link
-            href={`/events/${eventId}`}
-            className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-zinc-600 transition hover:bg-white hover:text-zinc-950"
-          >
-            <span className="text-lg">←</span>
-            Retour à l&apos;événement
-          </Link>
-        </div>
+        <EventNavigation eventId={eventId} eventName={form.name || "Modifier l'événement"} />
 
         <section className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
           <div className="border-b border-zinc-100 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 px-6 py-8 text-white sm:px-8">
