@@ -84,9 +84,12 @@ export default function EventNavigation({
           gap: .45rem;
           overflow-x: auto;
           scrollbar-width: none;
+          -ms-overflow-style: none;
           padding: .1rem;
         }
-        .nav-scroll::-webkit-scrollbar { display: none; }
+        .nav-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; background: transparent; }
+        .nav-scroll::-webkit-scrollbar-track,
+        .nav-scroll::-webkit-scrollbar-thumb { background: transparent; border: 0; }
 
         .nav-item {
           position: relative;
@@ -127,6 +130,9 @@ export default function EventNavigation({
           color: #000 !important;
         }
         .nav-item > span:last-child { color: #000 !important; }
+        .nav-item-active > span:last-child { color: #000 !important; }
+        .dashboard-link > span:last-child { color: #000 !important; font-weight: 900; }
+        .dashboard-link, .dashboard-link:visited, .dashboard-link:link, .dashboard-link:hover, .dashboard-link:focus, .dashboard-link:active { color: #000 !important; }
         .nav-item:hover {
           transform: translateY(-2px) scale(1.015);
           background: rgba(239,249,255,.98);
