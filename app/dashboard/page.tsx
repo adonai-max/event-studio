@@ -239,7 +239,10 @@ export default function DashboardPage() {
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-xs font-black text-sky-700 ring-1 ring-sky-100">✦</div>
               <div className="min-w-0"><p className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-amber-600"><span className="priority-pulse h-1.5 w-1.5 rounded-full bg-amber-500" />Priorité</p><p className="truncate text-[11px] font-black text-amber-950">{action.label} <span className="font-medium text-amber-700/70">· {action.detail}</span></p></div>
             </div>
-            <Link href={action.href} className="inline-flex shrink-0 items-center justify-center rounded-xl bg-zinc-950 px-3 py-2 text-[10px] font-black text-white transition hover:bg-sky-700">{action.label} →</Link>
+            <Link href={action.href} className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-zinc-900 bg-zinc-950 px-3 py-2 text-[10px] font-black text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-700 hover:bg-sky-700 hover:shadow-md hover:shadow-sky-500/15">
+  <span>Ouvrir</span>
+  <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+</Link>
           </div>
         </section>;
       })()}
