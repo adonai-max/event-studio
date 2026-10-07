@@ -187,18 +187,23 @@ export default function EventPage() {
           </div>
         </section>
 
-        <section className="overview-focus-strip event-motion-card mt-7 overflow-hidden rounded-[24px] border border-slate-200/80 bg-white/80 shadow-[0_14px_40px_rgba(15,23,42,.05)] backdrop-blur">
-          <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white shadow-lg shadow-slate-900/15">✦</div>
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-[.2em] text-sky-600">Fil conducteur</p>
-                <p className="mt-0.5 text-sm font-bold text-slate-800">Créez → organisez → contrôlez</p>
+        <section className="overview-focus-strip event-motion-card mt-7 overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/85 shadow-[0_16px_45px_rgba(15,23,42,.055)] backdrop-blur">
+          <div className="px-5 py-5 sm:px-7">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="overview-focus-mark">✦</div>
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[.2em] text-sky-600">Fil conducteur</p>
+                  <p className="mt-0.5 text-sm font-black text-slate-800">Un parcours pensé pour avancer sans friction</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.12em] text-slate-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-              Une expérience, trois espaces
+              <div className="overview-steps" aria-label="Parcours Event Studio">
+                <div className="overview-step overview-step-active"><span>01</span><b>Créez</b></div>
+                <i />
+                <div className="overview-step"><span>02</span><b>Organisez</b></div>
+                <i />
+                <div className="overview-step"><span>03</span><b>Contrôlez</b></div>
+              </div>
             </div>
           </div>
         </section>
@@ -390,6 +395,68 @@ export default function EventPage() {
         .overview-focus-strip {
           transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
         }
+        .overview-focus-mark {
+          display:flex;
+          width:42px;
+          height:42px;
+          flex:0 0 auto;
+          align-items:center;
+          justify-content:center;
+          border-radius:14px;
+          color:#fff;
+          background:linear-gradient(135deg,#0f172a,#334155);
+          box-shadow:0 10px 22px rgba(15,23,42,.16);
+          animation:focusMarkPulse 3.5s ease-in-out infinite;
+        }
+        .overview-steps {
+          display:flex;
+          align-items:center;
+          gap:.55rem;
+        }
+        .overview-steps i {
+          width:34px;
+          height:1px;
+          background:linear-gradient(90deg,#bae6fd,#cbd5e1);
+        }
+        .overview-step {
+          display:flex;
+          align-items:center;
+          gap:.5rem;
+          padding:.45rem .65rem;
+          border-radius:999px;
+          color:#94a3b8;
+          background:#f8fafc;
+          border:1px solid #e2e8f0;
+          transition:transform .25s ease,border-color .25s ease,background .25s ease;
+        }
+        .overview-step span {
+          display:flex;
+          width:22px;
+          height:22px;
+          align-items:center;
+          justify-content:center;
+          border-radius:999px;
+          font-size:8px;
+          font-weight:900;
+          background:#e2e8f0;
+          color:#64748b;
+        }
+        .overview-step b {
+          font-size:9px;
+          text-transform:uppercase;
+          letter-spacing:.12em;
+        }
+        .overview-step-active {
+          color:#1d4ed8;
+          background:#eff8ff;
+          border-color:#bae6fd;
+          box-shadow:0 8px 20px rgba(37,99,235,.08);
+        }
+        .overview-step-active span {
+          color:#fff;
+          background:linear-gradient(135deg,#0ea5e9,#2563eb);
+        }
+        .overview-step:hover { transform:translateY(-2px); border-color:#93c5fd; }
         .overview-focus-strip:hover {
           transform: translateY(-2px);
           border-color: rgba(125,211,252,.45);
@@ -480,9 +547,19 @@ export default function EventPage() {
           50% { transform: rotate(180deg) scale(1.05); }
           to { transform: rotate(360deg) scale(1); }
         }
+        @keyframes focusMarkPulse {
+          0%,100% { box-shadow:0 10px 22px rgba(15,23,42,.16); transform:translateY(0); }
+          50% { box-shadow:0 14px 28px rgba(37,99,235,.18); transform:translateY(-2px); }
+        }
+        @media (max-width: 767px) {
+          .overview-steps { width:100%; justify-content:space-between; gap:.35rem; }
+          .overview-steps i { flex:1; min-width:10px; }
+          .overview-step { padding:.4rem .5rem; }
+          .overview-step b { font-size:8px; }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .overview-orb, .overview-sheen, .overview-command-ring-one, .overview-command-ring-two { animation: none; }
-          .overview-action, .overview-icon, .overview-detail, .overview-glass, .overview-focus-strip { transition: none; }
+          .overview-orb, .overview-sheen, .overview-command-ring-one, .overview-command-ring-two, .overview-focus-mark { animation:none; }
+          .overview-action, .overview-icon, .overview-detail, .overview-glass, .overview-focus-strip, .overview-step { transition:none; }
         }
       `}</style>
     </main>
