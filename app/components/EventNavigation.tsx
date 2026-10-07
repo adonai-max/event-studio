@@ -204,10 +204,15 @@ export default function EventNavigation({
                   key={tab.href}
                   href={tab.href}
                   className={["nav-item px-3 py-2 sm:px-4", active ? "nav-item-active font-black" : "font-semibold"].join(" ")}
+                  style={{ color: "#000000" }}
                   aria-current={active ? "page" : undefined}
                 >
-                  <span className="nav-icon" aria-hidden="true">{tab.icon}</span>
-                  <span className="text-[10px] sm:text-[11px]">{tab.label}</span>
+                  <span className="nav-icon" style={{ color: active ? "#ffffff" : "#000000" }} aria-hidden="true">
+                    {tab.icon}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px]" style={{ color: "#000000" }}>
+                    {tab.label}
+                  </span>
                 </Link>
               );
             })}
