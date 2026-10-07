@@ -19,10 +19,10 @@ export default function EventNavigation({
 
   const tabs = eventId
     ? [
-        { href: "/events/" + eventId, label: "Vue événement", shortLabel: "Vue", icon: "⌂", step: "01", exact: true },
-        { href: "/events/" + eventId + "/invitation", label: "Invitation", shortLabel: "Invitation", icon: "✦", step: "02", exact: false },
-        { href: "/events/" + eventId + "/guests", label: "Invités", shortLabel: "Invités", icon: "◎", step: "03", exact: false },
-        { href: "/events/" + eventId + "/control", label: "Event Control", shortLabel: "Control", icon: "⌁", step: "04", exact: false },
+        { href: "/events/" + eventId, label: "Vue événement", shortLabel: "Vue", icon: "▦", exact: true },
+        { href: "/events/" + eventId + "/invitation", label: "Invitation", shortLabel: "Invitation", icon: "◇", exact: false },
+        { href: "/events/" + eventId + "/guests", label: "Invités", shortLabel: "Invités", icon: "♙", exact: false },
+        { href: "/events/" + eventId + "/control", label: "Event Control", shortLabel: "Control", icon: "◉", exact: false },
       ]
     : [];
 
@@ -94,8 +94,8 @@ export default function EventNavigation({
           min-width: 0;
           align-items: center;
           justify-content: center;
-          gap: .65rem;
-          min-height: 3.85rem;
+          gap: .7rem;
+          min-height: 3.7rem;
           border: 1px solid rgba(226,232,240,.88);
           border-radius: 1.05rem;
           color: #0f172a !important;
@@ -148,42 +148,21 @@ export default function EventNavigation({
         .nav-icon {
           position:relative;
           display:inline-flex;
-          width:2.25rem;
-          height:2.25rem;
+          width:2.15rem;
+          height:2.15rem;
           flex:0 0 auto;
           align-items:center;
           justify-content:center;
           border-radius:.72rem;
-          font-size:.9rem;
+          font-size:.98rem;
           background:#f1f5f9;
           color:#0f172a !important;
           box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);
           transition:transform 320ms cubic-bezier(.22,1,.36,1),background 260ms ease,color 260ms ease,box-shadow 320ms ease;
         }
-        .nav-step {
-          position:absolute;
-          right:.42rem;
-          top:.38rem;
-          font-size:7px;
-          font-weight:900;
-          letter-spacing:.08em;
-          color:#94a3b8;
-          opacity:.75;
-        }
         .nav-item:hover .nav-icon { transform:translateY(-2px) rotate(-4deg) scale(1.08);background:rgba(14,165,233,.12);color:#000 !important;box-shadow:0 5px 12px rgba(14,165,233,.12); }
         .nav-item-active .nav-icon { background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff !important;box-shadow:0 7px 16px rgba(37,99,235,.25);animation:iconFloat 2.8s ease-in-out infinite; }
-        .nav-item-active .nav-step { color:#2563eb;opacity:1; }
-        .back-button,.dashboard-link {
-          display:inline-flex;
-          align-items:center;
-          gap:.45rem;
-          flex:0 0 auto;
-          border-radius:.82rem;
-          color:#0f172a !important;
-          background:rgba(248,250,252,.9);
-          transition:transform 260ms cubic-bezier(.22,1,.36,1),color 240ms ease,background 240ms ease,box-shadow 240ms ease;
-        }
-        .back-button:hover { transform:translateX(-3px);color:#1d4ed8 !important;background:rgba(219,234,254,.7); }
+        .back-button { border:1px solid rgba(226,232,240,.9); padding:.62rem .8rem; box-shadow:0 6px 16px rgba(15,23,42,.05); }\n        .back-button:hover { transform:translateX(-2px);color:#1d4ed8 !important;background:rgba(219,234,254,.72);box-shadow:0 9px 20px rgba(37,99,235,.10); }
         .dashboard-link:hover { transform:translateY(-2px);color:#1d4ed8 !important;background:rgba(219,234,254,.8);box-shadow:0 8px 18px rgba(37,99,235,.1); }
         .dashboard-icon {
           display:inline-flex;
@@ -196,7 +175,7 @@ export default function EventNavigation({
           background:linear-gradient(135deg,#0ea5e9,#2563eb);
           box-shadow:0 5px 13px rgba(37,99,235,.22);
         }
-        .event-name { color:#0f172a !important;animation:nameIn .7s .15s cubic-bezier(.22,1,.36,1) both; }
+        .back-icon { display:inline-flex; width:1.8rem; height:1.8rem; align-items:center; justify-content:center; border-radius:.62rem; background:#fff; color:#2563eb; box-shadow:inset 0 0 0 1px rgba(226,232,240,.95); font-size:1rem; font-weight:900; }\n        .event-name { color:#0f172a !important;animation:nameIn .7s .15s cubic-bezier(.22,1,.36,1) both; }
         :global(.event-page-motion){animation:pageEnter .58s cubic-bezier(.22,1,.36,1) both;}
         :global(.event-page-motion .event-motion-card){animation:cardEnter .62s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--motion-delay,80ms);}
         :global(.event-page-motion .event-motion-card:nth-child(2)){--motion-delay:130ms;}
@@ -224,7 +203,7 @@ export default function EventNavigation({
         @keyframes cardEnter{from{opacity:0;transform:translateY(10px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
         @media (max-width:767px){
           .nav-scroll{grid-template-columns:repeat(4,minmax(148px,1fr));}
-          .nav-item{min-height:3.45rem;justify-content:flex-start;padding-left:.8rem!important;}
+          .nav-item{min-height:3.35rem;justify-content:flex-start;padding-left:.75rem!important;}
           .nav-step{display:none;}
           .event-navigation{border-radius:20px;}
         }
@@ -237,15 +216,11 @@ export default function EventNavigation({
       <div className="event-navigation rounded-[22px] px-2.5 py-2.5 sm:px-3.5">
         <div className="relative flex items-center gap-2">
           <button type="button" onClick={handleBack} className="back-button px-3 py-2.5 text-[11px] font-bold" aria-label="Retour à la page précédente" title="Retour à la page précédente">
-            <span className="text-base">←</span>
+            <span className="back-icon" aria-hidden="true">‹</span>
             <span className="hidden sm:inline">Retour</span>
           </button>
 
           <div className="mx-0.5 hidden h-7 w-px shrink-0 bg-zinc-200 sm:block" />
-
-          <div className="hidden shrink-0 px-1 sm:block">
-            <span className="text-[8px] font-black uppercase tracking-[.16em] text-zinc-900">Navigation</span>
-          </div>
 
           <nav className="nav-scroll min-w-0 flex-1 px-0.5 py-1" aria-label="Navigation de l'événement">
             {tabs.map((tab) => {
@@ -256,15 +231,15 @@ export default function EventNavigation({
                   href={tab.href}
                   className={[
                     "nav-item px-3 sm:px-4",
-                    active ? "nav-item-active font-black" : "font-bold",
+                    active ? "nav-item-active font-black" : "font-semibold",
                   ].join(" ")}
                   aria-current={active ? "page" : undefined}
                 >
                   <span className="nav-icon" aria-hidden="true">
                     {tab.icon}
-                    <span className="nav-step">{tab.step}</span>
+                    
                   </span>
-                  <span className="truncate text-[11px] tracking-[-.01em] sm:text-[12px]">
+                  <span className="truncate text-[11px] tracking-[-.015em] sm:text-[13px]">
                     <span className="sm:hidden">{tab.shortLabel}</span>
                     <span className="hidden sm:inline">{tab.label}</span>
                   </span>
