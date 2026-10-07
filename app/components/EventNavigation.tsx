@@ -15,13 +15,13 @@ const iconMap = {
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
   ),
   invitation: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16A1.5 1.5 0 0 1 21.5 7v10A1.5 1.5 0 0 1 20 18.5H4A1.5 1.5 0 0 1 2.5 17V7A1.5 1.5 0 0 1 4 5.5Z" /><path d="m3.5 7 8.5 6 8.5-6" /><path d="M7.5 10.2 4 17M16.5 10.2 20 17" /></svg>
   ),
   guests: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3.5 19a5.5 5.5 0 0 1 11 0" /><circle cx="17" cy="9" r="2.5" /><path d="M15 19a4 4 0 0 1 5.5-3.7" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3" /><path d="M3 19.5a5.5 5.5 0 0 1 11 0" /><circle cx="17.2" cy="9" r="2.4" /><path d="M14.7 19.5a4.1 4.1 0 0 1 6.1-3.55" /><path d="M5.5 15.2c1.8.7 4.2.7 6 0" /></svg>
   ),
   control: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" /><circle cx="8" cy="7" r="2" /><circle cx="16" cy="12" r="2" /><circle cx="10" cy="17" r="2" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M7 8h10M7 12h10M7 16h6" /><circle cx="17" cy="16" r="1.6" /></svg>
   ),
   dashboard: (
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5" /><path d="M6.5 9.5V20h11V9.5M10 20v-5h4v5" /></svg>
@@ -100,14 +100,14 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .nav-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-5px;height:3px;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#2563eb,#818cf8);opacity:0;transform:scaleX(.35);transition:opacity 250ms ease,transform 350ms cubic-bezier(.22,1,.36,1)}
         .nav-item:hover{z-index:50;animation:tabWonderLoop 1.9s cubic-bezier(.22,1,.36,1) infinite;background:linear-gradient(145deg,#ffffff 0%,#effaff 55%,#e0f2fe 100%);border-color:rgba(14,165,233,.72);box-shadow:0 20px 42px rgba(14,165,233,.24),0 0 0 3px rgba(56,189,248,.08),inset 0 1px 0 #fff}
         .nav-item:hover::before{transform:translateX(125%)}
-        .nav-item:hover .truncate{transform:translateX(2px) scale(1.035);transition:transform 260ms cubic-bezier(.22,1,.36,1)}
+        .nav-item:hover .truncate{transform:translateX(2px) scale(1.035);transition:transform 260ms cubic-bezier(.22,1,.36,1)}.nav-item:hover .truncate{color:#075985!important;text-shadow:0 2px 8px rgba(14,165,233,.1)}
         .nav-item:focus-visible{outline:2px solid rgba(37,99,235,.55);outline-offset:2px}
         .nav-item-active{color:#075985!important;background:linear-gradient(135deg,#ecfeff 0%,#e0f2fe 48%,#dbeafe 100%);border-color:rgba(14,165,233,.48);box-shadow:0 18px 36px rgba(14,165,233,.17),inset 0 1px 0 #fff;animation:activeTabBreath 3.2s ease-in-out infinite}
         .nav-item-active::after{opacity:1;transform:scaleX(1);animation:navActive .45s cubic-bezier(.22,1,.36,1) both}
         .nav-icon{position:relative;display:inline-flex;width:2.05rem;height:2.05rem;flex:0 0 auto;align-items:center;justify-content:center;border-radius:.7rem;font-size:.98rem;background:#f1f5f9;color:#0f172a!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);transition:transform 320ms cubic-bezier(.22,1,.36,1),background 260ms ease,color 260ms ease,box-shadow 320ms ease}
-        .nav-icon svg{width:1.05rem;height:1.05rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-        .nav-item:hover .nav-icon{animation:iconWonder .9s cubic-bezier(.16,1,.3,1) both;background:rgba(14,165,233,.12);color:#0369a1!important;box-shadow:0 5px 12px rgba(14,165,233,.12)}
-        .nav-item-active .nav-icon{background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff!important;box-shadow:0 8px 18px rgba(37,99,235,.28);animation:iconFloat 2.4s ease-in-out infinite}
+        .nav-icon svg{width:1.1rem;height:1.1rem;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+        .nav-item:hover .nav-icon{animation:iconWonder .9s cubic-bezier(.16,1,.3,1) both;background:linear-gradient(135deg,rgba(14,165,233,.18),rgba(99,102,241,.13));color:#0369a1!important;box-shadow:0 6px 15px rgba(14,165,233,.16),inset 0 0 0 1px rgba(255,255,255,.85)}
+        .nav-item-active .nav-icon{background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff!important;box-shadow:0 8px 18px rgba(37,99,235,.28);animation:iconFloat 2.4s ease-in-out infinite}.nav-item-active .nav-icon svg{filter:drop-shadow(0 1px 2px rgba(15,23,42,.18))}
         .back-button{position:relative;display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(186,230,253,.95);padding:.46rem .78rem .46rem .5rem;border-radius:1rem;background:linear-gradient(145deg,#ffffff,#f0f9ff);color:#0f3f67!important;box-shadow:0 8px 20px rgba(15,23,42,.07),inset 0 1px 0 rgba(255,255,255,.95);white-space:nowrap;overflow:hidden;transition:transform 280ms cubic-bezier(.22,1,.36,1),box-shadow 280ms ease,border-color 220ms ease,background 220ms ease}
         .back-button::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.9) 48%,transparent 70%);transform:translateX(-120%);transition:transform 650ms cubic-bezier(.16,1,.3,1)}\n        .back-button:hover{animation:backWonder 1.7s cubic-bezier(.22,1,.36,1) infinite;color:#075985!important;background:linear-gradient(145deg,#fff,#e0f2fe);border-color:rgba(14,165,233,.48);box-shadow:0 12px 26px rgba(37,99,235,.14),inset 0 1px 0 #fff}\n        .back-button:hover::before{transform:translateX(120%)}
         .back-icon{display:inline-flex;width:2rem;height:2rem;align-items:center;justify-content:center;border-radius:.72rem;background:linear-gradient(135deg,#e0f2fe,#dbeafe);color:#2563eb;box-shadow:inset 0 0 0 1px rgba(147,197,253,.55),0 4px 10px rgba(37,99,235,.1);transition:transform 300ms cubic-bezier(.22,1,.36,1),background 220ms ease,box-shadow 220ms ease}
