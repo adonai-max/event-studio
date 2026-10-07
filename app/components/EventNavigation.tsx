@@ -37,23 +37,44 @@ export default function EventNavigation({
   return (
     <div className="event-navigation-wrap">
       <style jsx>{`
-        .event-navigation-wrap { position: relative; z-index: 20; margin-bottom: 1.25rem; }
+        .event-navigation-wrap {
+          position: relative;
+          z-index: 20;
+          margin-bottom: 1.25rem;
+          animation: navReveal .65s cubic-bezier(.22,1,.36,1) both;
+        }
         .event-navigation {
           position: relative;
           overflow: hidden;
           border: 1px solid rgba(148, 163, 184, 0.20);
-          background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(248,250,252,.90));
-          box-shadow: 0 12px 35px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.90);
+          background: linear-gradient(135deg, rgba(255,255,255,.97), rgba(248,250,252,.92));
+          box-shadow: 0 14px 38px rgba(15,23,42,.075), inset 0 1px 0 rgba(255,255,255,.92);
           backdrop-filter: blur(18px);
+          isolation: isolate;
         }
         .event-navigation::before {
           content: "";
           position: absolute;
-          inset: 0;
+          inset: -45%;
+          z-index: -2;
           pointer-events: none;
           background:
-            radial-gradient(circle at 10% 0%, rgba(56,189,248,.10), transparent 30%),
-            radial-gradient(circle at 90% 100%, rgba(37,99,235,.08), transparent 30%);
+            radial-gradient(circle at 12% 18%, rgba(56,189,248,.15), transparent 25%),
+            radial-gradient(circle at 86% 82%, rgba(37,99,235,.12), transparent 25%);
+          animation: ambientDrift 10s ease-in-out infinite alternate;
+        }
+        .event-navigation::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: -35%;
+          width: 25%;
+          z-index: -1;
+          pointer-events: none;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,.80), transparent);
+          transform: skewX(-18deg);
+          animation: lightSweep 8s ease-in-out infinite;
         }
         .nav-scroll {
           position: relative;
@@ -66,7 +87,6 @@ export default function EventNavigation({
         }
         .nav-scroll::-webkit-scrollbar { display: none; }
 
-        /* Contraste verrouillé : tous les libellés restent noirs, actif ou non. */
         .nav-item {
           position: relative;
           display: inline-flex;
@@ -78,7 +98,23 @@ export default function EventNavigation({
           border-radius: .85rem;
           color: #000 !important;
           background: rgba(255,255,255,.88);
-          transition: transform 260ms cubic-bezier(.22,1,.36,1), color 260ms ease, background 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+          overflow: hidden;
+          transform: translateZ(0);
+          transition:
+            transform 300ms cubic-bezier(.22,1,.36,1),
+            color 260ms ease,
+            background 260ms ease,
+            border-color 260ms ease,
+            box-shadow 300ms ease;
+        }
+        .nav-item::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,.82) 48%, transparent 70%);
+          transform: translateX(-125%);
+          transition: transform 700ms cubic-bezier(.22,1,.36,1);
         }
         .nav-item,
         .nav-item:visited,
@@ -90,31 +126,33 @@ export default function EventNavigation({
         }
         .nav-item > span:last-child { color: #000 !important; }
         .nav-item:hover {
-          transform: translateY(-1px);
-          background: rgba(14,165,233,.08);
+          transform: translateY(-2px) scale(1.015);
+          background: rgba(239,249,255,.98);
+          border-color: rgba(56,189,248,.28);
+          box-shadow: 0 9px 20px rgba(14,165,233,.10);
         }
+        .nav-item:hover::before { transform: translateX(125%); }
         .nav-item:focus-visible {
           outline: 2px solid rgba(37,99,235,.55);
           outline-offset: 2px;
         }
         .nav-item-active {
           color: #000 !important;
-          background: #fff;
-          border-color: rgba(37,99,235,.30);
-          box-shadow: 0 3px 10px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.95);
+          background: linear-gradient(135deg, #ffffff, #eff8ff);
+          border-color: rgba(37,99,235,.32);
+          box-shadow: 0 6px 17px rgba(37,99,235,.11), inset 0 1px 0 rgba(255,255,255,.98);
         }
-        .nav-item-active > span:last-child { color: #000 !important; }
         .nav-item-active::after {
           content: "";
           position: absolute;
-          left: 20%;
-          right: 20%;
+          left: 17%;
+          right: 17%;
           bottom: -1px;
           height: 2px;
           border-radius: 999px;
-          background: linear-gradient(90deg, rgb(56 189 248), rgb(37 99 235));
-          box-shadow: 0 0 7px rgba(37,99,235,.22);
-          animation: navActive .35s cubic-bezier(.22,1,.36,1) both;
+          background: linear-gradient(90deg, rgb(56 189 248), rgb(37 99 235), rgb(99 102 241));
+          box-shadow: 0 0 10px rgba(37,99,235,.32);
+          animation: navActive .45s cubic-bezier(.22,1,.36,1) both;
         }
         .nav-icon {
           display: inline-flex;
@@ -126,29 +164,26 @@ export default function EventNavigation({
           font-size: .75rem;
           background: rgb(238 242 247);
           color: #0f172a !important;
-          transition: transform 260ms ease, background 260ms ease, color 260ms ease, box-shadow 260ms ease;
+          transition: transform 320ms cubic-bezier(.22,1,.36,1), background 260ms ease, color 260ms ease, box-shadow 320ms ease;
         }
-        .nav-item:hover .nav-icon { transform: scale(1.08); background: rgba(14,165,233,.10); color: #000 !important; }
+        .nav-item:hover .nav-icon {
+          transform: rotate(-4deg) scale(1.10);
+          background: rgba(14,165,233,.12);
+          color: #000 !important;
+          box-shadow: 0 4px 11px rgba(14,165,233,.11);
+        }
         .nav-item-active .nav-icon {
           background: linear-gradient(135deg, rgb(14 165 233), rgb(37 99 235));
           color: #fff !important;
-          box-shadow: 0 4px 10px rgba(37,99,235,.18);
+          box-shadow: 0 5px 13px rgba(37,99,235,.23);
+          animation: iconFloat 2.8s ease-in-out infinite;
         }
         .back-button,
         .back-button:visited,
         .back-button:link,
         .back-button:hover,
         .back-button:focus,
-        .back-button:active {
-          display: inline-flex;
-          align-items: center;
-          gap: .45rem;
-          flex: 0 0 auto;
-          border-radius: .8rem;
-          color: #000 !important;
-          transition: transform 240ms ease, color 240ms ease, background 240ms ease;
-        }
-        .back-button:hover { transform: translateX(-2px); background: rgba(14,165,233,.07); }
+        .back-button:active,
         .dashboard-link,
         .dashboard-link:visited,
         .dashboard-link:link,
@@ -161,19 +196,92 @@ export default function EventNavigation({
           flex: 0 0 auto;
           border-radius: .8rem;
           color: #000 !important;
-          transition: transform 240ms ease, color 240ms ease, background 240ms ease;
+          transition: transform 260ms cubic-bezier(.22,1,.36,1), color 240ms ease, background 240ms ease;
         }
-        .dashboard-link:hover { transform: translateY(-1px); background: rgba(14,165,233,.07); }
-        .event-name { color: #0f172a !important; }
+        .back-button:hover { transform: translateX(-3px); background: rgba(14,165,233,.07); }
+        .dashboard-link:hover { transform: translateY(-2px); background: rgba(14,165,233,.07); }
+        .event-name {
+          color: #0f172a !important;
+          animation: nameIn .7s .15s cubic-bezier(.22,1,.36,1) both;
+        }
 
+        /* Système Motion + Wonder partagé par toutes les pages événement. */
+        :global(.event-page-motion) {
+          animation: pageEnter .58s cubic-bezier(.22,1,.36,1) both;
+        }
+        :global(.event-page-motion .event-motion-card) {
+          animation: cardEnter .62s cubic-bezier(.22,1,.36,1) both;
+          animation-delay: var(--motion-delay, 80ms);
+        }
+        :global(.event-page-motion .event-motion-card:nth-child(2)) { --motion-delay: 130ms; }
+        :global(.event-page-motion .event-motion-card:nth-child(3)) { --motion-delay: 180ms; }
+        :global(.event-page-motion .event-motion-card:nth-child(4)) { --motion-delay: 230ms; }
+        :global(.event-page-motion .event-motion-card:nth-child(5)) { --motion-delay: 280ms; }
+        :global(.event-page-motion .event-motion-card:hover) {
+          transform: translateY(-3px);
+          transition: transform 280ms cubic-bezier(.22,1,.36,1), box-shadow 280ms ease;
+        }
+        :global(.event-page-motion .event-motion-interactive) {
+          transition: transform 260ms cubic-bezier(.22,1,.36,1), box-shadow 260ms ease, border-color 260ms ease;
+        }
+        :global(.event-page-motion .event-motion-interactive:hover) {
+          transform: translateY(-2px);
+        }
+
+        @keyframes navReveal {
+          from { opacity: 0; transform: translateY(-7px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes ambientDrift {
+          from { transform: translate3d(-1%, -1%, 0) scale(1); }
+          to { transform: translate3d(2%, 2%, 0) scale(1.04); }
+        }
+        @keyframes lightSweep {
+          0%, 18% { transform: translateX(-170%) skewX(-18deg); opacity: 0; }
+          35% { opacity: .78; }
+          62%, 100% { transform: translateX(470%) skewX(-18deg); opacity: 0; }
+        }
         @keyframes navActive {
           from { opacity: 0; transform: scaleX(.45); }
           to { opacity: 1; transform: scaleX(1); }
         }
+        @keyframes iconFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-1.5px); }
+        }
+        @keyframes nameIn {
+          from { opacity: 0; transform: translateX(-5px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pageEnter {
+          from { opacity: 0; transform: translateY(5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes cardEnter {
+          from { opacity: 0; transform: translateY(10px) scale(.992); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .nav-item, .nav-icon, .back-button, .dashboard-link { transition: none; }
-          .nav-item:hover, .back-button:hover, .dashboard-link:hover { transform: none; }
-          .nav-item-active::after { animation: none; }
+          .event-navigation-wrap,
+          .event-navigation::before,
+          .event-navigation::after,
+          .nav-item,
+          .nav-icon,
+          .back-button,
+          .dashboard-link,
+          .event-name,
+          :global(.event-page-motion),
+          :global(.event-page-motion .event-motion-card) {
+            animation: none !important;
+            transition: none !important;
+          }
+          .nav-item:hover,
+          .back-button:hover,
+          .dashboard-link:hover,
+          :global(.event-page-motion .event-motion-card:hover),
+          :global(.event-page-motion .event-motion-interactive:hover) {
+            transform: none;
+          }
         }
       `}</style>
 
@@ -203,11 +311,18 @@ export default function EventNavigation({
                 <Link
                   key={tab.href}
                   href={tab.href}
-                  className={["nav-item px-3 py-2 sm:px-4", active ? "nav-item-active font-black" : "font-semibold"].join(" ")}
+                  className={[
+                    "nav-item px-3 py-2 sm:px-4",
+                    active ? "nav-item-active font-black" : "font-semibold",
+                  ].join(" ")}
                   style={{ color: "#000000" }}
                   aria-current={active ? "page" : undefined}
                 >
-                  <span className="nav-icon" style={{ color: active ? "#ffffff" : "#000000" }} aria-hidden="true">
+                  <span
+                    className="nav-icon"
+                    style={{ color: active ? "#ffffff" : "#000000" }}
+                    aria-hidden="true"
+                  >
                     {tab.icon}
                   </span>
                   <span className="text-[10px] sm:text-[11px]" style={{ color: "#000000" }}>
