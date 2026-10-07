@@ -129,3 +129,197 @@
   font-size: 0.75rem;
   font-weight: 800;
 }
+
+
+/* =========================================================
+   EVENT STUDIO — DARK / NIGHT THEME
+   Centralisé ici pour que Vue événement, Invitation,
+   Invités et Event Control restent cohérents.
+   ========================================================= */
+
+html.dark {
+  --es-bg: #070b14;
+  --es-surface: #0f172a;
+  --es-surface-soft: #111827;
+  --es-text: #f8fafc;
+  --es-text-muted: #94a3b8;
+  --es-border: rgba(148,163,184,.18);
+  color-scheme: dark;
+}
+
+html.dark body {
+  background: #070b14 !important;
+  color: #f8fafc;
+}
+
+html.dark .event-page-motion {
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 8% 5%, rgba(14,165,233,.12), transparent 27%),
+    radial-gradient(circle at 92% 10%, rgba(99,102,241,.13), transparent 28%),
+    linear-gradient(180deg,#080d18 0%,#0a1020 52%,#070b14 100%) !important;
+}
+
+/* Navigation commune */
+html.dark .event-navigation {
+  border-color: rgba(148,163,184,.18) !important;
+  background: linear-gradient(135deg,rgba(15,23,42,.96),rgba(17,24,39,.94)) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+html.dark .nav-item {
+  color: #e5e7eb !important;
+  background: rgba(30,41,59,.72) !important;
+  border-color: rgba(148,163,184,.16) !important;
+}
+html.dark .nav-item:hover {
+  color: #fff !important;
+  background: rgba(14,116,144,.22) !important;
+  border-color: rgba(56,189,248,.35) !important;
+}
+html.dark .nav-item-active {
+  color: #fff !important;
+  background: linear-gradient(145deg,#12324b,#123b70) !important;
+  border-color: rgba(56,189,248,.45) !important;
+  box-shadow: 0 14px 30px rgba(14,116,144,.20), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+html.dark .nav-icon {
+  background: #1e293b !important;
+  color: #e5e7eb !important;
+}
+html.dark .nav-item-active .nav-icon {
+  color: #fff !important;
+}
+html.dark .back-button,
+html.dark .dashboard-link {
+  color: #e5e7eb !important;
+  background: rgba(30,41,59,.85) !important;
+}
+html.dark .back-button:hover,
+html.dark .dashboard-link:hover {
+  color: #7dd3fc !important;
+  background: rgba(14,116,144,.22) !important;
+}
+html.dark .event-name {
+  color: #e2e8f0 !important;
+}
+html.dark .event-navigation .bg-zinc-200,
+html.dark .event-navigation .bg-zinc-100 {
+  background-color: #334155 !important;
+}
+html.dark .event-navigation .border-zinc-100,
+html.dark .event-navigation .border-zinc-200 {
+  border-color: rgba(148,163,184,.16) !important;
+}
+
+/* Surfaces, cartes et champs de tous les onglets */
+html.dark .event-page-motion .bg-white,
+html.dark .event-page-motion .bg-white\/90,
+html.dark .event-page-motion .bg-white\/95,
+html.dark .event-page-motion .bg-white\/\[\.94\] {
+  background-color: #0f172a !important;
+}
+html.dark .event-page-motion .bg-slate-50,
+html.dark .event-page-motion .bg-slate-50\/70,
+html.dark .event-page-motion .bg-slate-50\/80,
+html.dark .event-page-motion .bg-zinc-50 {
+  background-color: #111827 !important;
+}
+html.dark .event-page-motion .bg-slate-100,
+html.dark .event-page-motion .bg-zinc-100 {
+  background-color: #1e293b !important;
+}
+html.dark .event-page-motion .border-slate-100,
+html.dark .event-page-motion .border-slate-200,
+html.dark .event-page-motion .border-slate-200\/80,
+html.dark .event-page-motion .border-zinc-100,
+html.dark .event-page-motion .border-zinc-200 {
+  border-color: rgba(148,163,184,.16) !important;
+}
+html.dark .event-page-motion .text-slate-950,
+html.dark .event-page-motion .text-zinc-950 {
+  color: #f8fafc !important;
+}
+html.dark .event-page-motion .text-slate-800,
+html.dark .event-page-motion .text-zinc-800 {
+  color: #e2e8f0 !important;
+}
+html.dark .event-page-motion .text-slate-700,
+html.dark .event-page-motion .text-zinc-700 {
+  color: #cbd5e1 !important;
+}
+html.dark .event-page-motion .text-slate-600,
+html.dark .event-page-motion .text-zinc-600 {
+  color: #94a3b8 !important;
+}
+html.dark .event-page-motion .text-slate-500,
+html.dark .event-page-motion .text-zinc-500 {
+  color: #94a3b8 !important;
+}
+html.dark .event-page-motion .text-slate-400,
+html.dark .event-page-motion .text-zinc-400 {
+  color: #64748b !important;
+}
+
+/* Inputs / selects / textareas */
+html.dark .event-page-motion input,
+html.dark .event-page-motion textarea,
+html.dark .event-page-motion select {
+  color: #f8fafc !important;
+  background-color: #0f172a !important;
+  border-color: rgba(148,163,184,.24) !important;
+}
+html.dark .event-page-motion input::placeholder,
+html.dark .event-page-motion textarea::placeholder {
+  color: #64748b !important;
+}
+html.dark .event-page-motion option {
+  color: #f8fafc;
+  background: #0f172a;
+}
+
+/* Overview — éléments clairs qui doivent rester lisibles en nuit */
+html.dark .overview-detail {
+  background: rgba(15,23,42,.88) !important;
+  border-color: rgba(148,163,184,.16) !important;
+}
+html.dark .overview-detail:hover {
+  background: #162033 !important;
+  border-color: rgba(56,189,248,.28) !important;
+}
+html.dark .overview-action {
+  background: rgba(15,23,42,.94) !important;
+  border-color: rgba(148,163,184,.18) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,.24) !important;
+}
+html.dark .overview-action:hover {
+  border-color: rgba(56,189,248,.35) !important;
+  box-shadow: 0 24px 55px rgba(0,0,0,.32) !important;
+}
+html.dark .overview-action .border-slate-100 {
+  border-color: rgba(148,163,184,.14) !important;
+}
+
+/* Le hero de la Vue événement conserve son identité sombre premium. */
+html.dark .overview-hero {
+  border-color: rgba(148,163,184,.12) !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.36) !important;
+}
+
+/* Scroll / sélection */
+html.dark ::selection {
+  background: rgba(56,189,248,.28);
+  color: #fff;
+}
+
+/* Dashboard également synchronisé avec le mode nuit. */
+html.dark .dashboard-page,
+html.dark [data-event-studio-dashboard] {
+  background: #070b14 !important;
+  color: #f8fafc !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="system"] {
+    color-scheme: dark;
+  }
+}
