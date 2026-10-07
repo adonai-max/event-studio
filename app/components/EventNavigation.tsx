@@ -197,11 +197,25 @@ export default function EventNavigation({
           gap: .45rem;
           flex: 0 0 auto;
           border-radius: .8rem;
-          color: #000 !important;
-          transition: transform 260ms cubic-bezier(.22,1,.36,1), color 240ms ease, background 240ms ease;
+          color: #0f172a !important;
+          background: rgba(248,250,252,.9);
+          transition: transform 260ms cubic-bezier(.22,1,.36,1), color 240ms ease, background 240ms ease, box-shadow 240ms ease;
         }
-        .back-button:hover { transform: translateX(-3px); background: rgba(14,165,233,.07); }
-        .dashboard-link:hover { transform: translateY(-2px); background: rgba(14,165,233,.07); }
+        .back-button:hover { transform: translateX(-3px); color: #1d4ed8 !important; background: rgba(219,234,254,.65); }
+        .dashboard-link:hover { transform: translateY(-2px); color: #1d4ed8 !important; background: rgba(219,234,254,.8); box-shadow: 0 8px 18px rgba(37,99,235,.10); }
+        .dashboard-icon {
+          display: inline-flex;
+          width: 1.8rem;
+          height: 1.8rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: .6rem;
+          color: #fff !important;
+          background: linear-gradient(135deg, #0ea5e9, #2563eb);
+          box-shadow: 0 5px 13px rgba(37,99,235,.22);
+        }
+        .dashboard-link > span:last-child { color: inherit !important; }
+
         .event-name {
           color: #0f172a !important;
           animation: nameIn .7s .15s cubic-bezier(.22,1,.36,1) both;
@@ -377,8 +391,8 @@ export default function EventNavigation({
             className="dashboard-link hidden px-3 py-2.5 text-[11px] font-bold lg:inline-flex"
             title="Retour au Dashboard"
           >
-            <span aria-hidden="true">⌂</span>
-            Dashboard
+            <span className="dashboard-icon" aria-hidden="true">⌂</span>
+            <span>Dashboard</span>
           </Link>
         </div>
 
