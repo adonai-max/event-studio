@@ -387,13 +387,25 @@ export default function EventPage() {
           box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 36px rgba(0,0,0,.16);
         }
         .overview-meta-icon {
-          position: relative; z-index: 2; display: flex; width: 42px; height: 42px; flex: 0 0 auto;
-          align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.12);
-          border-radius: 14px; background: rgba(255,255,255,.075); color: currentColor;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 8px 18px rgba(0,0,0,.12);
-          transition: transform .32s cubic-bezier(.22,1,.36,1), background .3s ease;
+          position: relative; z-index: 2; display: flex; width: 46px; height: 46px; flex: 0 0 auto;
+          align-items: center; justify-content: center; border-radius: 15px;
+          color: currentColor; background: rgba(255,255,255,.09);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 9px 20px rgba(0,0,0,.16);
+          transition: transform .32s cubic-bezier(.22,1,.36,1), background .3s ease, box-shadow .3s ease;
         }
-        .overview-meta-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .overview-meta-sky .overview-meta-icon {
+          color: #38bdf8; background: linear-gradient(145deg,rgba(56,189,248,.22),rgba(14,165,233,.08));
+          border: 1px solid rgba(56,189,248,.28); box-shadow: inset 0 1px 0 rgba(186,230,253,.16), 0 9px 22px rgba(14,165,233,.16);
+        }
+        .overview-meta-violet .overview-meta-icon {
+          color: #a78bfa; background: linear-gradient(145deg,rgba(167,139,250,.22),rgba(124,58,237,.08));
+          border: 1px solid rgba(167,139,250,.28); box-shadow: inset 0 1px 0 rgba(221,214,254,.16), 0 9px 22px rgba(124,58,237,.16);
+        }
+        .overview-meta-amber .overview-meta-icon {
+          color: #fbbf24; background: linear-gradient(145deg,rgba(251,191,36,.22),rgba(245,158,11,.08));
+          border: 1px solid rgba(251,191,36,.28); box-shadow: inset 0 1px 0 rgba(254,243,199,.16), 0 9px 22px rgba(245,158,11,.16);
+        }
+        .overview-meta-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 6px currentColor); }
         .overview-meta-card:hover .overview-meta-icon { transform: translateY(-2px) rotate(-3deg) scale(1.06); background: rgba(255,255,255,.11); }
         .overview-meta-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .19em; color: #94a3b8; }
         .overview-meta-value {
