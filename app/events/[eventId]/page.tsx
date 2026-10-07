@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 import EventNavigation from "@/app/components/EventNavigation";
-import { CalendarDays, Clock3, MapPin } from "lucide-react";
 
 type EventItem = {
   id: string;
@@ -16,6 +15,27 @@ type EventItem = {
   description: string | null;
 };
 
+
+const CalendarDays = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" {...props}>
+    <path d="M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
+    <path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01" />
+  </svg>
+);
+
+const Clock3 = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" {...props}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3.5 2" />
+  </svg>
+);
+
+const MapPin = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" {...props}>
+    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+    <circle cx="12" cy="10" r="2.5" />
+  </svg>
+);
 
 const pageIcons = {
   type: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M6.5 4v4.5M17.5 4v4.5M6 10.5h12M6 14h5M6 17.5h8" /></svg>,
