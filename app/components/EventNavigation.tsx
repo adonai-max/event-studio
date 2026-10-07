@@ -50,11 +50,11 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
           ]
         : [
             { transform: "translate3d(0,0,0) scale(1)" },
-            { transform: "translate3d(0,-10px,0) scale(1.08)", offset: 0.45 },
-            { transform: "translate3d(0,-6px,0) scale(1.05)", offset: 0.7 },
-            { transform: "translate3d(0,-8px,0) scale(1.07)" },
+            { transform: "translate3d(0,-3px,0) scale(1.02)", offset: 0.45 },
+            { transform: "translate3d(0,-1px,0) scale(1.01)", offset: 0.72 },
+            { transform: "translate3d(0,-2px,0) scale(1.015)" },
           ],
-      { duration: type === "back" ? 1500 : 1800, iterations: Infinity, easing: "cubic-bezier(.22,1,.36,1)" }
+      { duration: type === "back" ? 1700 : 2400, iterations: Infinity, easing: "cubic-bezier(.22,1,.36,1)" }
     );
     if (type === "back") backAnimation.current = animation;
     else hoverAnimations.current.set(key, animation);
@@ -93,16 +93,16 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .event-navigation{position:relative;overflow:visible;border:1px solid rgba(148,163,184,.2);background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(248,250,252,.92));box-shadow:0 18px 48px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(22px);isolation:isolate}
         .event-navigation::before{content:"";position:absolute;inset:-70%;z-index:-2;pointer-events:none;background:radial-gradient(circle at 12% 20%,rgba(56,189,248,.16),transparent 24%),radial-gradient(circle at 88% 80%,rgba(99,102,241,.13),transparent 25%);animation:ambientDrift 12s ease-in-out infinite alternate}
         .event-navigation::after{content:"";position:absolute;top:0;bottom:0;left:-28%;width:18%;z-index:-1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:skewX(-18deg);animation:lightSweep 9s ease-in-out infinite}
-        .nav-scroll{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:.6rem;overflow-x:visible;scrollbar-width:none;-ms-overflow-style:none;padding:.1rem}
+        .nav-scroll{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:.5rem;overflow-x:visible;scrollbar-width:none;-ms-overflow-style:none;padding:.1rem}
         .nav-scroll::-webkit-scrollbar{width:0;height:0;display:none}
-        .nav-item{position:relative;z-index:1;display:flex;will-change:transform;min-width:0;align-items:center;justify-content:center;gap:.62rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,245,249,.78));overflow:hidden;transform:translateZ(0);transition:transform 420ms cubic-bezier(.16,1,.3,1),background 260ms ease,border-color 260ms ease,box-shadow 320ms ease;transform-origin:center center}
+        .nav-item{position:relative;z-index:1;display:flex;will-change:transform;min-width:0;align-items:center;justify-content:center;gap:.68rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,245,249,.78));overflow:hidden;transform:translateZ(0);transition:transform 420ms cubic-bezier(.16,1,.3,1),background 260ms ease,border-color 260ms ease,box-shadow 320ms ease;transform-origin:center center}
         .nav-item::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 22%,rgba(255,255,255,.9) 48%,transparent 72%);transform:translateX(-125%);transition:transform 800ms cubic-bezier(.22,1,.36,1)}
         .nav-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-5px;height:3px;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#2563eb,#818cf8);opacity:0;transform:scaleX(.35);transition:opacity 250ms ease,transform 350ms cubic-bezier(.22,1,.36,1)}
-        .nav-item:hover{z-index:50;animation:tabWonderLoop 1.9s cubic-bezier(.22,1,.36,1) infinite;background:linear-gradient(145deg,#ffffff 0%,#effaff 55%,#e0f2fe 100%);border-color:rgba(14,165,233,.72);box-shadow:0 20px 42px rgba(14,165,233,.24),0 0 0 3px rgba(56,189,248,.08),inset 0 1px 0 #fff}
+        .nav-item:hover{z-index:50;animation:tabWonderLoop 2.4s cubic-bezier(.22,1,.36,1) infinite;background:linear-gradient(145deg,#ffffff 0%,#effaff 55%,#e0f2fe 100%);border-color:rgba(14,165,233,.72);box-shadow:0 20px 42px rgba(14,165,233,.24),0 0 0 3px rgba(56,189,248,.08),inset 0 1px 0 #fff}
         .nav-item:hover::before{transform:translateX(125%)}
         .nav-item:hover .truncate{transform:translateX(2px) scale(1.035);transition:transform 260ms cubic-bezier(.22,1,.36,1)}.nav-item:hover .truncate{color:#075985!important;text-shadow:0 2px 8px rgba(14,165,233,.1)}
         .nav-item:focus-visible{outline:2px solid rgba(37,99,235,.55);outline-offset:2px}
-        .nav-item-active{color:#075985!important;background:linear-gradient(135deg,#ecfeff 0%,#e0f2fe 48%,#dbeafe 100%);border-color:rgba(14,165,233,.48);box-shadow:0 18px 36px rgba(14,165,233,.17),inset 0 1px 0 #fff;animation:activeTabBreath 3.2s ease-in-out infinite}
+        .nav-item-active{color:#0f172a!important;background:linear-gradient(135deg,#ffffff 0%,#f8fafc 100%);border-color:rgba(148,163,184,.42);box-shadow:0 18px 36px rgba(15,23,42,.10),inset 0 1px 0 #fff;animation:activeTabBreath 3.6s ease-in-out infinite}
         .nav-item-active::after{opacity:1;transform:scaleX(1);animation:navActive .45s cubic-bezier(.22,1,.36,1) both}
         .nav-icon{position:relative;display:inline-flex;width:2.15rem;height:2.15rem;flex:0 0 auto;align-items:center;justify-content:center;border-radius:.72rem;font-size:.98rem;color:#334155!important;background:linear-gradient(145deg,#ffffff,#f1f5f9);border:1px solid rgba(226,232,240,.95);box-shadow:0 5px 12px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.98);transition:transform 320ms cubic-bezier(.22,1,.36,1),background 260ms ease,color 260ms ease,box-shadow 320ms ease,border-color 260ms ease}
         .nav-icon::before{content:"";position:absolute;inset:2px;border-radius:.58rem;opacity:.12;pointer-events:none;background:currentColor;transition:opacity 260ms ease,transform 320ms ease}
@@ -112,9 +112,21 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .nav-item:nth-child(3) .nav-icon{color:#059669!important;background:linear-gradient(145deg,#ecfdf5,#d1fae5);border-color:rgba(110,231,183,.72);box-shadow:0 6px 15px rgba(5,150,105,.13),inset 0 1px 0 #fff}
         .nav-item:nth-child(4) .nav-icon{color:#ea580c!important;background:linear-gradient(145deg,#fff7ed,#ffedd5);border-color:rgba(253,186,116,.72);box-shadow:0 6px 15px rgba(234,88,12,.13),inset 0 1px 0 #fff}
         .nav-item:hover .nav-icon{animation:iconWonder .9s cubic-bezier(.16,1,.3,1) both;transform:translateY(-2px) scale(1.04);box-shadow:0 10px 20px rgba(15,23,42,.12),inset 0 1px 0 #fff}
+        .nav-item:nth-child(1):hover .nav-icon{box-shadow:0 10px 22px rgba(37,99,235,.24),inset 0 1px 0 #fff}
+        .nav-item:nth-child(2):hover .nav-icon{box-shadow:0 10px 22px rgba(124,58,237,.23),inset 0 1px 0 #fff}
+        .nav-item:nth-child(3):hover .nav-icon{box-shadow:0 10px 22px rgba(5,150,105,.23),inset 0 1px 0 #fff}
+        .nav-item:nth-child(4):hover .nav-icon{box-shadow:0 10px 22px rgba(234,88,12,.23),inset 0 1px 0 #fff}
         .nav-item:hover .nav-icon::before{opacity:.2;transform:scale(1.04)}
-        .nav-item-active .nav-icon{color:#fff!important;background:linear-gradient(135deg,#2563eb,#4f46e5);border-color:rgba(255,255,255,.72);box-shadow:0 9px 22px rgba(37,99,235,.32),0 0 0 3px rgba(59,130,246,.08);animation:iconFloat 2.4s ease-in-out infinite}
-        .nav-item-active .nav-icon::before{opacity:.14;background:#fff}
+        .nav-item-active .nav-icon{color:#fff!important;background:linear-gradient(135deg,#2563eb,#4f46e5);border-color:rgba(255,255,255,.82);box-shadow:0 9px 22px rgba(37,99,235,.26),0 0 0 3px rgba(59,130,246,.08);animation:iconFloat 2.8s ease-in-out infinite}
+        .nav-item-active .nav-icon::before{opacity:.16;background:#fff}
+        .nav-item-active:nth-child(1){color:#1d4ed8!important;background:linear-gradient(135deg,#eff6ff,#ffffff);border-color:rgba(96,165,250,.48);box-shadow:0 18px 36px rgba(37,99,235,.13),inset 0 1px 0 #fff}
+        .nav-item-active:nth-child(1) .nav-icon{background:linear-gradient(135deg,#2563eb,#1d4ed8);box-shadow:0 9px 22px rgba(37,99,235,.28),0 0 0 3px rgba(59,130,246,.08)}
+        .nav-item-active:nth-child(2){color:#6d28d9!important;background:linear-gradient(135deg,#f5f3ff,#ffffff);border-color:rgba(167,139,250,.48);box-shadow:0 18px 36px rgba(124,58,237,.12),inset 0 1px 0 #fff}
+        .nav-item-active:nth-child(2) .nav-icon{background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 9px 22px rgba(124,58,237,.27),0 0 0 3px rgba(139,92,246,.08)}
+        .nav-item-active:nth-child(3){color:#047857!important;background:linear-gradient(135deg,#ecfdf5,#ffffff);border-color:rgba(52,211,153,.48);box-shadow:0 18px 36px rgba(5,150,105,.12),inset 0 1px 0 #fff}
+        .nav-item-active:nth-child(3) .nav-icon{background:linear-gradient(135deg,#059669,#047857);box-shadow:0 9px 22px rgba(5,150,105,.27),0 0 0 3px rgba(16,185,129,.08)}
+        .nav-item-active:nth-child(4){color:#c2410c!important;background:linear-gradient(135deg,#fff7ed,#ffffff);border-color:rgba(251,146,60,.5);box-shadow:0 18px 36px rgba(234,88,12,.12),inset 0 1px 0 #fff}
+        .nav-item-active:nth-child(4) .nav-icon{background:linear-gradient(135deg,#ea580c,#c2410c);box-shadow:0 9px 22px rgba(234,88,12,.27),0 0 0 3px rgba(249,115,22,.08)}
         .nav-item-active .nav-icon svg{filter:drop-shadow(0 1px 2px rgba(15,23,42,.24))}
         .back-button{position:relative;display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(186,230,253,.95);padding:.46rem .78rem .46rem .5rem;border-radius:1rem;background:linear-gradient(145deg,#ffffff,#f0f9ff);color:#0f3f67!important;box-shadow:0 8px 20px rgba(15,23,42,.07),inset 0 1px 0 rgba(255,255,255,.95);white-space:nowrap;overflow:hidden;transition:transform 280ms cubic-bezier(.22,1,.36,1),box-shadow 280ms ease,border-color 220ms ease,background 220ms ease}
         .back-button::before{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.9) 48%,transparent 70%);transform:translateX(-120%);transition:transform 650ms cubic-bezier(.16,1,.3,1)}\n        .back-button:hover{animation:backWonder 1.7s cubic-bezier(.22,1,.36,1) infinite;color:#075985!important;background:linear-gradient(145deg,#fff,#e0f2fe);border-color:rgba(14,165,233,.48);box-shadow:0 12px 26px rgba(37,99,235,.14),inset 0 1px 0 #fff}\n        .back-button:hover::before{transform:translateX(120%)}
@@ -142,12 +154,12 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         :global(.event-page-motion input:focus),:global(.event-page-motion textarea:focus),:global(.event-page-motion select:focus){transform:translateY(-1px)}
         @keyframes navReveal{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
         @keyframes tabWonder{0%{transform:translate3d(0,0,0) scale(1)}45%{transform:translate3d(0,-9px,0) scale(1.09) rotateX(1deg)}70%{transform:translate3d(0,-6px,0) scale(1.07)}100%{transform:translate3d(0,-7px,0) scale(1.08)}}
-        @keyframes tabWonderLoop{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-4px,0) scale(1.035)}}
+        @keyframes tabWonderLoop{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-2px,0) scale(1.018)}}
         @keyframes backWonder{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-2px,-1px,0) scale(1.025)}}
         @keyframes ambientDrift{from{transform:translate3d(-1%,-1%,0) scale(1)}to{transform:translate3d(2%,2%,0) scale(1.04)}}
         @keyframes lightSweep{0%,18%{transform:translateX(-170%) skewX(-18deg);opacity:0}35%{opacity:.78}62%,100%{transform:translateX(470%) skewX(-18deg);opacity:0}}
         @keyframes navActive{0%{opacity:0;transform:scaleX(.35)}60%{opacity:1;transform:scaleX(1.06)}100%{opacity:1;transform:scaleX(1)}}
-        @keyframes activeTabBreath{0%,100%{box-shadow:0 18px 36px rgba(14,165,233,.14),inset 0 1px 0 #fff}50%{box-shadow:0 21px 42px rgba(37,99,235,.22),inset 0 1px 0 #fff}}
+        @keyframes activeTabBreath{0%,100%{transform:translateY(0);box-shadow:0 18px 36px rgba(15,23,42,.08),inset 0 1px 0 #fff}50%{transform:translateY(-1px);box-shadow:0 21px 42px rgba(37,99,235,.14),inset 0 1px 0 #fff}}
         @keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
         @keyframes iconWonder{0%{transform:translateY(0) scale(1) rotate(0)}55%{transform:translateY(-2px) scale(1.08) rotate(-2deg)}100%{transform:translateY(-1px) scale(1.05) rotate(-1deg)}}
         @keyframes dashboardFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.5px) scale(1.012)}}
