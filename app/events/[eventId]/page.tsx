@@ -74,6 +74,21 @@ export default function EventPage() {
 
   if (loading) {
     return (
+      <main className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,rgba(14,165,233,.13),transparent_28%),radial-gradient(circle_at_88%_18%,rgba(79,70,229,.10),transparent_30%),#f7f9fc]">
+        <div className="mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+          <div className="h-16 animate-pulse rounded-2xl bg-slate-200/70" />
+          <div className="mt-6 h-72 animate-pulse rounded-[28px] bg-white shadow-[0_24px_70px_rgba(15,23,42,.06)]" />
+          <div className="mt-7 grid gap-4 md:grid-cols-3">
+            <div className="h-44 animate-pulse rounded-[24px] bg-white" />
+            <div className="h-44 animate-pulse rounded-[24px] bg-white" />
+            <div className="h-44 animate-pulse rounded-[24px] bg-white" />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_12%_8%,rgba(14,165,233,.13),transparent_28%),radial-gradient(circle_at_88%_18%,rgba(79,70,229,.10),transparent_30%),#f7f9fc] event-page-motion">
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
         <EventNavigation eventId={event.id} eventName={event.name} />
