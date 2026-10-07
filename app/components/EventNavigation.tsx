@@ -80,7 +80,7 @@ export default function EventNavigation({
           position: relative;
           display: flex;
           align-items: center;
-          gap: .5rem;
+          gap: .4rem;
           overflow-x: auto;
           scrollbar-width: none;
           padding: .1rem;
@@ -93,11 +93,11 @@ export default function EventNavigation({
           flex: 0 0 auto;
           align-items: center;
           gap: .5rem;
-          min-height: 2.85rem;
-          border: 1px solid transparent;
-          border-radius: .85rem;
-          color: #000 !important;
-          background: rgba(255,255,255,.88);
+          min-height: 3.65rem;
+          border: 1px solid rgba(226,232,240,.9);
+          border-radius: 1rem;
+          color: #0f172a !important;
+          background: rgba(255,255,255,.76);
           overflow: hidden;
           transform: translateZ(0);
           transition:
@@ -129,7 +129,7 @@ export default function EventNavigation({
           transform: translateY(-2px) scale(1.015);
           background: rgba(239,249,255,.98);
           border-color: rgba(56,189,248,.28);
-          box-shadow: 0 9px 20px rgba(14,165,233,.10);
+          box-shadow: 0 12px 25px rgba(37,99,235,.12);
         }
         .nav-item:hover::before { transform: translateX(125%); }
         .nav-item:focus-visible {
@@ -138,9 +138,9 @@ export default function EventNavigation({
         }
         .nav-item-active {
           color: #000 !important;
-          background: linear-gradient(135deg, #ffffff, #eff8ff);
-          border-color: rgba(37,99,235,.32);
-          box-shadow: 0 6px 17px rgba(37,99,235,.11), inset 0 1px 0 rgba(255,255,255,.98);
+          background: linear-gradient(145deg, #f8fdff 0%, #e8f5ff 55%, #dbeafe 100%);
+          border-color: rgba(37,99,235,.42);
+          box-shadow: 0 12px 28px rgba(37,99,235,.16), inset 0 1px 0 rgba(255,255,255,.98);
         }
         .nav-item-active::after {
           content: "";
@@ -158,11 +158,11 @@ export default function EventNavigation({
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 1.7rem;
-          height: 1.7rem;
-          border-radius: .55rem;
-          font-size: .75rem;
-          background: rgb(238 242 247);
+          width: 2rem;
+          height: 2rem;
+          border-radius: .7rem;
+          font-size: .85rem;
+          background: #f1f5f9;
           color: #0f172a !important;
           transition: transform 320ms cubic-bezier(.22,1,.36,1), background 260ms ease, color 260ms ease, box-shadow 320ms ease;
         }
@@ -173,7 +173,7 @@ export default function EventNavigation({
           box-shadow: 0 4px 11px rgba(14,165,233,.11);
         }
         .nav-item-active .nav-icon {
-          background: linear-gradient(135deg, rgb(14 165 233), rgb(37 99 235));
+          background: linear-gradient(135deg, #0ea5e9, #2563eb);
           color: #fff !important;
           box-shadow: 0 5px 13px rgba(37,99,235,.23);
           animation: iconFloat 2.8s ease-in-out infinite;
@@ -290,6 +290,10 @@ export default function EventNavigation({
           from { opacity: 0; transform: translateY(10px) scale(.992); }
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
+        @media (max-width: 767px) {
+          .nav-scroll { grid-template-columns: repeat(4, minmax(142px, 1fr)); }
+          .nav-item { min-height: 3.25rem; justify-content: flex-start; }
+        }
         @media (prefers-reduced-motion: reduce) {
           .event-navigation-wrap,
           .event-navigation::before,
@@ -316,7 +320,7 @@ export default function EventNavigation({
         }
       `}</style>
 
-      <div className="event-navigation rounded-[20px] px-2 py-2 sm:px-3">
+      <div className="event-navigation rounded-[22px] px-2.5 py-2.5 sm:px-3.5">
         <div className="relative flex items-center gap-2">
           <button
             type="button"
@@ -335,7 +339,7 @@ export default function EventNavigation({
             <span className="text-[8px] font-black uppercase tracking-[0.16em] text-zinc-900">Menu</span>
           </div>
 
-          <nav className="nav-scroll min-w-0 flex-1 px-0.5 py-1.5" aria-label="Navigation de l'événement">
+          <nav className="nav-scroll min-w-0 flex-1 px-0.5 py-1" aria-label="Navigation de l'événement">
             {tabs.map((tab) => {
               const active = isActive(tab);
               return (
@@ -343,7 +347,7 @@ export default function EventNavigation({
                   key={tab.href}
                   href={tab.href}
                   className={[
-                    "nav-item px-3 py-2 sm:px-4",
+                    "nav-item px-3 sm:px-4",
                     active ? "nav-item-active font-black" : "font-semibold",
                   ].join(" ")}
                   style={{ color: "#000000" }}
@@ -356,7 +360,7 @@ export default function EventNavigation({
                   >
                     {tab.icon}
                   </span>
-                  <span className="text-[10px] sm:text-[11px]" style={{ color: "#000000" }}>
+                  <span className="truncate text-[10px] sm:text-[11px]">
                     {tab.label}
                   </span>
                 </Link>
@@ -364,11 +368,11 @@ export default function EventNavigation({
             })}
           </nav>
 
-          <div className="hidden h-6 w-px shrink-0 bg-zinc-200 md:block" />
+          <div className="hidden h-6 w-px shrink-0 bg-zinc-200 lg:block" />
 
           <Link
             href="/dashboard"
-            className="dashboard-link hidden px-3 py-2.5 text-[11px] font-bold"
+            className="dashboard-link hidden px-3 py-2.5 text-[11px] font-bold lg:inline-flex"
             title="Retour au Dashboard"
           >
             <span aria-hidden="true">⌂</span>
