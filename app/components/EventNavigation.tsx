@@ -100,12 +100,16 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .nav-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-5px;height:3px;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#2563eb,#818cf8);opacity:0;transform:scaleX(.35);transition:opacity 250ms ease,transform 350ms cubic-bezier(.22,1,.36,1)}
         .nav-item:hover{z-index:50;animation:tabWonderLoop 2.4s cubic-bezier(.22,1,.36,1) infinite;background:linear-gradient(145deg,#ffffff 0%,#effaff 55%,#e0f2fe 100%);border-color:rgba(14,165,233,.72);box-shadow:0 20px 42px rgba(14,165,233,.24),0 0 0 3px rgba(56,189,248,.08),inset 0 1px 0 #fff}
         .nav-item:hover::before{transform:translateX(125%)}
-        .nav-item:hover .truncate{transform:translateX(2px) scale(1.035);transition:transform 260ms cubic-bezier(.22,1,.36,1)}.nav-item:hover .truncate{color:#075985!important;text-shadow:0 2px 8px rgba(14,165,233,.1)}
+        .nav-item:hover .nav-label{transform:translateX(2px) scale(1.035);transition:transform 260ms cubic-bezier(.22,1,.36,1)}.nav-item:hover .nav-label{color:#075985!important;text-shadow:0 2px 8px rgba(14,165,233,.1)}
         .nav-item:focus-visible{outline:2px solid rgba(37,99,235,.55);outline-offset:2px}
         .nav-item-active{color:#0f172a!important;background:linear-gradient(135deg,#ffffff 0%,#f8fafc 100%);border-color:rgba(148,163,184,.42);box-shadow:0 18px 36px rgba(15,23,42,.10),inset 0 1px 0 #fff;animation:activeTabBreath 3.6s ease-in-out infinite}
         .nav-item-active::after{opacity:1;transform:scaleX(1);animation:navActive .45s cubic-bezier(.22,1,.36,1) both}
         .nav-icon{position:relative;display:inline-flex;width:2.15rem;height:2.15rem;flex:0 0 auto;align-items:center;justify-content:center;border-radius:.72rem;font-size:.98rem;color:#334155!important;background:linear-gradient(145deg,#ffffff,#f1f5f9);border:1px solid rgba(226,232,240,.95);box-shadow:0 5px 12px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.98);transition:transform 320ms cubic-bezier(.22,1,.36,1),background 260ms ease,color 260ms ease,box-shadow 320ms ease,border-color 260ms ease}
         .nav-icon::before{content:"";position:absolute;inset:2px;border-radius:.58rem;opacity:.12;pointer-events:none;background:currentColor;transition:opacity 260ms ease,transform 320ms ease}
+        .nav-icon-halo{position:absolute;inset:-5px;border-radius:.9rem;border:1px solid currentColor;opacity:0;transform:scale(.82);pointer-events:none;transition:opacity 280ms ease,transform 420ms cubic-bezier(.22,1,.36,1);filter:blur(.2px)}
+        .nav-item:hover .nav-icon-halo{opacity:.24;transform:scale(1.08)}
+        .nav-item-active .nav-icon-halo{opacity:.16;transform:scale(1.04);animation:iconHalo 2.8s ease-in-out infinite}
+        .nav-label{position:relative;z-index:1;transition:transform 260ms cubic-bezier(.22,1,.36,1),color 260ms ease}
         .nav-icon svg{position:relative;z-index:1;width:1.12rem;height:1.12rem;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
         .nav-item:nth-child(1) .nav-icon{color:#2563eb!important;background:linear-gradient(145deg,#eff6ff,#dbeafe);border-color:rgba(147,197,253,.7);box-shadow:0 6px 15px rgba(37,99,235,.14),inset 0 1px 0 #fff}
         .nav-item:nth-child(2) .nav-icon{color:#7c3aed!important;background:linear-gradient(145deg,#f5f3ff,#ede9fe);border-color:rgba(196,181,253,.72);box-shadow:0 6px 15px rgba(124,58,237,.13),inset 0 1px 0 #fff}
@@ -162,6 +166,7 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         @keyframes activeTabBreath{0%,100%{transform:translateY(0);box-shadow:0 18px 36px rgba(15,23,42,.08),inset 0 1px 0 #fff}50%{transform:translateY(-1px);box-shadow:0 21px 42px rgba(37,99,235,.14),inset 0 1px 0 #fff}}
         @keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
         @keyframes iconWonder{0%{transform:translateY(0) scale(1) rotate(0)}55%{transform:translateY(-2px) scale(1.08) rotate(-2deg)}100%{transform:translateY(-1px) scale(1.05) rotate(-1deg)}}
+        @keyframes iconHalo{0%,100%{opacity:.12;transform:scale(1.02)}50%{opacity:.25;transform:scale(1.09)}}
         @keyframes dashboardFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1.5px) scale(1.012)}}
         @keyframes dashboardSweep{0%,18%{transform:translateX(-130%);opacity:0}35%{opacity:.8}58%,100%{transform:translateX(130%);opacity:0}}
         
@@ -198,8 +203,8 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
               const active = isActive(tab);
               return (
                 <Link key={tab.href} href={tab.href} onMouseEnter={(event) => animateHover(tab.href, event.currentTarget, "tab")} onMouseLeave={() => stopHover(tab.href, "tab")} className={[`nav-item px-3 sm:px-4`, active ? "nav-item-active font-black" : "font-semibold"].join(" ")} aria-current={active ? "page" : undefined}>
-                  <span className="nav-icon">{tab.icon}</span>
-                  <span className="truncate text-[11px] tracking-[-.01em] sm:text-[13px]">
+                  <span className="nav-icon"><span className="nav-icon-halo" />{tab.icon}</span>
+                  <span className="nav-label truncate text-[11px] tracking-[-.01em] sm:text-[13px]">
                     <span className="sm:hidden">{tab.shortLabel}</span>
                     <span className="hidden sm:inline">{tab.label}</span>
                   </span>
