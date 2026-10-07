@@ -78,9 +78,10 @@ export default function EventNavigation({
         }
         .nav-scroll {
           position: relative;
-          display: flex;
-          align-items: center;
-          gap: .4rem;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          align-items: stretch;
+          gap: .45rem;
           overflow-x: auto;
           scrollbar-width: none;
           padding: .1rem;
@@ -89,15 +90,16 @@ export default function EventNavigation({
 
         .nav-item {
           position: relative;
-          display: inline-flex;
-          flex: 0 0 auto;
+          display: flex;
+          min-width: 0;
           align-items: center;
-          gap: .5rem;
-          min-height: 3.65rem;
+          justify-content: center;
+          gap: .6rem;
+          min-height: 3.7rem;
           border: 1px solid rgba(226,232,240,.9);
           border-radius: 1rem;
           color: #0f172a !important;
-          background: rgba(255,255,255,.76);
+          background: rgba(248,250,252,.72);
           overflow: hidden;
           transform: translateZ(0);
           transition:
@@ -136,19 +138,19 @@ export default function EventNavigation({
           outline: 2px solid rgba(37,99,235,.55);
           outline-offset: 2px;
         }
-        .nav-item-active {
-          color: #000 !important;
+         .nav-item-active {
+          color: #0b3b82 !important;
           background: linear-gradient(145deg, #f8fdff 0%, #e8f5ff 55%, #dbeafe 100%);
           border-color: rgba(37,99,235,.42);
-          box-shadow: 0 12px 28px rgba(37,99,235,.16), inset 0 1px 0 rgba(255,255,255,.98);
+          box-shadow: 0 14px 30px rgba(37,99,235,.18), inset 0 1px 0 rgba(255,255,255,.98);
         }
         .nav-item-active::after {
           content: "";
           position: absolute;
-          left: 17%;
-          right: 17%;
+          left: 10%;
+          right: 10%;
           bottom: -1px;
-          height: 2px;
+          height: 3px;
           border-radius: 999px;
           background: linear-gradient(90deg, rgb(56 189 248), rgb(37 99 235), rgb(99 102 241));
           box-shadow: 0 0 10px rgba(37,99,235,.32);
@@ -158,10 +160,10 @@ export default function EventNavigation({
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 2rem;
-          height: 2rem;
+          width: 2.15rem;
+          height: 2.15rem;
           border-radius: .7rem;
-          font-size: .85rem;
+          font-size: .9rem;
           background: #f1f5f9;
           color: #0f172a !important;
           transition: transform 320ms cubic-bezier(.22,1,.36,1), background 260ms ease, color 260ms ease, box-shadow 320ms ease;
@@ -291,8 +293,8 @@ export default function EventNavigation({
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
         @media (max-width: 767px) {
-          .nav-scroll { grid-template-columns: repeat(4, minmax(142px, 1fr)); }
-          .nav-item { min-height: 3.25rem; justify-content: flex-start; }
+          .nav-scroll { grid-template-columns: repeat(4, minmax(138px, 1fr)); }
+          .nav-item { min-height: 3.35rem; justify-content: flex-start; }
         }
         @media (prefers-reduced-motion: reduce) {
           .event-navigation-wrap,
@@ -348,7 +350,7 @@ export default function EventNavigation({
                   href={tab.href}
                   className={[
                     "nav-item px-3 sm:px-4",
-                    active ? "nav-item-active font-black" : "font-semibold",
+                    active ? "nav-item-active font-black" : "font-bold",
                   ].join(" ")}
                   style={{ color: "#000000" }}
                   aria-current={active ? "page" : undefined}
@@ -360,7 +362,7 @@ export default function EventNavigation({
                   >
                     {tab.icon}
                   </span>
-                  <span className="truncate text-[10px] sm:text-[11px]">
+                  <span className="truncate text-[11px] sm:text-[12px] tracking-[-0.01em]">
                     {tab.label}
                   </span>
                 </Link>
