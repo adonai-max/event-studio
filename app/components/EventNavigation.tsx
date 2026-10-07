@@ -104,9 +104,10 @@ export default function EventNavigation({
           position: relative;
           display: flex;
           align-items: center;
-          gap: .4rem;
+          gap: .5rem;
           overflow-x: auto;
           scrollbar-width: none;
+          padding: .1rem;
         }
 
         .nav-scroll::-webkit-scrollbar {
@@ -119,12 +120,16 @@ export default function EventNavigation({
           flex: 0 0 auto;
           align-items: center;
           gap: .5rem;
-          border-radius: .9rem;
-          color: rgb(100 116 139);
+          min-height: 2.7rem;
+          border: 1px solid transparent;
+          border-radius: .85rem;
+          color: rgb(71 85 105);
+          background: rgba(248,250,252,.72);
           transition:
             transform 260ms cubic-bezier(.22,1,.36,1),
             color 260ms ease,
             background 260ms ease,
+            border-color 260ms ease,
             box-shadow 260ms ease;
         }
 
@@ -135,33 +140,24 @@ export default function EventNavigation({
         }
 
         .nav-item-active {
-          color: rgb(3 105 161);
-          background:
-            linear-gradient(
-              135deg,
-              rgba(224,242,254,.92),
-              rgba(239,246,255,.82)
-            );
+          color: rgb(15 23 42);
+          background: white;
+          border-color: rgba(37,99,235,.22);
           box-shadow:
-            0 6px 18px rgba(14,165,233,.08),
-            inset 0 1px 0 rgba(255,255,255,.9);
+            0 4px 14px rgba(15,23,42,.08),
+            0 0 0 2px rgba(37,99,235,.06);
         }
 
         .nav-item-active::after {
           content: "";
           position: absolute;
-          left: 18%;
-          right: 18%;
-          bottom: 0;
+          left: 20%;
+          right: 20%;
+          bottom: -1px;
           height: 2px;
           border-radius: 999px;
-          background: linear-gradient(
-            90deg,
-            rgb(56 189 248),
-            rgb(37 99 235),
-            rgb(29 78 216)
-          );
-          box-shadow: 0 0 12px rgba(37,99,235,.38);
+          background: linear-gradient(90deg, rgb(14 165 233), rgb(37 99 235));
+          box-shadow: 0 0 8px rgba(37,99,235,.28);
           animation: navActive .35s cubic-bezier(.22,1,.36,1) both;
         }
 
@@ -169,14 +165,16 @@ export default function EventNavigation({
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 1.65rem;
-          height: 1.65rem;
+          width: 1.7rem;
+          height: 1.7rem;
           border-radius: .55rem;
-          font-size: .78rem;
-          background: rgba(148,163,184,.10);
+          font-size: .75rem;
+          background: rgb(241 245 249);
+          color: rgb(100 116 139);
           transition:
             transform 260ms ease,
             background 260ms ease,
+            color 260ms ease,
             box-shadow 260ms ease;
         }
 
@@ -186,13 +184,9 @@ export default function EventNavigation({
         }
 
         .nav-item-active .nav-icon {
-          background: linear-gradient(
-            135deg,
-            rgb(14 165 233),
-            rgb(37 99 235)
-          );
+          background: linear-gradient(135deg, rgb(14 165 233), rgb(37 99 235));
           color: white;
-          box-shadow: 0 5px 12px rgba(37,99,235,.20);
+          box-shadow: 0 4px 10px rgba(37,99,235,.18);
         }
 
         .back-button {
@@ -280,7 +274,7 @@ export default function EventNavigation({
           <div className="h-6 w-px shrink-0 bg-zinc-200" />
 
           <nav
-            className="nav-scroll min-w-0 flex-1 px-0.5 py-0.5"
+            className="nav-scroll min-w-0 flex-1 px-0.5 py-1"
             aria-label="Navigation de l'événement"
           >
             {tabs.map((tab) => {
@@ -291,7 +285,7 @@ export default function EventNavigation({
                   key={tab.href}
                   href={tab.href}
                   className={[
-                    "nav-item px-2.5 py-2 sm:px-3.5 sm:py-2.5",
+                    "nav-item px-3 py-2 sm:px-4",
                     active ? "nav-item-active font-black" : "font-semibold",
                   ].join(" ")}
                   aria-current={active ? "page" : undefined}
