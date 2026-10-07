@@ -74,7 +74,7 @@ export default function EventPage() {
 
   if (loading) {
     return (
-      <main className="min-h-[calc(100vh-72px)] bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.10),_transparent_30%),#f7f9fc]">
+      <main className="min-h-[calc(100vh-72px)] bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.10),_transparent_30%),#f7f9fc] event-page-motion">
         <div className="mx-auto max-w-5xl px-6 py-16 text-center">
           <p className="text-zinc-500">
             Chargement de l&apos;événement...
@@ -86,7 +86,7 @@ export default function EventPage() {
 
   if (errorMessage || !event) {
     return (
-      <main className="min-h-screen bg-zinc-50">
+      <main className="min-h-screen bg-zinc-50 event-page-motion">
         <div className="mx-auto max-w-5xl px-6 py-16">
           <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
             <h1 className="text-xl font-bold text-red-800">
@@ -110,7 +110,7 @@ export default function EventPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50">
+    <main className="min-h-screen bg-zinc-50 event-page-motion">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
                 <EventNavigation eventId={event.id} eventName={event.name} />
