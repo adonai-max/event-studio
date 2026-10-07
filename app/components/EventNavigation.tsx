@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useRef } from "react";
 
 type EventNavigationProps = {
   eventId?: string;
@@ -33,6 +34,41 @@ const iconMap = {
 export default function EventNavigation({ eventId, eventName, backHref = "/dashboard" }: EventNavigationProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const hoverAnimations = useRef(new Map<string, Animation>());
+  const backAnimation = useRef<Animation | null>(null);
+
+  function animateHover(key: string, element: HTMLElement | null, type: "tab" | "back") {
+    if (!element || typeof element.animate !== "function") return;
+    const current = type === "back" ? backAnimation.current : hoverAnimations.current.get(key);
+    current?.cancel();
+    const animation = element.animate(
+      type === "back"
+        ? [
+            { transform: "translate3d(0,0,0) scale(1)" },
+            { transform: "translate3d(-5px,-3px,0) scale(1.06)", offset: 0.5 },
+            { transform: "translate3d(0,0,0) scale(1)" },
+          ]
+        : [
+            { transform: "translate3d(0,0,0) scale(1)" },
+            { transform: "translate3d(0,-10px,0) scale(1.08)", offset: 0.45 },
+            { transform: "translate3d(0,-6px,0) scale(1.05)", offset: 0.7 },
+            { transform: "translate3d(0,-8px,0) scale(1.07)" },
+          ],
+      { duration: type === "back" ? 700 : 850, iterations: Infinity, easing: "cubic-bezier(.22,1,.36,1)" }
+    );
+    if (type === "back") backAnimation.current = animation;
+    else hoverAnimations.current.set(key, animation);
+  }
+
+  function stopHover(key: string, type: "tab" | "back") {
+    if (type === "back") {
+      backAnimation.current?.cancel();
+      backAnimation.current = null;
+    } else {
+      hoverAnimations.current.get(key)?.cancel();
+      hoverAnimations.current.delete(key);
+    }
+  }
 
   const tabs = eventId
     ? [
@@ -125,7 +161,7 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
 
       <div className="event-navigation rounded-[22px] px-2.5 py-2.5 sm:px-3.5">
         <div className="relative flex items-center gap-2">
-          <button type="button" onClick={handleBack} className="back-button text-[11px] font-bold" aria-label="Retour à la page précédente" title="Retour à la page précédente">
+          <button type="button" onClick={handleBack} onMouseEnter={(event) => animateHover("back", event.currentTarget, "back")} onMouseLeave={() => stopHover("back", "back")} className="back-button text-[11px] font-bold" aria-label="Retour à la page précédente" title="Retour à la page précédente">
             <span className="back-icon">{iconMap.back}</span>
             <span className="hidden sm:inline">Retour</span>
           </button>
@@ -136,7 +172,7 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
             {tabs.map((tab) => {
               const active = isActive(tab);
               return (
-                <Link key={tab.href} href={tab.href} className={[`nav-item px-3 sm:px-4`, active ? "nav-item-active font-black" : "font-semibold"].join(" ")} aria-current={active ? "page" : undefined}>
+                <Link key={tab.href} href={tab.href} onMouseEnter={(event) => animateHover(tab.href, event.currentTarget, "tab")} onMouseLeave={() => stopHover(tab.href, "tab")} className={[`nav-item px-3 sm:px-4`, active ? "nav-item-active font-black" : "font-semibold"].join(" ")} aria-current={active ? "page" : undefined}>
                   <span className="nav-icon">{tab.icon}</span>
                   <span className="truncate text-[11px] tracking-[-.01em] sm:text-[13px]">
                     <span className="sm:hidden">{tab.shortLabel}</span>
