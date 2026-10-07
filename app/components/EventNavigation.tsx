@@ -123,7 +123,7 @@ export default function EventNavigation({
           min-height: 2.85rem;
           border: 1px solid transparent;
           border-radius: .85rem;
-          color: rgb(71 85 105);
+          color: rgb(0 0 0);
           background: rgba(248,250,252,.58);
           transition:
             transform 260ms cubic-bezier(.22,1,.36,1),
@@ -135,7 +135,7 @@ export default function EventNavigation({
 
         .nav-item:hover {
           transform: translateY(-1px);
-          color: rgb(15 23 42);
+          color: rgb(0 0 0);
           background: rgba(14,165,233,.06);
         }
 
@@ -170,7 +170,7 @@ export default function EventNavigation({
           border-radius: .55rem;
           font-size: .75rem;
           background: rgb(238 242 247);
-          color: rgb(100 116 139);
+          color: rgb(15 23 42);
           transition:
             transform 260ms ease,
             background 260ms ease,
@@ -204,7 +204,7 @@ export default function EventNavigation({
 
         .back-button:hover {
           transform: translateX(-2px);
-          color: rgb(3 105 161);
+          color: rgb(0 76 153);
           background: rgba(14,165,233,.07);
         }
 
