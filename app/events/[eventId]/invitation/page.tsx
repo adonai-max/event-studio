@@ -816,7 +816,7 @@ export default function InvitationBuilderPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-50 px-4 py-10">
+      <main className="min-h-screen bg-zinc-50 px-4 py-10 event-page-motion">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
             <div className="h-7 w-64 animate-pulse rounded bg-zinc-200" />
@@ -830,7 +830,7 @@ export default function InvitationBuilderPage() {
 
   if (!event) {
     return (
-      <main className="min-h-screen bg-zinc-50 px-4 py-10">
+      <main className="min-h-screen bg-zinc-50 px-4 py-10 event-page-motion">
         <div className="mx-auto max-w-3xl rounded-3xl border border-red-200 bg-white p-8 shadow-sm">
           <p className="text-sm font-semibold text-red-600">
             {errorMessage ||
@@ -842,7 +842,7 @@ export default function InvitationBuilderPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 text-zinc-900">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900 event-page-motion">
       <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
         <EventNavigation eventId={event.id} eventName={event.name} />
 
