@@ -59,18 +59,18 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .event-navigation::after{content:"";position:absolute;top:0;bottom:0;left:-28%;width:18%;z-index:-1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:skewX(-18deg);animation:lightSweep 9s ease-in-out infinite}
         .nav-scroll{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:.6rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:.1rem}
         .nav-scroll::-webkit-scrollbar{width:0;height:0;display:none}
-        .nav-item{position:relative;display:flex;min-width:0;align-items:center;justify-content:center;gap:.62rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:rgba(248,250,252,.7);overflow:hidden;transform:translateZ(0);transition:transform 300ms cubic-bezier(.22,1,.36,1),background 260ms ease,border-color 260ms ease,box-shadow 300ms ease}
+        .nav-item{position:relative;display:flex;min-width:0;align-items:center;justify-content:center;gap:.62rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,245,249,.78));overflow:hidden;transform:translateZ(0);transition:transform 300ms cubic-bezier(.22,1,.36,1),background 260ms ease,border-color 260ms ease,box-shadow 300ms ease}
         .nav-item::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 22%,rgba(255,255,255,.9) 48%,transparent 72%);transform:translateX(-125%);transition:transform 800ms cubic-bezier(.22,1,.36,1)}
         .nav-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-5px;height:3px;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#2563eb,#818cf8);opacity:0;transform:scaleX(.35);transition:opacity 250ms ease,transform 350ms cubic-bezier(.22,1,.36,1)}
-        .nav-item:hover{transform:translateY(-3px);background:rgba(239,249,255,.98);border-color:rgba(56,189,248,.3);box-shadow:0 14px 28px rgba(37,99,235,.11)}
+        .nav-item:hover{transform:translateY(-4px) scale(1.012);background:linear-gradient(145deg,#fff,#eef9ff);border-color:rgba(14,165,233,.38);box-shadow:0 16px 30px rgba(37,99,235,.14)}
         .nav-item:hover::before{transform:translateX(125%)}
         .nav-item:focus-visible{outline:2px solid rgba(37,99,235,.55);outline-offset:2px}
-        .nav-item-active{color:#0b3b82!important;background:linear-gradient(145deg,#fff 0%,#eff8ff 52%,#dbeafe 100%);border-color:rgba(37,99,235,.38);box-shadow:0 16px 32px rgba(37,99,235,.16),inset 0 1px 0 #fff}
+        .nav-item-active{color:#075985!important;background:linear-gradient(135deg,#ecfeff 0%,#e0f2fe 48%,#dbeafe 100%);border-color:rgba(14,165,233,.48);box-shadow:0 18px 36px rgba(14,165,233,.17),inset 0 1px 0 #fff;animation:activeTabBreath 3.2s ease-in-out infinite}
         .nav-item-active::after{opacity:1;transform:scaleX(1);animation:navActive .45s cubic-bezier(.22,1,.36,1) both}
         .nav-icon{position:relative;display:inline-flex;width:2.05rem;height:2.05rem;flex:0 0 auto;align-items:center;justify-content:center;border-radius:.7rem;font-size:.98rem;background:#f1f5f9;color:#0f172a!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);transition:transform 320ms cubic-bezier(.22,1,.36,1),background 260ms ease,color 260ms ease,box-shadow 320ms ease}
         .nav-icon svg{width:1.05rem;height:1.05rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-        .nav-item:hover .nav-icon{transform:translateY(-2px) scale(1.06);background:rgba(14,165,233,.12);color:#0369a1!important;box-shadow:0 5px 12px rgba(14,165,233,.12)}
-        .nav-item-active .nav-icon{background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff!important;box-shadow:0 7px 16px rgba(37,99,235,.25);animation:iconFloat 2.8s ease-in-out infinite}
+        .nav-item:hover .nav-icon{transform:translateY(-3px) scale(1.1) rotate(-2deg);background:rgba(14,165,233,.12);color:#0369a1!important;box-shadow:0 5px 12px rgba(14,165,233,.12)}
+        .nav-item-active .nav-icon{background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff!important;box-shadow:0 8px 18px rgba(37,99,235,.28);animation:iconFloat 2.4s ease-in-out infinite}
         .back-button{display:inline-flex;align-items:center;gap:.45rem;border:1px solid rgba(203,213,225,.95);padding:.52rem .7rem;border-radius:.85rem;background:rgba(255,255,255,.94);color:#334155!important;box-shadow:0 7px 18px rgba(15,23,42,.06);white-space:nowrap}
         .back-button:hover{transform:translateX(-2px);color:#1d4ed8!important;background:#eff6ff;box-shadow:0 10px 22px rgba(37,99,235,.12)}
         .back-icon{display:inline-flex;width:1.75rem;height:1.75rem;align-items:center;justify-content:center;border-radius:.55rem;background:#eff6ff;color:#2563eb;box-shadow:inset 0 0 0 1px rgba(191,219,254,.8)}
@@ -98,7 +98,8 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         @keyframes navReveal{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
         @keyframes ambientDrift{from{transform:translate3d(-1%,-1%,0) scale(1)}to{transform:translate3d(2%,2%,0) scale(1.04)}}
         @keyframes lightSweep{0%,18%{transform:translateX(-170%) skewX(-18deg);opacity:0}35%{opacity:.78}62%,100%{transform:translateX(470%) skewX(-18deg);opacity:0}}
-        @keyframes navActive{from{opacity:0;transform:scaleX(.45)}to{opacity:1;transform:scaleX(1)}}
+        @keyframes navActive{0%{opacity:0;transform:scaleX(.35)}60%{opacity:1;transform:scaleX(1.06)}100%{opacity:1;transform:scaleX(1)}}
+        @keyframes activeTabBreath{0%,100%{box-shadow:0 18px 36px rgba(14,165,233,.14),inset 0 1px 0 #fff}50%{box-shadow:0 21px 42px rgba(37,99,235,.22),inset 0 1px 0 #fff}}
         @keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
         @keyframes nameIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:translateX(0)}}
         @keyframes pageEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
