@@ -120,11 +120,11 @@ export default function EventNavigation({
           flex: 0 0 auto;
           align-items: center;
           gap: .5rem;
-          min-height: 2.7rem;
+          min-height: 2.85rem;
           border: 1px solid transparent;
           border-radius: .85rem;
           color: rgb(71 85 105);
-          background: rgba(248,250,252,.72);
+          background: rgba(248,250,252,.58);
           transition:
             transform 260ms cubic-bezier(.22,1,.36,1),
             color 260ms ease,
@@ -142,10 +142,10 @@ export default function EventNavigation({
         .nav-item-active {
           color: rgb(15 23 42);
           background: white;
-          border-color: rgba(37,99,235,.22);
+          border-color: rgba(37,99,235,.30);
           box-shadow:
-            0 4px 14px rgba(15,23,42,.08),
-            0 0 0 2px rgba(37,99,235,.06);
+            0 3px 10px rgba(15,23,42,.07),
+            inset 0 1px 0 rgba(255,255,255,.95);
         }
 
         .nav-item-active::after {
@@ -156,8 +156,8 @@ export default function EventNavigation({
           bottom: -1px;
           height: 2px;
           border-radius: 999px;
-          background: linear-gradient(90deg, rgb(14 165 233), rgb(37 99 235));
-          box-shadow: 0 0 8px rgba(37,99,235,.28);
+          background: linear-gradient(90deg, rgb(56 189 248), rgb(37 99 235));
+          box-shadow: 0 0 7px rgba(37,99,235,.22);
           animation: navActive .35s cubic-bezier(.22,1,.36,1) both;
         }
 
@@ -169,7 +169,7 @@ export default function EventNavigation({
           height: 1.7rem;
           border-radius: .55rem;
           font-size: .75rem;
-          background: rgb(241 245 249);
+          background: rgb(238 242 247);
           color: rgb(100 116 139);
           transition:
             transform 260ms ease,
@@ -259,7 +259,7 @@ export default function EventNavigation({
       `}</style>
 
       <div className="event-navigation rounded-[20px] px-2 py-2 sm:px-3">
-        <div className="relative flex items-center gap-1.5">
+        <div className="relative flex items-center gap-2">
           <button
             type="button"
             onClick={handleBack}
@@ -271,10 +271,12 @@ export default function EventNavigation({
             <span className="hidden sm:inline">Retour</span>
           </button>
 
-          <div className="h-6 w-px shrink-0 bg-zinc-200" />
+          <div className="mx-0.5 hidden h-7 w-px shrink-0 bg-zinc-200 sm:block" />
+
+          <div className="hidden shrink-0 px-1 sm:block"><span className="text-[8px] font-black uppercase tracking-[0.16em] text-zinc-400">Menu</span></div>
 
           <nav
-            className="nav-scroll min-w-0 flex-1 px-0.5 py-1"
+            className="nav-scroll min-w-0 flex-1 px-0.5 py-1.5"
             aria-label="Navigation de l'événement"
           >
             {tabs.map((tab) => {
