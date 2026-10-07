@@ -466,7 +466,7 @@ export default function EventControlPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-50">
+      <main className="min-h-screen bg-zinc-50 event-page-motion">
         <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
           <div className="rounded-3xl border border-zinc-200 bg-white p-10 shadow-sm">
             <p className="text-sm font-semibold uppercase tracking-wide text-green-600">
@@ -484,7 +484,7 @@ export default function EventControlPage() {
 
   if (pageError || !event) {
     return (
-      <main className="min-h-screen bg-zinc-50">
+      <main className="min-h-screen bg-zinc-50 event-page-motion">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
           <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
             <p className="text-3xl">⚠️</p>
@@ -503,7 +503,7 @@ export default function EventControlPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50">
+    <main className="min-h-screen bg-zinc-50 event-page-motion">
       <div className="mx-auto max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
         <EventNavigation eventId={eventId} eventName={event.name} />
 
