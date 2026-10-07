@@ -15,11 +15,23 @@ type EventItem = {
   description: string | null;
 };
 
+
+const pageIcons = {
+  type: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M6.5 4v4.5M17.5 4v4.5M6 10.5h12M6 14h5M6 17.5h8" /></svg>,
+  date: <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17" /><path d="M7.5 13h.01M12 13h.01M16.5 13h.01M7.5 16.5h.01M12 16.5h.01" /></svg>,
+  time: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5l3.5 2" /></svg>,
+  location: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10.5c0 5-7 10-7 10s-7-5-7-10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10.5" r="2.3" /></svg>,
+  invitation: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16A1.5 1.5 0 0 1 21.5 7v10A1.5 1.5 0 0 1 20 18.5H4A1.5 1.5 0 0 1 2.5 17V7A1.5 1.5 0 0 1 4 5.5Z" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>,
+  guests: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3" /><path d="M3 19.5a5.5 5.5 0 0 1 11 0" /><circle cx="17.2" cy="9" r="2.4" /><path d="M14.7 19.5a4.1 4.1 0 0 1 6.1-3.55" /></svg>,
+  control: <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M7 8h10M7 12h10M7 16h6" /><circle cx="17" cy="16" r="1.6" /></svg>,
+  edit: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 17.5-.8 3.3 3.3-.8L18.2 8.3a2.4 2.4 0 0 0-3.4-3.4L3.1 16.9Z" /><path d="m13.5 6.5 4 4" /></svg>,
+};
+
 const details = (event: EventItem) => [
-  { label: "Type", value: event.type || "Événement", icon: "✦", tone: "sky" },
-  { label: "Date", value: event.date || "Non définie", icon: "📅", tone: "violet" },
-  { label: "Heure", value: event.time || "Non définie", icon: "◷", tone: "amber" },
-  { label: "Lieu", value: event.location || "Non défini", icon: "⌖", tone: "emerald" },
+  { label: "Type", value: event.type || "Événement", icon: pageIcons.type, tone: "sky" },
+  { label: "Date", value: event.date || "Non définie", icon: pageIcons.date, tone: "violet" },
+  { label: "Heure", value: event.time || "Non définie", icon: pageIcons.time, tone: "amber" },
+  { label: "Lieu", value: event.location || "Non défini", icon: pageIcons.location, tone: "emerald" },
 ];
 
 export default function EventPage() {
@@ -148,9 +160,9 @@ export default function EventPage() {
 
               <div className="mt-8 grid gap-2.5 sm:grid-cols-3">
                 {[
-                  { label: "Date", value: event.date || "À définir", icon: "📅" },
-                  { label: "Heure", value: event.time || "À définir", icon: "◷" },
-                  { label: "Lieu", value: event.location || "À définir", icon: "⌖" },
+                  { label: "Date", value: event.date || "À définir", icon: pageIcons.date },
+                  { label: "Heure", value: event.time || "À définir", icon: pageIcons.time },
+                  { label: "Lieu", value: event.location || "À définir", icon: pageIcons.location },
                 ].map((item) => (
                   <div key={item.label} className="overview-glass event-motion-interactive rounded-2xl border border-white/10 bg-white/[.06] px-4 py-3.5 backdrop-blur-md">
                     <p className="text-[9px] font-black uppercase tracking-[.18em] text-slate-500">{item.label}</p>
@@ -220,7 +232,7 @@ export default function EventPage() {
           <div className="grid gap-4 lg:grid-cols-3">
             <button onClick={() => router.push("/events/" + event.id + "/invitation")} className="overview-action event-motion-card event-motion-interactive group text-left">
               <div className="overview-action-top">
-                <span className="overview-icon bg-sky-50 text-sky-600 ring-sky-100">💌</span>
+                <span className="overview-icon overview-icon-sky">{pageIcons.invitation}</span>
                 <span className="overview-number">01</span>
               </div>
               <div className="mt-8">
@@ -236,7 +248,7 @@ export default function EventPage() {
 
             <button onClick={() => router.push("/events/" + event.id + "/guests")} className="overview-action event-motion-card event-motion-interactive group text-left">
               <div className="overview-action-top">
-                <span className="overview-icon bg-violet-50 text-violet-600 ring-violet-100">👥</span>
+                <span className="overview-icon overview-icon-violet">{pageIcons.guests}</span>
                 <span className="overview-number">02</span>
               </div>
               <div className="mt-8">
@@ -252,7 +264,7 @@ export default function EventPage() {
 
             <button onClick={() => router.push("/events/" + event.id + "/control")} className="overview-action event-motion-card event-motion-interactive group text-left">
               <div className="overview-action-top">
-                <span className="overview-icon bg-emerald-50 text-emerald-600 ring-emerald-100">🎟️</span>
+                <span className="overview-icon overview-icon-emerald">{pageIcons.control}</span>
                 <span className="overview-number">03</span>
               </div>
               <div className="mt-8">
@@ -286,7 +298,7 @@ export default function EventPage() {
             {eventDetails.map((item) => (
               <div key={item.label} className="overview-detail event-motion-interactive rounded-2xl border border-slate-100 bg-slate-50/70 p-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xl">{item.icon}</span>
+                  <span className="overview-detail-icon">{item.icon}</span>
                   <span className="h-2 w-2 rounded-full bg-slate-300" />
                 </div>
                 <p className="mt-6 text-[9px] font-black uppercase tracking-[.18em] text-slate-400">{item.label}</p>
@@ -297,7 +309,7 @@ export default function EventPage() {
 
           <div className="mx-5 mb-5 rounded-2xl border border-slate-100 bg-[linear-gradient(135deg,#f8fafc,#f0f9ff)] p-5 sm:mx-6 sm:mb-6 sm:p-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-lg shadow-sm ring-1 ring-slate-100">✎</div>
+              <div className="description-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-100">{pageIcons.edit}</div>
               <div className="min-w-0">
                 <p className="text-[9px] font-black uppercase tracking-[.18em] text-slate-400">Description</p>
                 <p className="mt-2 max-w-4xl text-sm leading-7 text-slate-600">
@@ -512,12 +524,16 @@ export default function EventPage() {
           align-items: center;
           justify-content: center;
           border-radius: 17px;
-          font-size: 23px;
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
-          transition: transform .28s ease;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.75), 0 8px 18px rgba(15,23,42,.06);
+          transition: transform .32s cubic-bezier(.22,1,.36,1), box-shadow .32s ease;
         }
+        .overview-icon svg { width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+        .overview-icon-sky { color:#0284c7; background:linear-gradient(145deg,#eff6ff,#e0f2fe); box-shadow:inset 0 0 0 1px rgba(125,211,252,.55),0 10px 22px rgba(14,165,233,.12); }
+        .overview-icon-violet { color:#7c3aed; background:linear-gradient(145deg,#f5f3ff,#ede9fe); box-shadow:inset 0 0 0 1px rgba(196,181,253,.6),0 10px 22px rgba(124,58,237,.11); }
+        .overview-icon-emerald { color:#059669; background:linear-gradient(145deg,#ecfdf5,#d1fae5); box-shadow:inset 0 0 0 1px rgba(110,231,183,.6),0 10px 22px rgba(5,150,105,.11); }
         .overview-action:hover .overview-icon {
-          transform: translateY(-3px) rotate(-2deg) scale(1.04);
+          transform: translateY(-4px) rotate(-2deg) scale(1.06);
+          box-shadow: 0 14px 28px rgba(15,23,42,.12), inset 0 0 0 1px rgba(255,255,255,.8);
         }
         .overview-number {
           font-size: 10px;
@@ -526,13 +542,22 @@ export default function EventPage() {
           color: #cbd5e1;
         }
         .overview-detail {
-          transition: transform .25s ease, border-color .25s ease, background .25s ease;
+          position:relative;
+          overflow:hidden;
+          transition: transform .28s cubic-bezier(.22,1,.36,1), border-color .25s ease, background .25s ease, box-shadow .28s ease;
         }
+        .overview-detail::after{content:"";position:absolute;inset:auto -25% -65% 35%;height:110px;border-radius:999px;background:rgba(56,189,248,.06);filter:blur(24px);transition:transform .4s ease}
+        .overview-detail-icon{position:relative;z-index:1;display:flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:11px;background:#fff;color:#475569;box-shadow:0 5px 12px rgba(15,23,42,.06),inset 0 0 0 1px rgba(226,232,240,.8)}
+        .overview-detail-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+        .description-icon{color:#2563eb}
+        .description-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
         .overview-detail:hover {
-          transform: translateY(-3px);
+          transform: translateY(-4px);
           border-color: #cbd5e1;
           background: white;
+          box-shadow:0 14px 28px rgba(15,23,42,.07);
         }
+        .overview-detail:hover::after{transform:translate(-16px,-10px)}
         @keyframes overviewFloat {
           0%, 100% { transform: translate3d(0,0,0) scale(1); }
           50% { transform: translate3d(0,-18px,0) scale(1.04); }
