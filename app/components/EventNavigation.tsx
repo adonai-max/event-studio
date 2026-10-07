@@ -273,7 +273,7 @@ export default function EventNavigation({
 
           <div className="mx-0.5 hidden h-7 w-px shrink-0 bg-zinc-200 sm:block" />
 
-          <div className="hidden shrink-0 px-1 sm:block"><span className="text-[8px] font-black uppercase tracking-[0.16em] text-zinc-400">Menu</span></div>
+          <div className="hidden shrink-0 px-1 sm:block"><span className="text-[8px] font-black uppercase tracking-[0.16em] text-zinc-900">Menu</span></div>
 
           <nav
             className="nav-scroll min-w-0 flex-1 px-0.5 py-1.5"
