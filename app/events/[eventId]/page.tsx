@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 import EventNavigation from "@/app/components/EventNavigation";
+import { CalendarDays, Clock3, MapPin } from "lucide-react";
 
 type EventItem = {
   id: string;
@@ -18,9 +19,9 @@ type EventItem = {
 
 const pageIcons = {
   type: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M6.5 4v4.5M17.5 4v4.5M6 10.5h12M6 14h5M6 17.5h8" /></svg>,
-  date: <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17" /><path d="M7.5 13h.01M12 13h.01M16.5 13h.01M7.5 16.5h.01M12 16.5h.01" /></svg>,
-  time: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5l3.5 2" /></svg>,
-  location: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10.5c0 5-7 10-7 10s-7-5-7-10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10.5" r="2.3" /></svg>,
+  date: <CalendarDays aria-hidden="true" strokeWidth={2.1} />,
+  time: <Clock3 aria-hidden="true" strokeWidth={2.1} />,
+  location: <MapPin aria-hidden="true" strokeWidth={2.1} />,
   invitation: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16A1.5 1.5 0 0 1 21.5 7v10A1.5 1.5 0 0 1 20 18.5H4A1.5 1.5 0 0 1 2.5 17V7A1.5 1.5 0 0 1 4 5.5Z" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>,
   guests: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3" /><path d="M3 19.5a5.5 5.5 0 0 1 11 0" /><circle cx="17.2" cy="9" r="2.4" /><path d="M14.7 19.5a4.1 4.1 0 0 1 6.1-3.55" /></svg>,
   control: <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M7 8h10M7 12h10M7 16h6" /><circle cx="17" cy="16" r="1.6" /></svg>,
