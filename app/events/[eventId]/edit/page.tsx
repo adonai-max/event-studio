@@ -146,7 +146,7 @@ export default function EditEventPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-12">
+      <main className="min-h-screen bg-slate-50 px-6 py-12 event-page-motion">
         <div className="mx-auto max-w-4xl">
         <EventNavigation eventId={eventId} />
           <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
@@ -165,7 +165,7 @@ export default function EditEventPage() {
 
   if (errorMessage && !form.name) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-12">
+      <main className="min-h-screen bg-slate-50 px-6 py-12 event-page-motion">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-red-200 bg-white p-8 shadow-sm">
             <p className="text-sm font-semibold text-red-600">
@@ -185,7 +185,7 @@ export default function EditEventPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8 event-page-motion">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6">
           <Link
