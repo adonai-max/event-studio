@@ -54,4 +54,24 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
+
+/* Event Studio — masque global de toute scrollbar native, y compris les conteneurs internes */
+*,
+*::before,
+*::after {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar,
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
 @import "./styles/event-studio.css";
