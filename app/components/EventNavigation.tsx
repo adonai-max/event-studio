@@ -228,6 +228,31 @@ export default function EventNavigation({
           transform: translateY(-2px);
         }
 
+        :global(.event-page-motion section),
+        :global(.event-page-motion article) {
+          animation: contentRise .62s cubic-bezier(.22,1,.36,1) both;
+        }
+        :global(.event-page-motion section:nth-of-type(2)),
+        :global(.event-page-motion article:nth-of-type(2)) { animation-delay: 90ms; }
+        :global(.event-page-motion section:nth-of-type(3)),
+        :global(.event-page-motion article:nth-of-type(3)) { animation-delay: 150ms; }
+        :global(.event-page-motion section:nth-of-type(4)),
+        :global(.event-page-motion article:nth-of-type(4)) { animation-delay: 210ms; }
+        :global(.event-page-motion section:nth-of-type(5)),
+        :global(.event-page-motion article:nth-of-type(5)) { animation-delay: 270ms; }
+        :global(.event-page-motion input),
+        :global(.event-page-motion textarea),
+        :global(.event-page-motion select),
+        :global(.event-page-motion button) {
+          transition-timing-function: cubic-bezier(.22,1,.36,1);
+        }
+        :global(.event-page-motion input:focus),
+        :global(.event-page-motion textarea:focus),
+        :global(.event-page-motion select:focus) {
+          transform: translateY(-1px);
+        }
+
+
         @keyframes navReveal {
           from { opacity: 0; transform: translateY(-7px); }
           to { opacity: 1; transform: translateY(0); }
@@ -257,6 +282,10 @@ export default function EventNavigation({
           from { opacity: 0; transform: translateY(5px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes contentRise {
+          from { opacity: 0; transform: translateY(12px) scale(.995); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
         @keyframes cardEnter {
           from { opacity: 0; transform: translateY(10px) scale(.992); }
           to { opacity: 1; transform: translateY(0) scale(1); }
@@ -271,7 +300,9 @@ export default function EventNavigation({
           .dashboard-link,
           .event-name,
           :global(.event-page-motion),
-          :global(.event-page-motion .event-motion-card) {
+          :global(.event-page-motion .event-motion-card),
+          :global(.event-page-motion section),
+          :global(.event-page-motion article) {
             animation: none !important;
             transition: none !important;
           }
