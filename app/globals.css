@@ -25,51 +25,27 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Event Studio — scrollbar premium et discret */
-html {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(37, 99, 235, 0.32) transparent;
-  scroll-behavior: smooth;
+/* Event Studio — aucune bande de scrollbar native visible */
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-html::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-html::-webkit-scrollbar-track {
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
   background: transparent;
 }
 
-html::-webkit-scrollbar-thumb {
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: rgba(37, 99, 235, 0.28);
-  background-clip: padding-box;
-  transition: background 180ms ease;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #38bdf8, #2563eb, #1d4ed8);
-  background-clip: padding-box;
-}
-
-html::-webkit-scrollbar-corner {
+html::-webkit-scrollbar-track,
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-track,
+body::-webkit-scrollbar-thumb {
   background: transparent;
-}
-
-.dark {
-  scrollbar-color: rgba(96, 165, 250, 0.38) transparent;
-}
-
-.dark::-webkit-scrollbar-thumb {
-  background: rgba(96, 165, 250, 0.34);
-  background-clip: padding-box;
-}
-
-.dark::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #7dd3fc, #3b82f6, #2563eb);
-  background-clip: padding-box;
+  border: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
