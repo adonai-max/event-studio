@@ -57,12 +57,12 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .event-navigation{position:relative;overflow:hidden;border:1px solid rgba(148,163,184,.2);background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(248,250,252,.92));box-shadow:0 18px 48px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(22px);isolation:isolate}
         .event-navigation::before{content:"";position:absolute;inset:-70%;z-index:-2;pointer-events:none;background:radial-gradient(circle at 12% 20%,rgba(56,189,248,.16),transparent 24%),radial-gradient(circle at 88% 80%,rgba(99,102,241,.13),transparent 25%);animation:ambientDrift 12s ease-in-out infinite alternate}
         .event-navigation::after{content:"";position:absolute;top:0;bottom:0;left:-28%;width:18%;z-index:-1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:skewX(-18deg);animation:lightSweep 9s ease-in-out infinite}
-        .nav-scroll{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:.6rem;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:.1rem}
+        .nav-scroll{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:.6rem;overflow-x:visible;scrollbar-width:none;-ms-overflow-style:none;padding:.1rem}
         .nav-scroll::-webkit-scrollbar{width:0;height:0;display:none}
-        .nav-item{position:relative;display:flex;min-width:0;align-items:center;justify-content:center;gap:.62rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,245,249,.78));overflow:hidden;transform:translateZ(0);transition:transform 320ms cubic-bezier(.22,1,.36,1),background 260ms ease,border-color 260ms ease,box-shadow 300ms ease;transform-origin:center}
+        .nav-item{position:relative;z-index:1;display:flex;min-width:0;align-items:center;justify-content:center;gap:.62rem;min-height:3.8rem;border:1px solid rgba(226,232,240,.9);border-radius:1rem;color:#0f172a!important;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,245,249,.78));overflow:hidden;transform:translateZ(0);transition:transform 360ms cubic-bezier(.16,1,.3,1),background 260ms ease,border-color 260ms ease,box-shadow 320ms ease;transform-origin:center}
         .nav-item::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 22%,rgba(255,255,255,.9) 48%,transparent 72%);transform:translateX(-125%);transition:transform 800ms cubic-bezier(.22,1,.36,1)}
         .nav-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-5px;height:3px;border-radius:999px;background:linear-gradient(90deg,#38bdf8,#2563eb,#818cf8);opacity:0;transform:scaleX(.35);transition:opacity 250ms ease,transform 350ms cubic-bezier(.22,1,.36,1)}
-        .nav-item:hover{transform:translateY(-4px) scale(1.035);background:linear-gradient(145deg,#fff,#eef9ff);border-color:rgba(14,165,233,.38);box-shadow:0 16px 30px rgba(37,99,235,.14)}
+        .nav-item:hover{z-index:10;transform:translateY(-6px) scale(1.075);background:linear-gradient(145deg,#fff,#eef9ff);border-color:rgba(14,165,233,.38);box-shadow:0 16px 30px rgba(37,99,235,.14)}
         .nav-item:hover::before{transform:translateX(125%)}
         .nav-item:focus-visible{outline:2px solid rgba(37,99,235,.55);outline-offset:2px}
         .nav-item-active{color:#075985!important;background:linear-gradient(135deg,#ecfeff 0%,#e0f2fe 48%,#dbeafe 100%);border-color:rgba(14,165,233,.48);box-shadow:0 18px 36px rgba(14,165,233,.17),inset 0 1px 0 #fff;animation:activeTabBreath 3.2s ease-in-out infinite}
@@ -106,7 +106,7 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         @keyframes contentRise{from{opacity:0;transform:translateY(12px) scale(.995)}to{opacity:1;transform:translateY(0) scale(1)}}
         @keyframes cardEnter{from{opacity:0;transform:translateY(10px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
         @media (max-width:767px){
-          .nav-scroll{grid-template-columns:repeat(4,minmax(148px,1fr))}
+          .nav-scroll{grid-template-columns:repeat(4,minmax(148px,1fr));overflow-x:auto}
           .nav-item{min-height:3.35rem;justify-content:flex-start;padding-left:.75rem!important}
           .event-navigation{border-radius:20px}
           .back-button{padding:.5rem .62rem}
