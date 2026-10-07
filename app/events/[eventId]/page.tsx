@@ -158,15 +158,19 @@ export default function EventPage() {
                 Tout votre événement, au même endroit. Préparez l'expérience, organisez vos invités et gardez le contrôle jusqu'à l'entrée.
               </p>
 
-              <div className="mt-8 grid gap-2.5 sm:grid-cols-3">
+              <div className="overview-event-meta mt-8 grid gap-3 sm:grid-cols-3">
                 {[
-                  { label: "Date", value: event.date || "À définir", icon: pageIcons.date },
-                  { label: "Heure", value: event.time || "À définir", icon: pageIcons.time },
-                  { label: "Lieu", value: event.location || "À définir", icon: pageIcons.location },
+                  { label: "Date", value: event.date || "À définir", icon: pageIcons.date, tone: "sky" },
+                  { label: "Heure", value: event.time || "À définir", icon: pageIcons.time, tone: "violet" },
+                  { label: "Lieu", value: event.location || "À définir", icon: pageIcons.location, tone: "amber" },
                 ].map((item) => (
-                  <div key={item.label} className="overview-glass event-motion-interactive rounded-2xl border border-white/10 bg-white/[.06] px-4 py-3.5 backdrop-blur-md">
-                    <p className="text-[9px] font-black uppercase tracking-[.18em] text-slate-500">{item.label}</p>
-                    <p className="mt-1.5 truncate text-sm font-bold text-white">{item.icon} {item.value}</p>
+                  <div key={item.label} className={"overview-meta-card overview-meta-" + item.tone + " event-motion-interactive"}>
+                    <div className="overview-meta-icon">{item.icon}</div>
+                    <div className="min-w-0">
+                      <p className="overview-meta-label">{item.label}</p>
+                      <p className="overview-meta-value" title={item.value}>{item.value}</p>
+                    </div>
+                    <span className="overview-meta-shine" />
                   </div>
                 ))}
               </div>
@@ -363,6 +367,51 @@ export default function EventPage() {
         }
         .overview-sheen {
           animation: overviewSheen 8s ease-in-out infinite;
+        }
+        .overview-event-meta { position: relative; }
+        .overview-meta-card {
+          position: relative; display: flex; min-height: 82px; align-items: center; gap: 13px;
+          overflow: hidden; padding: 13px 15px; border: 1px solid rgba(255,255,255,.10);
+          border-radius: 21px; background: linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 28px rgba(0,0,0,.10);
+          backdrop-filter: blur(16px);
+          transition: transform .32s cubic-bezier(.22,1,.36,1), border-color .3s ease, box-shadow .3s ease, background .3s ease;
+        }
+        .overview-meta-card::before {
+          content: ""; position: absolute; left: 0; top: 15px; bottom: 15px; width: 2px;
+          border-radius: 999px; background: currentColor; opacity: .8;
+        }
+        .overview-meta-card:hover {
+          transform: translateY(-4px); border-color: rgba(255,255,255,.20);
+          background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 36px rgba(0,0,0,.16);
+        }
+        .overview-meta-icon {
+          position: relative; z-index: 2; display: flex; width: 42px; height: 42px; flex: 0 0 auto;
+          align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.12);
+          border-radius: 14px; background: rgba(255,255,255,.075); color: currentColor;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 8px 18px rgba(0,0,0,.12);
+          transition: transform .32s cubic-bezier(.22,1,.36,1), background .3s ease;
+        }
+        .overview-meta-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .overview-meta-card:hover .overview-meta-icon { transform: translateY(-2px) rotate(-3deg) scale(1.06); background: rgba(255,255,255,.11); }
+        .overview-meta-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .19em; color: #94a3b8; }
+        .overview-meta-value {
+          margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+          font-size: 14px; line-height: 1.2; font-weight: 850; letter-spacing: -.01em; color: #fff;
+        }
+        .overview-meta-shine {
+          position: absolute; right: -28px; bottom: -46px; width: 110px; height: 110px;
+          border-radius: 999px; background: currentColor; opacity: .10; filter: blur(24px);
+          transition: transform .45s ease, opacity .3s ease;
+        }
+        .overview-meta-card:hover .overview-meta-shine { transform: translate(-16px,-14px) scale(1.15); opacity: .15; }
+        .overview-meta-sky { color: #38bdf8; }
+        .overview-meta-violet { color: #a78bfa; }
+        .overview-meta-amber { color: #fbbf24; }
+        @media (max-width: 767px) {
+          .overview-meta-card { min-height: 76px; }
+          .overview-meta-value { font-size: 13px; }
         }
 .overview-command-panel {
           position: relative;
