@@ -409,11 +409,14 @@ export default function EventPage() {
         }
         .overview-meta-icon {
           position: relative; z-index: 2; display: flex; width: 46px; height: 46px; flex: 0 0 auto;
-          align-items: center; justify-content: center; border-radius: 15px;
-          color: currentColor; background: rgba(255,255,255,.09);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 9px 20px rgba(0,0,0,.16);
+          align-items: center; justify-content: center; border-radius: 15px; isolation:isolate; overflow:hidden;
+          color: currentColor; background: linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.045));
+          border:1px solid rgba(255,255,255,.22); transform:perspective(520px) rotateX(7deg) rotateY(-5deg) translateZ(0);
+          box-shadow: inset 0 2px 0 rgba(255,255,255,.28), inset 0 -4px 0 rgba(0,0,0,.12), 0 5px 0 rgba(0,0,0,.12), 0 12px 22px rgba(0,0,0,.22);
           transition: transform .32s cubic-bezier(.22,1,.36,1), background .3s ease, box-shadow .3s ease;
         }
+        .overview-meta-icon::after{content:"";position:absolute;z-index:-1;inset:0 0 auto;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent);pointer-events:none}
+        .overview-meta-icon svg{transform:translateZ(12px);filter:drop-shadow(0 3px 1px rgba(0,0,0,.28))}
         .overview-meta-sky .overview-meta-icon {
           color: #38bdf8; background: linear-gradient(145deg,rgba(56,189,248,.22),rgba(14,165,233,.08));
           border: 1px solid rgba(56,189,248,.28); box-shadow: inset 0 1px 0 rgba(186,230,253,.16), 0 9px 22px rgba(14,165,233,.16);
@@ -600,22 +603,20 @@ export default function EventPage() {
           justify-content: space-between;
         }
         .overview-icon {
-          display: flex;
-          width: 52px;
-          height: 52px;
-          align-items: center;
-          justify-content: center;
-          border-radius: 17px;
-          box-shadow: inset 0 0 0 1px rgba(255,255,255,.75), 0 8px 18px rgba(15,23,42,.06);
+          position:relative; isolation:isolate; overflow:hidden; display: flex; width: 52px; height: 52px;
+          align-items: center; justify-content: center; border-radius: 17px;
+          border:1px solid rgba(255,255,255,.75); transform:perspective(600px) rotateX(8deg) rotateY(-7deg) translateZ(0);
+          box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -4px 0 rgba(15,23,42,.09),0 5px 0 rgba(15,23,42,.08),0 13px 23px rgba(15,23,42,.13);
           transition: transform .32s cubic-bezier(.22,1,.36,1), box-shadow .32s ease;
         }
-        .overview-icon svg { width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+        .overview-icon::after{content:"";position:absolute;inset:0 0 auto;height:47%;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));pointer-events:none;z-index:0}
+        .overview-icon svg { position:relative;z-index:1;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 3px 1px rgba(15,23,42,.2));transform:translateZ(12px); }
         .overview-icon-sky { color:#0284c7; background:linear-gradient(145deg,#eff6ff,#e0f2fe); box-shadow:inset 0 0 0 1px rgba(125,211,252,.55),0 10px 22px rgba(14,165,233,.12); }
         .overview-icon-violet { color:#7c3aed; background:linear-gradient(145deg,#f5f3ff,#ede9fe); box-shadow:inset 0 0 0 1px rgba(196,181,253,.6),0 10px 22px rgba(124,58,237,.11); }
         .overview-icon-emerald { color:#059669; background:linear-gradient(145deg,#ecfdf5,#d1fae5); box-shadow:inset 0 0 0 1px rgba(110,231,183,.6),0 10px 22px rgba(5,150,105,.11); }
         .overview-action:hover .overview-icon {
-          transform: translateY(-4px) rotate(-2deg) scale(1.06);
-          box-shadow: 0 14px 28px rgba(15,23,42,.12), inset 0 0 0 1px rgba(255,255,255,.8);
+          transform:perspective(600px) translateY(-6px) rotateX(12deg) rotateY(-10deg) scale(1.1);
+          box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -3px 0 rgba(15,23,42,.08),0 7px 0 rgba(15,23,42,.08),0 19px 30px rgba(15,23,42,.2);
         }
         .overview-number {
           font-size: 10px;
@@ -629,8 +630,9 @@ export default function EventPage() {
           transition: transform .28s cubic-bezier(.22,1,.36,1), border-color .25s ease, background .25s ease, box-shadow .28s ease;
         }
         .overview-detail::after{content:"";position:absolute;inset:auto -25% -65% 35%;height:110px;border-radius:999px;background:rgba(56,189,248,.06);filter:blur(24px);transition:transform .4s ease}
-        .overview-detail-icon{position:relative;z-index:1;display:flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:11px;background:#fff;color:#475569;box-shadow:0 5px 12px rgba(15,23,42,.06),inset 0 0 0 1px rgba(226,232,240,.8)}
-        .overview-detail-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+        .overview-detail-icon{position:relative;isolation:isolate;overflow:hidden;z-index:1;display:flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:11px;background:linear-gradient(145deg,#fff,#e2e8f0);color:#475569;border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #fff,inset 0 -3px 0 rgba(15,23,42,.08),0 4px 0 rgba(15,23,42,.04),0 8px 13px rgba(15,23,42,.1);transform:perspective(420px) rotateX(7deg) rotateY(-5deg)}
+        .overview-detail-icon::after{content:"";position:absolute;inset:0 0 auto;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.8),transparent);pointer-events:none;z-index:0}
+        .overview-detail-icon svg{position:relative;z-index:1;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px rgba(15,23,42,.2));transform:translateZ(8px)}
         .description-icon{color:#2563eb}
         .description-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
         .overview-detail:hover {
