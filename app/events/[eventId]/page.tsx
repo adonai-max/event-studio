@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import EventNavigation from "@/app/components/EventNavigation";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
@@ -33,7 +34,7 @@ function Icon({ name, size = 20 }: { name: string; size?: number }) {
     "aria-hidden": true as const,
   };
 
-  const paths: Record<string, React.ReactNode> = {
+  const paths: Record<string, ReactNode> = {
     grid: <><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></>,
     calendar: <><rect x="3" y="5" width="18" height="16" rx="2.5" /><path d="M7 3v4M17 3v4M3 10h18" /><path d="m8 14 2 2 4-4" /></>,
     file: <><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20V5A1.5 1.5 0 0 1 7.5 3.5Z" /><path d="M14 3.5V8h4M9 13h6M9 16.5h6" /></>,
@@ -164,72 +165,26 @@ export default function EventPage() {
     return <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6"><div className="max-w-lg rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-2xl font-black text-rose-600">!</div><h1 className="mt-5 text-2xl font-black text-slate-950">Événement indisponible</h1><p className="mt-2 text-sm leading-6 text-slate-500">{errorMessage || "Impossible de charger cet événement."}</p><button onClick={() => router.push("/dashboard")} className="mt-6 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white">Retour au Dashboard</button></div></main>;
   }
 
-  const navItems = [
-    { label: "Vue d’ensemble", href: "/events/" + event.id, icon: "calendar", tone: "blue", exact: true },
-    { label: "Invitation", href: "/events/" + event.id + "/invitation", icon: "file", tone: "violet" },
-    { label: "Invités", href: "/events/" + event.id + "/guests", icon: "users", tone: "green" },
-    { label: "Event Control", href: "/events/" + event.id + "/control", icon: "scan", tone: "orange" },
-  ];
-
   return (
-    <main className="es-overview min-h-screen bg-[#F4F6FA] text-[#12213A]">
+    <main className="es-overview min-h-screen bg-[#F5F6FA] text-[#101A2E]">
       <style jsx>{`
-        .es-overview{--navy:#101d33;--blue:#2563eb;--muted:#64748b}
-        .es-overview *{box-sizing:border-box}
-        .es-sidebar{background:linear-gradient(180deg,#101d33 0%,#111f37 100%);color:#e2e8f0}
-        .es-navlink{display:flex;align-items:center;gap:11px;border:1px solid transparent;border-radius:12px;padding:11px 12px;color:#cbd5e1;font-size:13px;font-weight:600;transition:background .2s ease,border-color .2s ease,transform .2s ease}
-        .es-navlink:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);transform:translateX(2px)}
-        .es-navlink-active{background:linear-gradient(100deg,rgba(37,99,235,.34),rgba(59,130,246,.12));border-color:rgba(96,165,250,.28);color:white;box-shadow:inset 3px 0 #60a5fa}
-        .es-navicon{display:flex;width:31px;height:31px;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0}
-        .tone-blue .es-navicon{background:rgba(96,165,250,.15);color:#93c5fd}.tone-violet .es-navicon{background:rgba(167,139,250,.15);color:#c4b5fd}.tone-green .es-navicon{background:rgba(52,211,153,.15);color:#6ee7b7}.tone-orange .es-navicon{background:rgba(251,146,60,.15);color:#fdba74}
-        .es-stat{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.es-stat:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,23,42,.07);border-color:#cbd5e1}
-        .es-quick{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.es-quick:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.07)}
-        @media(prefers-reduced-motion:reduce){.es-navlink,.es-stat,.es-quick{transition:none}.es-navlink:hover,.es-stat:hover,.es-quick:hover{transform:none}}
+        .es-overview { --navy:#101a2e; --blue:#4263eb; --muted:#64748b; }
+        .es-overview * { box-sizing:border-box; }
+        .es-stat { transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+        .es-stat:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(16,26,46,.07); border-color:#cbd5e1; }
+        .es-quick { transition:background .18s ease, border-color .18s ease; }
+        .es-quick:hover { background:#f8faff; border-color:#dbe4ff; }
+        @media(prefers-reduced-motion:reduce) { .es-stat,.es-quick { transition:none; } .es-stat:hover { transform:none; } }
       `}</style>
-
-      <div className="mx-auto min-h-screen max-w-[1600px] lg:grid lg:grid-cols-[238px_minmax(0,1fr)]">
-        <aside className="es-sidebar flex flex-col gap-7 px-4 py-5 lg:sticky lg:top-0 lg:h-screen">
-          <Link href="/dashboard" className="flex items-center gap-3 px-2 py-1">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-lg shadow-blue-950/30"><Icon name="calendar" size={22} /></span>
-            <span><span className="block text-[15px] font-extrabold tracking-tight text-white">Event Studio</span><span className="mt-0.5 block text-[9px] font-bold uppercase tracking-[.18em] text-slate-400">Workspace</span></span>
-          </Link>
-
-          <div className="hidden h-px bg-white/10 lg:block" />
-          <div className="hidden lg:block">
-            <p className="mb-3 px-3 text-[9px] font-extrabold uppercase tracking-[.18em] text-slate-500">Espace principal</p>
-            <Link href="/dashboard" className="es-navlink"><span className="es-navicon text-blue-300"><Icon name="grid" size={18} /></span>Dashboard</Link>
-          </div>
-
+      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
+        <EventNavigation eventId={event.id} eventName={event.name} />
+        <header className="mb-6 flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="mb-3 hidden px-3 text-[9px] font-extrabold uppercase tracking-[.18em] text-slate-500 lg:block">Votre événement</p>
-            <nav aria-label="Navigation de l’événement" className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-1">
-              {navItems.map((item) => {
-                const active = item.exact ? true : false;
-                return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={`es-navlink tone-${item.tone} ${active ? "es-navlink-active" : ""}`}><span className="es-navicon"><Icon name={item.icon} size={18} /></span><span>{item.label}</span>{active && <span className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-sky-300 lg:block" />}</Link>;
-              })}
-            </nav>
-            <div className="mt-4 rounded-xl border border-white/10 bg-white/[.035] p-3">
-              <p className="text-[9px] font-bold uppercase tracking-[.15em] text-slate-500">Événement actif</p>
-              <p className="mt-1 truncate text-xs font-semibold text-slate-200" title={event.name}>{event.name}</p>
-            </div>
+            <p className="text-sm text-slate-500"><Link href="/dashboard" className="hover:text-blue-700">Dashboard</Link><span className="mx-2 text-slate-300">/</span><span className="font-semibold text-slate-700">Vue d’ensemble</span></p>
+            <p className="mt-1 text-xs font-semibold text-slate-400">Centre de pilotage de l’événement</p>
           </div>
-
-          <div className="mt-auto hidden rounded-2xl border border-white/10 bg-white/[.04] p-3 lg:block">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-400/10 text-sky-200"><Icon name="help" size={17} /></span>
-            <p className="mt-3 text-xs font-bold text-white">Besoin d’aide ?</p>
-            <p className="mt-1 text-[11px] leading-5 text-slate-400">Retrouvez les conseils pour organiser votre événement.</p>
-          </div>
-          <div className="hidden items-center gap-3 border-t border-white/10 px-2 pt-4 lg:flex">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-xs font-extrabold text-slate-700">{initials}</span>
-            <span className="min-w-0"><span className="block text-xs font-bold text-white">Espace organisateur</span><span className="block text-[10px] text-slate-400">Compte connecté</span></span>
-          </div>
-        </aside>
-
-        <section className="min-w-0 px-4 pb-10 pt-5 sm:px-6 lg:px-9 lg:pt-7">
-          <header className="mb-7 flex items-center justify-between gap-4">
-            <div className="min-w-0"><p className="text-xs text-slate-500"><Link href="/dashboard" className="hover:text-blue-700">Mes événements</Link><span className="mx-2 text-slate-300">/</span><span className="font-semibold text-slate-700">Vue d’ensemble</span></p><p className="mt-1 hidden text-[10px] font-bold uppercase tracking-[.16em] text-slate-400 sm:block">Centre de pilotage événementiel</p></div>
-            <div className="flex items-center gap-3"><button type="button" aria-label="Notifications" className="hidden h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 sm:flex"><Icon name="bell" size={18} /></button><span className="flex h-10 w-10 items-center justify-center rounded-full border border-white bg-white text-xs font-extrabold text-slate-700 shadow-sm">{initials}</span></div>
-          </header>
+          <span className="hidden h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-extrabold text-slate-700 shadow-sm sm:flex">{initials}</span>
+        </header>
 
           <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0"><div className="mb-2 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[9px] font-extrabold uppercase tracking-[.17em] text-blue-700"><span className="h-1.5 w-1.5 rounded-full bg-blue-500" />{event.type || "Événement"}</div><h1 className="break-words text-3xl font-extrabold tracking-[-.04em] text-[#12213A] sm:text-4xl">{event.name}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Préparez chaque détail, de la première invitation jusqu’au contrôle des entrées.</p></div>
@@ -275,7 +230,6 @@ export default function EventPage() {
           </section>
 
           <footer className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-5"><p className="text-[11px] font-medium text-slate-400">Event Studio <span className="mx-1.5">·</span> Organisez des moments inoubliables.</p><Link href="/dashboard" className="text-xs font-bold text-slate-500 transition hover:text-blue-700">← Retour au Dashboard</Link></footer>
-        </section>
       </div>
     </main>
   );
