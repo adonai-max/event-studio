@@ -614,6 +614,14 @@ export default function EventPage() {
         .overview-icon{transform:perspective(700px) rotateX(10deg) rotateY(-9deg) translateZ(0);box-shadow:inset 0 2px 0 rgba(255,255,255,.96),inset 0 -5px 0 rgba(15,23,42,.13),0 5px 0 rgba(15,23,42,.12),0 15px 25px rgba(15,23,42,.17);filter:drop-shadow(0 4px 4px rgba(15,23,42,.08))}
         .overview-icon::before{content:"";position:absolute;inset:3px;border-radius:12px;border:1px solid rgba(255,255,255,.34);box-shadow:inset 0 1px 3px rgba(255,255,255,.55),inset 0 -3px 5px rgba(15,23,42,.08);pointer-events:none}
         .overview-icon::after{background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.18) 48%,transparent 76%);height:48%;opacity:.9}
+        /* Premium dimensional icon finish */
+        .overview-icon{transform:perspective(700px) rotateX(10deg) rotateY(-9deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.96),inset 0 -5px 0 rgba(15,23,42,.13),0 5px 0 rgba(15,23,42,.12),0 15px 25px rgba(15,23,42,.17)}
+        .overview-icon::before{content:"";position:absolute;inset:3px;border-radius:12px;border:1px solid rgba(255,255,255,.34);pointer-events:none}
+        .overview-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(15,23,42,.28));transform:translateZ(8px)}
+        .overview-action:hover .overview-icon{transform:perspective(700px) translateY(-4px) rotateX(12deg) rotateY(-10deg) scale(1.07)}
+        .overview-meta-icon{transform:perspective(650px) rotateX(9deg) rotateY(-8deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),inset 0 -5px 0 rgba(0,0,0,.15),0 5px 0 rgba(0,0,0,.13),0 14px 24px rgba(0,0,0,.22)}
+        .overview-meta-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(0,0,0,.32));transform:translateZ(8px)}
+        .overview-detail-icon{transform:perspective(600px) rotateX(8deg) rotateY(-7deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -4px 0 rgba(15,23,42,.12),0 4px 0 rgba(15,23,42,.07),0 10px 18px rgba(15,23,42,.12)}
         .overview-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(15,23,42,.28)) drop-shadow(0 4px 3px rgba(15,23,42,.12));transform:translateZ(10px)}
         .overview-action:hover .overview-icon{transform:perspective(700px) translateY(-5px) rotateX(14deg) rotateY(-12deg) scale(1.08);box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -4px 0 rgba(15,23,42,.1),0 5px 0 rgba(15,23,42,.1),0 19px 30px rgba(15,23,42,.2)}
         .overview-meta-icon{transform:perspective(650px) rotateX(9deg) rotateY(-8deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),inset 0 -5px 0 rgba(0,0,0,.15),0 5px 0 rgba(0,0,0,.13),0 14px 24px rgba(0,0,0,.22)}
