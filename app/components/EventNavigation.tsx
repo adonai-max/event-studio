@@ -12,16 +12,16 @@ type EventNavigationProps = {
 
 const iconMap = {
   overview: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 13.2 12 4l8.5 9.2" /><path d="M5.8 11.2V20h12.4v-8.8" /><path d="M9.2 20v-5.6h5.6V20" /><path d="m17.5 4.2.7 1.7 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" /></svg>
   ),
   invitation: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16A1.5 1.5 0 0 1 21.5 7v10A1.5 1.5 0 0 1 20 18.5H4A1.5 1.5 0 0 1 2.5 17V7A1.5 1.5 0 0 1 4 5.5Z" /><path d="m3.5 7 8.5 6 8.5-6" /><path d="M7.5 10.2 4 17M16.5 10.2 20 17" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h10l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 20V5a1.5 1.5 0 0 1 1-1.5Z" /><path d="M14.5 3.8V8H19" /><path d="M8 12h7M8 15.5h5" /><path d="m16.8 13.5.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2z" /></svg>
   ),
   guests: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3" /><path d="M3 19.5a5.5 5.5 0 0 1 11 0" /><circle cx="17.2" cy="9" r="2.4" /><path d="M14.7 19.5a4.1 4.1 0 0 1 6.1-3.55" /><path d="M5.5 15.2c1.8.7 4.2.7 6 0" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7.5" r="3.1" /><circle cx="17.2" cy="9" r="2.4" /><path d="M2.8 19.5v-1.1a6.2 6.2 0 0 1 12.4 0v1.1Z" /><path d="M15.1 14.1a4.7 4.7 0 0 1 6.1 4.5v.9h-4" /><path d="M6.4 13.6h5.2" /></svg>
   ),
   control: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M7 8h10M7 12h10M7 16h6" /><circle cx="17" cy="16" r="1.6" /></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5H5.5a2 2 0 0 0-2 2V8M16 3.5h2.5a2 2 0 0 1 2 2V8M20.5 16v2.5a2 2 0 0 1-2 2H16M8 20.5H5.5a2 2 0 0 1-2-2V16" /><path d="M7 7h3v3H7zM14 7h3v3h-3zM7 14h3v3H7z" /><path d="M14 14h1.5v1.5H14zM17 17v.5M14 18h1" /><path d="m14 12 2 1.5 3-3" /></svg>
   ),
   dashboard: (
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5" /><path d="M6.5 9.5V20h11V9.5M10 20v-5h4v5" /></svg>
