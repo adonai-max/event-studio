@@ -1,20 +1,20 @@
 :root {
-  --es-primary: #4f46e5;
-  --es-primary-hover: #4338ca;
-  --es-secondary: #7c3aed;
+  --es-primary: #4263eb;
+  --es-primary-hover: #3451d1;
+  --es-secondary: #8b5cf6;
 
-  --es-success: #059669;
-  --es-warning: #d97706;
-  --es-danger: #dc2626;
-  --es-info: #0284c7;
+  --es-success: #15803d;
+  --es-warning: #b45309;
+  --es-danger: #b91c1c;
+  --es-info: #1d4ed8;
 
-  --es-bg: #f8fafc;
+  --es-bg: #f5f6fa;
   --es-surface: #ffffff;
   --es-surface-soft: #f1f5f9;
 
-  --es-text: #09090b;
-  --es-text-muted: #71717a;
-  --es-border: #e4e4e7;
+  --es-text: #101a2e;
+  --es-text-muted: #64748b;
+  --es-border: #e2e8f0;
 
   --es-radius-sm: 0.75rem;
   --es-radius-md: 1rem;
@@ -457,4 +457,62 @@ html.dark .event-navigation .border-t {
   html.dark .event-navigation .nav-item {
     animation: none !important;
   }
+}
+
+
+/* Event Studio — shared premium application chrome */
+.es-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  border-bottom: 1px solid rgb(255 255 255 / .09);
+  background: #101a2e;
+  color: #fff;
+  box-shadow: 0 4px 18px rgb(16 26 46 / .12);
+}
+.es-topbar__inner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  width:min(100% - 32px, 1440px);
+  min-height:68px;
+  margin-inline:auto;
+}
+.es-brand { display:flex; align-items:center; gap:12px; min-width:0; color:#fff; }
+.es-brand__mark { display:grid; place-items:center; width:40px; height:40px; flex-shrink:0; border-radius:12px; background:#4263eb; color:#fff; font-size:12px; font-weight:850; letter-spacing:-.04em; box-shadow:0 6px 16px rgb(66 99 235 / .22); }
+.es-brand__copy { display:flex; flex-direction:column; gap:2px; }
+.es-brand__copy strong { font-size:14px; font-weight:800; letter-spacing:-.02em; }
+.es-brand__copy small { color:#aab6cb; font-size:11px; }
+.es-topbar__actions { display:flex; align-items:center; gap:8px; }
+.es-icon-button { display:grid; place-items:center; width:40px; height:40px; border:1px solid rgb(255 255 255 / .14); border-radius:12px; background:rgb(255 255 255 / .05); color:#dce5f5; transition:background var(--es-transition),border-color var(--es-transition),color var(--es-transition); }
+.es-icon-button:hover { background:rgb(255 255 255 / .1); border-color:rgb(255 255 255 / .24); color:#fff; }
+.es-profile { position:relative; }
+.es-profile__trigger { display:flex; align-items:center; gap:9px; min-height:44px; padding:4px 10px 4px 5px; border:1px solid rgb(255 255 255 / .14); border-radius:14px; background:rgb(255 255 255 / .05); color:#fff; text-align:left; }
+.es-profile__trigger:hover { background:rgb(255 255 255 / .09); }
+.es-avatar { display:grid; place-items:center; width:32px; height:32px; overflow:hidden; flex-shrink:0; border-radius:10px; background:#24375a; color:#fff; font-size:11px; font-weight:800; }
+.es-avatar img { width:100%; height:100%; object-fit:cover; }
+.es-profile__copy { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.es-profile__copy strong { max-width:140px; overflow:hidden; color:#fff; font-size:12px; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+.es-profile__copy small { color:#aab6cb; font-size:10px; }
+.es-profile__trigger > svg { width:14px; height:14px; color:#aab6cb; }
+.es-profile__menu { position:absolute; top:calc(100% + 10px); right:0; z-index:120; width:256px; padding:8px; border:1px solid #e2e8f0; border-radius:16px; background:#fff; color:#101a2e; box-shadow:0 18px 45px rgb(16 26 46 / .18); }
+.es-profile__identity { display:flex; flex-direction:column; gap:3px; padding:10px 11px 12px; border-bottom:1px solid #edf0f5; }
+.es-profile__identity strong { font-size:12px; font-weight:750; }
+.es-profile__identity small { overflow:hidden; color:#64748b; font-size:11px; text-overflow:ellipsis; }
+.es-profile__menu a, .es-profile__menu button { display:flex; align-items:center; gap:10px; width:100%; min-height:40px; padding:9px 11px; border:0; border-radius:10px; background:transparent; color:#334155; font-size:13px; font-weight:600; text-align:left; }
+.es-profile__menu a:hover, .es-profile__menu button:hover { background:#f1f5ff; color:#2346c5; }
+.es-profile__menu button { cursor:pointer; }
+@media (max-width:520px) {
+  .es-topbar__inner { width:calc(100% - 24px); min-height:60px; gap:8px; }
+  .es-brand { gap:8px; }
+  .es-brand__mark { width:36px; height:36px; border-radius:10px; }
+  .es-brand__copy small { display:none; }
+  .es-topbar__actions { gap:6px; }
+  .es-icon-button { width:36px; height:36px; border-radius:10px; }
+  .es-profile__trigger { min-height:38px; padding-right:6px; }
+  .es-profile__copy, .es-profile__trigger > svg, .es-notification-button { display:none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .es-topbar *, .es-event-nav * { animation:none !important; transition:none !important; }
 }
