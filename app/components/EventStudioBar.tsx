@@ -55,7 +55,7 @@ export default function EventStudioBar() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-[90] overflow-visible border-b border-sky-400/30 bg-gradient-to-r from-sky-300 via-sky-600 to-blue-700 text-white shadow-[0_10px_30px_rgba(14,116,144,0.18)]">
+    <header className="sticky top-0 z-[90] overflow-visible border-b border-white/10 bg-[#101A2E] text-white shadow-[0_4px_18px_rgba(16,26,46,0.12)]">
       <style jsx>{`
         @keyframes eventStudioBarShift {
           0%, 100% { background-position: 0% 50%; }
@@ -74,9 +74,9 @@ export default function EventStudioBar() {
         }
       `}</style>
 
-      <div className="event-studio-bar-shift pointer-events-none absolute inset-0 bg-gradient-to-r from-sky-300/40 via-sky-500/10 to-blue-700/30" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(66,99,235,0.18),transparent_45%)]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/50" />
-      <div className="pointer-events-none absolute -inset-x-20 top-0 h-16 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-2xl motion-safe:animate-pulse motion-reduce:animate-none" />
+      
 
       <div className="relative mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
         <Link
@@ -84,7 +84,7 @@ export default function EventStudioBar() {
           className="group flex min-w-0 items-center gap-3"
           aria-label="Event Studio — Centre de pilotage"
         >
-          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-blue-950 to-blue-800 text-xs font-black text-white shadow-lg ring-1 ring-white/20 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:scale-105 group-hover:ring-white/40 motion-reduce:transition-none">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-[#4263EB] text-xs font-black text-white shadow-lg ring-1 ring-white/20 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:scale-105 group-hover:ring-white/40 motion-reduce:transition-none">
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-700 group-hover:translate-x-full group-hover:opacity-100 motion-reduce:transition-none" />
             <span className="relative">ES</span>
           </div>
@@ -93,7 +93,7 @@ export default function EventStudioBar() {
             <p className="truncate text-sm font-black tracking-tight text-white">
               Event Studio
             </p>
-            <p className="text-[11px] font-medium text-white/70">
+            <p className="text-[11px] font-medium text-slate-300">
               Centre de pilotage
             </p>
           </div>
@@ -107,7 +107,7 @@ export default function EventStudioBar() {
               isDark ? "Passer en mode lumière" : "Passer en mode sombre"
             }
             title={isDark ? "Mode lumière" : "Mode sombre"}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/15 text-base shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/25 hover:shadow-md motion-reduce:transition-none"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-base shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/25 hover:shadow-md motion-reduce:transition-none"
           >
             {isDark ? "☀️" : "🌙"}
           </button>
@@ -128,7 +128,7 @@ export default function EventStudioBar() {
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
               <path d="M13.7 21a2 2 0 0 1-3.4 0" />
             </svg>
-            <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-sky-600 bg-red-400" />
+            <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full border-2 border-[#101A2E] bg-rose-400" />
           </button>
 
           <div className="hidden h-8 w-px bg-white/30 sm:block" />
@@ -137,7 +137,7 @@ export default function EventStudioBar() {
             <button
               type="button"
               onClick={() => setProfileMenuOpen((open) => !open)}
-              className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-blue-950/45 p-1 shadow-md shadow-blue-950/20 backdrop-blur-md transition-all duration-500 hover:-translate-y-0.5 hover:bg-blue-950/60 motion-reduce:transition-none"
+              className="group flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] p-1 shadow-md shadow-blue-950/20 backdrop-blur-md transition-all duration-500 hover:-translate-y-0.5 hover:bg-blue-950/60 motion-reduce:transition-none"
               aria-label={`Profil de ${userName}`}
               aria-expanded={profileMenuOpen}
               aria-haspopup="menu"
@@ -160,7 +160,7 @@ export default function EventStudioBar() {
             {profileMenuOpen && (
               <div
                 role="menu"
-                className="absolute right-0 top-full z-[120] mt-2 w-64 overflow-hidden rounded-2xl border border-sky-100 bg-white p-2 text-slate-800 shadow-2xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                className="absolute right-0 top-full z-[120] mt-2 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 text-slate-800 shadow-xl shadow-slate-950/15 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
               >
                 <div className="border-b border-slate-100 px-3 py-2.5 dark:border-slate-800">
                   <p className="text-xs font-black text-slate-900 dark:text-white">
