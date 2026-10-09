@@ -117,6 +117,20 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         .nav-item-active .nav-icon-halo{opacity:.16;transform:scale(1.04);animation:iconHalo 2.8s ease-in-out infinite}
         .nav-label{position:relative;z-index:1;transition:transform 260ms cubic-bezier(.22,1,.36,1),color 260ms ease}
         .nav-icon svg{position:relative;z-index:1;width:1.12rem;height:1.12rem;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+        /* Premium 3D icon treatment: colored enamel, depth and soft studio lighting */
+        .nav-icon{transform-style:preserve-3d;backface-visibility:hidden;filter:drop-shadow(0 3px 1px rgba(15,23,42,.08))}
+        .nav-icon::after{height:48%;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.22) 62%,transparent);border:1px solid rgba(255,255,255,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}
+        .nav-icon::before{inset:3px;border-radius:.58rem;opacity:.18;box-shadow:inset 0 1px 2px rgba(255,255,255,.65),inset 0 -2px 3px rgba(15,23,42,.12)}
+        .nav-icon svg{filter:drop-shadow(0 1.5px 0 rgba(15,23,42,.22)) drop-shadow(0 3px 2px rgba(15,23,42,.12));stroke-width:2.15;paint-order:stroke fill}
+        .nav-item:nth-child(1) .nav-icon{box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -4px 0 rgba(37,99,235,.14),0 4px 0 #bfdbfe,0 9px 16px rgba(37,99,235,.2)}
+        .nav-item:nth-child(2) .nav-icon{box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -4px 0 rgba(124,58,237,.14),0 4px 0 #ddd6fe,0 9px 16px rgba(124,58,237,.2)}
+        .nav-item:nth-child(3) .nav-icon{box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -4px 0 rgba(5,150,105,.14),0 4px 0 #a7f3d0,0 9px 16px rgba(5,150,105,.2)}
+        .nav-item:nth-child(4) .nav-icon{box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -4px 0 rgba(234,88,12,.14),0 4px 0 #fed7aa,0 9px 16px rgba(234,88,12,.2)}
+        .nav-item:hover .nav-icon{transform:perspective(500px) translateY(-4px) rotateX(12deg) rotateY(-9deg) scale(1.1);filter:drop-shadow(0 8px 5px rgba(15,23,42,.16))}
+        .nav-item-active .nav-icon{transform:perspective(500px) rotateX(5deg) translateY(-1px);filter:drop-shadow(0 7px 5px rgba(15,23,42,.16))}
+        .nav-item-active .nav-icon svg{filter:drop-shadow(0 2px 1px rgba(15,23,42,.28))}
+        @media (prefers-reduced-motion:reduce){.nav-icon,.nav-icon svg,.nav-item,.nav-label{animation:none!important;transition:none!important}}
+
         .nav-item:nth-child(1) .nav-icon{color:#2563eb!important;background:linear-gradient(145deg,#eff6ff,#dbeafe);border-color:rgba(147,197,253,.7);box-shadow:0 6px 15px rgba(37,99,235,.14),inset 0 1px 0 #fff}
         .nav-item:nth-child(2) .nav-icon{color:#7c3aed!important;background:linear-gradient(145deg,#f5f3ff,#ede9fe);border-color:rgba(196,181,253,.72);box-shadow:0 6px 15px rgba(124,58,237,.13),inset 0 1px 0 #fff}
         .nav-item:nth-child(3) .nav-icon{color:#059669!important;background:linear-gradient(145deg,#ecfdf5,#d1fae5);border-color:rgba(110,231,183,.72);box-shadow:0 6px 15px rgba(5,150,105,.13),inset 0 1px 0 #fff}
