@@ -11,25 +11,13 @@ type EventNavigationProps = {
 };
 
 const iconMap = {
-  overview: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 13.2 12 4l8.5 9.2" /><path d="M5.8 11.2V20h12.4v-8.8" /><path d="M9.2 20v-5.6h5.6V20" /><path d="m17.5 4.2.7 1.7 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" /></svg>
-  ),
-  invitation: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h10l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 20V5a1.5 1.5 0 0 1 1-1.5Z" /><path d="M14.5 3.8V8H19" /><path d="M8 12h7M8 15.5h5" /><path d="m16.8 13.5.7 1.5 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2z" /></svg>
-  ),
-  guests: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7.5" r="3.1" /><circle cx="17.2" cy="9" r="2.4" /><path d="M2.8 19.5v-1.1a6.2 6.2 0 0 1 12.4 0v1.1Z" /><path d="M15.1 14.1a4.7 4.7 0 0 1 6.1 4.5v.9h-4" /><path d="M6.4 13.6h5.2" /></svg>
-  ),
-  control: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5H5.5a2 2 0 0 0-2 2V8M16 3.5h2.5a2 2 0 0 1 2 2V8M20.5 16v2.5a2 2 0 0 1-2 2H16M8 20.5H5.5a2 2 0 0 1-2-2V16" /><path d="M7 7h3v3H7zM14 7h3v3h-3zM7 14h3v3H7z" /><path d="M14 14h1.5v1.5H14zM17 17v.5M14 18h1" /><path d="m14 12 2 1.5 3-3" /></svg>
-  ),
-  dashboard: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5" /><path d="M6.5 9.5V20h11V9.5M10 20v-5h4v5" /></svg>
-  ),
-  back: (
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
-  ),
-};
+ overview: (<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="homeBlue"><stop stopColor="#7dd3fc"/><stop offset="1" stopColor="#1d4ed8"/></linearGradient></defs><path d="M3 11 12 4l9 7-2 2-1.5-1.2v7.5H6.5v-7.5L5 13Z" fill="url(#homeBlue)" stroke="#1e40af" strokeWidth=".8" strokeLinejoin="round"/><path d="M9.2 20.5v-5.8h5.6v5.8" fill="#dbeafe" stroke="#1d4ed8" strokeWidth=".8"/><path d="m18 2.5.8 1.7 1.7.8-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8Z" fill="#fde047" stroke="#ca8a04" strokeWidth=".5"/></svg>),
+ invitation: (<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="inviteViolet"><stop stopColor="#f5d0fe"/><stop offset=".55" stopColor="#c4b5fd"/><stop offset="1" stopColor="#7c3aed"/></linearGradient></defs><path d="M5.5 2.8h9l4.2 4.1v12.9a1.6 1.6 0 0 1-1.6 1.6H5.5a1.6 1.6 0 0 1-1.6-1.6V4.4a1.6 1.6 0 0 1 1.6-1.6Z" fill="url(#inviteViolet)" stroke="#6d28d9" strokeWidth=".8"/><path d="M14.5 2.9v4.5h4.1" fill="#fff" stroke="#8b5cf6" strokeWidth=".8"/><path d="M7.3 11.2h7.4M7.3 14.2h5.5M7.3 17.1h4" fill="none" stroke="#5b21b6" strokeWidth="1.3" strokeLinecap="round"/><path d="m17 12.2.8 1.5 1.6.3-1.2 1.1.3 1.6-1.5-.8-1.5.8.3-1.6-1.2-1.1 1.6-.3Z" fill="#fef08a" stroke="#ca8a04" strokeWidth=".5"/></svg>),
+ guests: (<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="guestGreen"><stop stopColor="#6ee7b7"/><stop offset="1" stopColor="#059669"/></linearGradient><linearGradient id="guestBlue"><stop stopColor="#bfdbfe"/><stop offset="1" stopColor="#2563eb"/></linearGradient></defs><circle cx="9" cy="7.2" r="3.5" fill="url(#guestGreen)" stroke="#047857" strokeWidth=".8"/><circle cx="17.2" cy="8.7" r="2.6" fill="url(#guestBlue)" stroke="#1d4ed8" strokeWidth=".8"/><path d="M2 19.6v-1a7 7 0 0 1 14 0v1Z" fill="url(#guestGreen)" stroke="#047857" strokeWidth=".8"/><path d="M14.7 14.2a4.8 4.8 0 0 1 7 4.3v1h-4" fill="url(#guestBlue)" stroke="#1d4ed8" strokeWidth=".8"/></svg>),
+ control: (<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="controlOrange"><stop stopColor="#fed7aa"/><stop offset="1" stopColor="#ea580c"/></linearGradient></defs><path d="M8 3H5.5A2.5 2.5 0 0 0 3 5.5V8M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16" fill="none" stroke="#f97316" strokeWidth="2.1" strokeLinecap="round"/><rect x="6.2" y="6.2" width="4.5" height="4.5" rx=".6" fill="url(#controlOrange)" stroke="#c2410c" strokeWidth=".8"/><rect x="13.3" y="6.2" width="4.5" height="4.5" rx=".6" fill="url(#controlOrange)" stroke="#c2410c" strokeWidth=".8"/><rect x="6.2" y="13.3" width="4.5" height="4.5" rx=".6" fill="url(#controlOrange)" stroke="#c2410c" strokeWidth=".8"/><path d="m13.3 12.2 2.2 2 4.1-4" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+ dashboard: (<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5"/><path d="M6.5 9.5V20h11V9.5M10 20v-5h4v5"/></svg>),
+ back: (<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>),
+};;
 
 export default function EventNavigation({ eventId, eventName, backHref = "/dashboard" }: EventNavigationProps) {
   const pathname = usePathname();
