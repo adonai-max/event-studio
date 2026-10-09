@@ -641,7 +641,7 @@ export default function GuestsPage() {
 
             <div className="relative flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-700">
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
                   <span>Event Studio</span>
                   <span className="h-1 w-1 rounded-full bg-indigo-400" />
                   <span>Invités</span>
@@ -722,7 +722,7 @@ export default function GuestsPage() {
           <div className="p-5 sm:p-6 lg:p-7">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
                   Vue RSVP
                 </p>
 
@@ -736,7 +736,7 @@ export default function GuestsPage() {
               </div>
 
               <div className="rounded-2xl bg-indigo-50 px-4 py-3 text-right ring-1 ring-indigo-100">
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-600">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600">
                   Taux de confirmation
                 </p>
                 <p className="mt-1 text-2xl font-black text-indigo-700">
@@ -797,7 +797,7 @@ export default function GuestsPage() {
             <div className="border-b border-zinc-100 bg-zinc-50/70 px-6 py-5 sm:px-8">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
                     {editingGuestId !== null
                       ? "Modification"
                       : "Nouvelle invitation"}
@@ -943,7 +943,7 @@ export default function GuestsPage() {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
                     Annuaire événement
                   </p>
 
@@ -1188,7 +1188,7 @@ function GuestRow({
               </h3>
 
               {guest.type === "couple" && (
-                <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-violet-700 ring-1 ring-violet-100">
+                <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-black uppercase tracking-[0.08em] text-violet-700 ring-1 ring-violet-100">
                   Couple
                 </span>
               )}
@@ -1223,12 +1223,12 @@ function GuestRow({
               <StatusBadge status={guest.status} />
 
               {guest.checkedIn ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700 ring-1 ring-emerald-100">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700 ring-1 ring-emerald-100">
                   <span aria-hidden="true">✓</span>
                   Entré
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-bold text-zinc-500">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-500">
                   Pas encore entré
                 </span>
               )}
@@ -1242,7 +1242,7 @@ function GuestRow({
                 🔗
               </span>
 
-              <span className="min-w-0 truncate font-mono text-[11px] font-medium text-zinc-400">
+              <span className="min-w-0 truncate font-mono text-xs font-medium text-zinc-400">
                 /i/{guest.slug}
               </span>
             </div>
@@ -1365,7 +1365,7 @@ function GuestTypeButton({
 
           <p
             className={[
-              "mt-3 text-[10px] font-black uppercase tracking-[0.16em]",
+              "mt-3 text-xs font-black uppercase tracking-[0.16em]",
               active ? "text-indigo-600" : "text-zinc-400",
             ].join(" ")}
           >
@@ -1478,7 +1478,7 @@ function RsvpSummaryItem({
             {value}
           </span>
 
-          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-400">
+          <p className="mt-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">
             invité{value > 1 ? "s" : ""}
           </p>
         </div>
@@ -1521,7 +1521,7 @@ function StatusBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold ring-1 ${config.className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ${config.className}`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${config.dot}`}
