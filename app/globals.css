@@ -117,3 +117,5 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 /* Preserve native scroll affordance where a user needs to know a panel can scroll. */
+
+@import "./styles/event-studio.css";
