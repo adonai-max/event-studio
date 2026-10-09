@@ -323,3 +323,138 @@ html.dark [data-event-studio-dashboard] {
     color-scheme: dark;
   }
 }
+
+
+/* WONDER × BOSS — navigation refined for true dark mode */
+html.dark .event-navigation {
+  background: linear-gradient(145deg, #111827 0%, #0b1220 58%, #101a2d 100%) !important;
+  border-color: rgba(148,163,184,.22) !important;
+  box-shadow: 0 20px 48px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+html.dark .event-navigation::before {
+  background: radial-gradient(circle at 12% 20%, rgba(56,189,248,.09), transparent 28%), radial-gradient(circle at 88% 80%, rgba(139,92,246,.09), transparent 30%) !important;
+}
+html.dark .event-navigation::after {
+  background: linear-gradient(90deg, transparent, rgba(148,163,184,.12), transparent) !important;
+}
+html.dark .event-navigation .nav-item {
+  color: #cbd5e1 !important;
+  background: linear-gradient(145deg, rgba(30,41,59,.76), rgba(15,23,42,.9)) !important;
+  border-color: rgba(148,163,184,.17) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 5px 12px rgba(0,0,0,.14) !important;
+}
+html.dark .event-navigation .nav-item:hover {
+  color: #f8fafc !important;
+  background: linear-gradient(145deg, rgba(30,41,59,.98), rgba(17,31,52,.98)) !important;
+  border-color: rgba(125,211,252,.38) !important;
+  box-shadow: 0 12px 25px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+html.dark .event-navigation .nav-item-active {
+  color: #f8fafc !important;
+  background: linear-gradient(145deg, #172438, #111b2d) !important;
+  border-color: rgba(148,163,184,.3) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.055) !important;
+}
+html.dark .event-navigation .nav-item-active::after {
+  height: 2px;
+  bottom: 0;
+  background: linear-gradient(90deg, #60a5fa, #a78bfa, #34d399, #fb923c) !important;
+  opacity: .95;
+}
+html.dark .event-navigation .nav-item:nth-child(1) .nav-icon {
+  color: #93c5fd !important;
+  background: linear-gradient(145deg, #203b5e, #14243b 82%) !important;
+  border-color: rgba(96,165,250,.36) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), inset 0 -3px 0 rgba(0,0,0,.2), 0 3px 0 #10213a, 0 8px 15px rgba(0,0,0,.22) !important;
+}
+html.dark .event-navigation .nav-item:nth-child(2) .nav-icon {
+  color: #d8b4fe !important;
+  background: linear-gradient(145deg, #392653, #241833 82%) !important;
+  border-color: rgba(192,132,252,.34) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), inset 0 -3px 0 rgba(0,0,0,.2), 0 3px 0 #20142f, 0 8px 15px rgba(0,0,0,.22) !important;
+}
+html.dark .event-navigation .nav-item:nth-child(3) .nav-icon {
+  color: #6ee7b7 !important;
+  background: linear-gradient(145deg, #164438, #102d27 82%) !important;
+  border-color: rgba(52,211,153,.32) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), inset 0 -3px 0 rgba(0,0,0,.2), 0 3px 0 #0d2721, 0 8px 15px rgba(0,0,0,.22) !important;
+}
+html.dark .event-navigation .nav-item:nth-child(4) .nav-icon {
+  color: #fdba74 !important;
+  background: linear-gradient(145deg, #4a2b1c, #2d1c15 82%) !important;
+  border-color: rgba(251,146,60,.34) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), inset 0 -3px 0 rgba(0,0,0,.2), 0 3px 0 #27170f, 0 8px 15px rgba(0,0,0,.22) !important;
+}
+html.dark .event-navigation .nav-item-active:nth-child(1) .nav-icon {
+  color: #dbeafe !important;
+  background: linear-gradient(145deg, #2563a9, #17365d 88%) !important;
+  border-color: rgba(147,197,253,.56) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -3px 0 rgba(0,0,0,.24), 0 4px 0 #102744, 0 10px 19px rgba(37,99,235,.2) !important;
+}
+html.dark .event-navigation .nav-item-active:nth-child(2) .nav-icon {
+  color: #f3e8ff !important;
+  background: linear-gradient(145deg, #8049bd, #48276f 88%) !important;
+  border-color: rgba(216,180,254,.52) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -3px 0 rgba(0,0,0,.24), 0 4px 0 #301a4a, 0 10px 19px rgba(124,58,237,.2) !important;
+}
+html.dark .event-navigation .nav-item-active:nth-child(3) .nav-icon {
+  color: #d1fae5 !important;
+  background: linear-gradient(145deg, #0f9f76, #075b48 88%) !important;
+  border-color: rgba(110,231,183,.5) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -3px 0 rgba(0,0,0,.24), 0 4px 0 #064638, 0 10px 19px rgba(5,150,105,.2) !important;
+}
+html.dark .event-navigation .nav-item-active:nth-child(4) .nav-icon {
+  color: #ffedd5 !important;
+  background: linear-gradient(145deg, #c65d1b, #77330f 88%) !important;
+  border-color: rgba(253,186,116,.5) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -3px 0 rgba(0,0,0,.24), 0 4px 0 #55240c, 0 10px 19px rgba(234,88,12,.2) !important;
+}
+html.dark .event-navigation .nav-icon::before {
+  opacity: .18 !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.16), transparent 55%, rgba(0,0,0,.16)) !important;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.14), inset 0 -2px 4px rgba(0,0,0,.22) !important;
+}
+html.dark .event-navigation .nav-icon::after {
+  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.045) 58%, transparent) !important;
+  border-color: rgba(255,255,255,.12) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+html.dark .event-navigation .nav-icon-halo {
+  color: #94a3b8;
+  opacity: 0 !important;
+}
+html.dark .event-navigation .nav-item-active .nav-icon-halo {
+  opacity: .2 !important;
+}
+html.dark .event-navigation .nav-label {
+  text-shadow: none !important;
+}
+html.dark .event-navigation .nav-item:hover .nav-label {
+  color: #f8fafc !important;
+}
+html.dark .event-navigation .back-button,
+html.dark .event-navigation .dashboard-link {
+  color: #cbd5e1 !important;
+  background: linear-gradient(145deg, #1e293b, #111827) !important;
+  border-color: rgba(148,163,184,.2) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 5px 12px rgba(0,0,0,.16) !important;
+}
+html.dark .event-navigation .back-button:hover,
+html.dark .event-navigation .dashboard-link:hover {
+  color: #e0f2fe !important;
+  border-color: rgba(125,211,252,.3) !important;
+  background: linear-gradient(145deg, #24374d, #152438) !important;
+}
+html.dark .event-navigation .event-name {
+  color: #94a3b8 !important;
+}
+html.dark .event-navigation .border-t {
+  border-color: rgba(148,163,184,.12) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.dark .event-navigation .nav-icon,
+  html.dark .event-navigation .nav-icon svg,
+  html.dark .event-navigation .nav-item {
+    animation: none !important;
+  }
+}
