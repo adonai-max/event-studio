@@ -3,8 +3,30 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #f5f6fa;
+  --foreground: #101a2e;
+  --es-navy: #101a2e;
+  --es-navy-soft: #18243b;
+  --es-primary: #4263eb;
+  --es-primary-hover: #3451d1;
+  --es-violet: #8b5cf6;
+  --es-success: #15803d;
+  --es-warning: #b45309;
+  --es-danger: #b91c1c;
+  --es-info: #1d4ed8;
+  --es-bg: #f5f6fa;
+  --es-surface: #ffffff;
+  --es-text: #101a2e;
+  --es-muted: #64748b;
+  --es-border: #e2e8f0;
+  --es-radius-sm: 10px;
+  --es-radius-md: 14px;
+  --es-radius-lg: 20px;
+  --es-shadow-sm: 0 1px 2px rgb(16 26 46 / 0.04);
+  --es-shadow-md: 0 8px 24px rgb(16 26 46 / 0.07);
+  --es-shadow-lg: 0 20px 48px rgb(16 26 46 / 0.12);
+  --es-transition: 180ms cubic-bezier(.2,.7,.2,1);
 }
 
 @theme inline {
@@ -15,73 +37,83 @@
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  color-scheme: dark;
+  --background: #0b1220;
+  --foreground: #edf2fb;
 }
 
-html {
+html, body {
   width: 100%;
   min-width: 0;
-  background: var(--background);
-}
-
-body {
-  width: 100%;
-  min-width: 0;
+  min-height: 100%;
   margin: 0;
   overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Event Studio — aucune bande de scrollbar native visible */
-html,
-body {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+body { line-height: 1.5; }
+button, input, textarea, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { text-decoration: none; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 3px solid rgb(66 99 235 / .45);
+  outline-offset: 3px;
 }
+::selection { color: #fff; background: #4263eb; }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
-  background: transparent;
+.es-event-nav {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 4px 18px rgb(16 26 46 / .045);
 }
-
-html::-webkit-scrollbar-track,
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-track,
-body::-webkit-scrollbar-thumb {
-  background: transparent;
-  border: 0;
+.es-event-nav__context { display:flex; align-items:center; gap:12px; min-width:0; }
+.es-event-nav__back {
+  display:inline-flex; align-items:center; gap:8px; flex-shrink:0;
+  min-height:38px; padding:8px 11px; border:1px solid #e2e8f0;
+  border-radius:11px; color:#475569; background:#fff; font-size:13px; font-weight:650;
+  transition: background var(--es-transition), color var(--es-transition), border-color var(--es-transition);
 }
-
+.es-event-nav__back:hover { color:#1d4ed8; border-color:#bfccff; background:#f7f9ff; }
+.es-event-nav__back svg { width:17px; height:17px; }
+.es-event-nav__event { overflow:hidden; min-width:0; color:#64748b; font-size:13px; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+.es-event-nav__tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.es-event-nav__tab {
+  display:flex; align-items:center; justify-content:center; gap:9px; min-width:0; min-height:46px;
+  padding:10px 12px; border:1px solid transparent; border-radius:12px;
+  color:#64748b; font-size:13px; font-weight:650;
+  transition: color var(--es-transition), background var(--es-transition), border-color var(--es-transition);
+}
+.es-event-nav__tab svg { width:18px; height:18px; flex:0 0 auto; }
+.es-event-nav__tab:hover { color:#1d4ed8; background:#f5f7ff; }
+.es-event-nav__tab.is-active { color:#2346c5; border-color:#dbe4ff; background:#eef2ff; box-shadow:inset 0 0 0 1px rgb(66 99 235 / .035); }
+.es-event-nav__tab:focus-visible { outline-offset:2px; }
+@media (min-width: 760px) {
+  .es-event-nav { flex-direction:row; align-items:center; justify-content:space-between; gap:16px; padding:12px; }
+  .es-event-nav__tabs { width:auto; display:flex; gap:4px; }
+  .es-event-nav__tab { min-height:42px; padding:9px 12px; }
+}
+@media (max-width: 520px) {
+  .es-event-nav { padding:10px; gap:10px; border-radius:14px; }
+  .es-event-nav__context { gap:8px; }
+  .es-event-nav__back { min-height:36px; padding:7px 9px; font-size:12px; }
+  .es-event-nav__event { font-size:12px; }
+  .es-event-nav__tabs { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .es-event-nav__tab { justify-content:flex-start; min-height:42px; padding:9px 10px; font-size:12px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
 }
 
-
-/* Event Studio — masque global de toute scrollbar native, y compris les conteneurs internes */
-*,
-*::before,
-*::after {
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-
-*::-webkit-scrollbar,
-*::-webkit-scrollbar-track,
-*::-webkit-scrollbar-thumb,
-*::-webkit-scrollbar-corner {
-  width: 0 !important;
-  height: 0 !important;
-  display: none !important;
-  background: transparent !important;
-  border: 0 !important;
-}
-
-@import "./styles/event-studio.css";
+/* Preserve native scroll affordance where a user needs to know a panel can scroll. */
