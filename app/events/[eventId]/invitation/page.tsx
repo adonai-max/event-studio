@@ -906,7 +906,7 @@ export default function InvitationBuilderPage() {
                     key={label}
                     className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4"
                   >
-                    <p className="text-[11px] font-black uppercase tracking-wide text-zinc-500">
+                    <p className="text-xs font-black uppercase tracking-wide text-zinc-500">
                       {label}
                     </p>
                     <p className="mt-1 text-sm font-bold text-zinc-900">
@@ -982,7 +982,7 @@ export default function InvitationBuilderPage() {
                       </span>
 
                       {active && (
-                        <span className="ml-auto rounded-full bg-indigo-600 px-2 py-1 text-[9px] font-black text-white">
+                        <span className="ml-auto rounded-full bg-indigo-600 px-2 py-1 text-xs font-black text-white">
                           ACTIF
                         </span>
                       )}
@@ -1272,7 +1272,7 @@ export default function InvitationBuilderPage() {
                           Aa
                         </span>
 
-                        <span className="mt-1 block text-[10px] font-bold text-zinc-500">
+                        <span className="mt-1 block text-xs font-bold text-zinc-500">
                           {font.name}
                         </span>
                       </button>
@@ -1926,7 +1926,7 @@ function PreviewInformation({
         </p>
 
         <p
-          className="mt-2 text-[10px] font-black uppercase tracking-wide"
+          className="mt-2 text-xs font-black uppercase tracking-wide"
           style={{
             color: mutedColor,
           }}
@@ -1952,7 +1952,7 @@ function PreviewInformation({
         </p>
 
         <p
-          className="mt-2 text-[10px] font-black uppercase tracking-wide"
+          className="mt-2 text-xs font-black uppercase tracking-wide"
           style={{
             color: mutedColor,
           }}
@@ -1978,7 +1978,7 @@ function PreviewInformation({
         </p>
 
         <p
-          className="mt-2 text-[10px] font-black uppercase tracking-wide"
+          className="mt-2 text-xs font-black uppercase tracking-wide"
           style={{
             color: mutedColor,
           }}
