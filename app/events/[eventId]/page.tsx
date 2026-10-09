@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
-import EventNavigation from "@/app/components/EventNavigation";
 
 type EventItem = {
   id: string;
@@ -15,45 +15,64 @@ type EventItem = {
   description: string | null;
 };
 
-
-const CalendarDays = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" {...props}>
-    <path d="M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
-    <path d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01" />
-  </svg>
-);
-
-const Clock3 = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" {...props}>
-    <circle cx="12" cy="12" r="9" />
-    <path d="M12 7v5l3.5 2" />
-  </svg>
-);
-
-const MapPin = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" {...props}>
-    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
-    <circle cx="12" cy="10" r="2.5" />
-  </svg>
-);
-
-const pageIcons = {
-  type: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M6.5 4v4.5M17.5 4v4.5M6 10.5h12M6 14h5M6 17.5h8" /></svg>,
-  date: <CalendarDays aria-hidden="true" strokeWidth={2.1} />,
-  time: <Clock3 aria-hidden="true" strokeWidth={2.1} />,
-  location: <MapPin aria-hidden="true" strokeWidth={2.1} />,
-  invitation: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16A1.5 1.5 0 0 1 21.5 7v10A1.5 1.5 0 0 1 20 18.5H4A1.5 1.5 0 0 1 2.5 17V7A1.5 1.5 0 0 1 4 5.5Z" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>,
-  guests: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8" r="3" /><path d="M3 19.5a5.5 5.5 0 0 1 11 0" /><circle cx="17.2" cy="9" r="2.4" /><path d="M14.7 19.5a4.1 4.1 0 0 1 6.1-3.55" /></svg>,
-  control: <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M7 8h10M7 12h10M7 16h6" /><circle cx="17" cy="16" r="1.6" /></svg>,
-  edit: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 17.5-.8 3.3 3.3-.8L18.2 8.3a2.4 2.4 0 0 0-3.4-3.4L3.1 16.9Z" /><path d="m13.5 6.5 4 4" /></svg>,
+type GuestSummary = {
+  status: "pending" | "confirmed" | "declined" | null;
+  checked_in: boolean | null;
 };
 
-const details = (event: EventItem) => [
-  { label: "Type", value: event.type || "Événement", icon: pageIcons.type, tone: "sky" },
-  { label: "Date", value: event.date || "Non définie", icon: pageIcons.date, tone: "violet" },
-  { label: "Heure", value: event.time || "Non définie", icon: pageIcons.time, tone: "amber" },
-  { label: "Lieu", value: event.location || "Non défini", icon: pageIcons.location, tone: "emerald" },
-];
+function Icon({ name, size = 20 }: { name: string; size?: number }) {
+  const common = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true as const,
+  };
+
+  const paths: Record<string, React.ReactNode> = {
+    grid: <><rect x="3.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.5" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.5" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.5" /></>,
+    calendar: <><rect x="3" y="5" width="18" height="16" rx="2.5" /><path d="M7 3v4M17 3v4M3 10h18" /><path d="m8 14 2 2 4-4" /></>,
+    file: <><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20V5A1.5 1.5 0 0 1 7.5 3.5Z" /><path d="M14 3.5V8h4M9 13h6M9 16.5h6" /></>,
+    users: <><circle cx="9" cy="8" r="3.2" /><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0" /><path d="M16 5.3a3 3 0 0 1 0 5.8M17 14a5.5 5.5 0 0 1 4.2 5.3" /></>,
+    scan: <><path d="M8 3H5.5A2.5 2.5 0 0 0 3 5.5V8M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16" /><rect x="7" y="7" width="4" height="4" rx=".5" /><rect x="14" y="7" width="3" height="3" rx=".5" /><rect x="7" y="14" width="3" height="3" rx=".5" /><path d="M14 14h1v1h-1zM17 17h1v1h-1z" /></>,
+    clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
+    pin: <><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
+    check: <path d="m5 12 4 4L19 6" />,
+    arrow: <><path d="M5 12h14M13 6l6 6-6 6" /></>,
+    edit: <><path d="m14 5 5 5M4 20l4.2-.9L19 8.3a2.1 2.1 0 0 0-3-3L5.2 16.1 4 20Z" /></>,
+    help: <><circle cx="12" cy="12" r="9" /><path d="M9.6 9a2.5 2.5 0 1 1 4.2 1.8c-1.2 1-1.8 1.3-1.8 2.7M12 17h.01" /></>,
+    bell: <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></>,
+  };
+
+  return <svg {...common}>{paths[name] ?? paths.grid}</svg>;
+}
+
+function formatDate(value: string | null) {
+  if (!value) return "À définir";
+  const date = new Date(value + (value.length === 10 ? "T12:00:00" : ""));
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function Detail({ icon, label, value }: { icon: string; label: string; value: string }) {
+  return (
+    <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/[.055] p-3.5">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-sky-300/15 bg-sky-300/10 text-sky-200"><Icon name={icon} size={19} /></span>
+      <span className="min-w-0">
+        <span className="block text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">{label}</span>
+        <span className="mt-1 block truncate text-sm font-semibold text-white" title={value}>{value}</span>
+      </span>
+    </div>
+  );
+}
 
 export default function EventPage() {
   const params = useParams();
@@ -61,19 +80,20 @@ export default function EventPage() {
   const eventId = String(params.eventId);
 
   const [event, setEvent] = useState<EventItem | null>(null);
+  const [guests, setGuests] = useState<GuestSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [guestsLoaded, setGuestsLoaded] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const loadEvent = async () => {
+    let active = true;
+
+    async function loadEvent() {
       setLoading(true);
       setErrorMessage("");
 
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (!active) return;
       if (userError || !user) {
         router.push("/login");
         return;
@@ -86,610 +106,177 @@ export default function EventPage() {
         .eq("owner_id", user.id)
         .single();
 
+      if (!active) return;
       if (error || !data) {
-        console.error("❌ Erreur chargement événement :", error);
-        setErrorMessage(
-          "Événement introuvable ou vous n'avez pas accès à cet événement.",
-        );
+        setErrorMessage("Événement introuvable ou vous n'avez pas accès à cet événement.");
         setLoading(false);
         return;
       }
 
-      setEvent(data);
+      setEvent(data as EventItem);
       setLoading(false);
-    };
 
-    if (eventId) loadEvent();
+      const { data: guestRows, error: guestError } = await supabase
+        .from("guests")
+        .select("status, checked_in")
+        .eq("event_id", eventId);
+
+      if (!active) return;
+      if (!guestError) setGuests((guestRows ?? []) as GuestSummary[]);
+      setGuestsLoaded(!guestError);
+    }
+
+    if (eventId) void loadEvent();
+    return () => { active = false; };
   }, [eventId, router]);
 
+  const stats = useMemo(() => ({
+    total: guests.length,
+    confirmed: guests.filter((guest) => guest.status === "confirmed").length,
+    pending: guests.filter((guest) => guest.status === "pending" || !guest.status).length,
+    checkedIn: guests.filter((guest) => guest.checked_in).length,
+  }), [guests]);
+
+  const initials = (event?.name ?? "Event Studio")
+    .split(/\s+/).filter(Boolean).slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase()).join("") || "ES";
+
+  const setupTasks = useMemo(() => {
+    if (!event) return [];
+    return [
+      { label: "Informations de l’événement", done: Boolean(event.name && event.date && event.time && event.location) },
+      { label: "Design de l’invitation", done: false, href: "/events/" + event.id + "/invitation" },
+      { label: "Liste des invités", done: guestsLoaded && stats.total > 0, href: "/events/" + event.id + "/guests" },
+      { label: "Confirmations des invités", done: guestsLoaded && stats.total > 0 && stats.pending === 0, href: "/events/" + event.id + "/guests" },
+      { label: "Préparer le contrôle d’accès", done: false, href: "/events/" + event.id + "/control" },
+    ];
+  }, [event, guestsLoaded, stats.pending, stats.total]);
+
+  const progress = setupTasks.length
+    ? Math.round((setupTasks.filter((task) => task.done).length / setupTasks.length) * 100)
+    : 0;
+
   if (loading) {
-    return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_10%_5%,rgba(14,165,233,.14),transparent_28%),radial-gradient(circle_at_90%_12%,rgba(99,102,241,.12),transparent_30%),#f7f9fc]">
-        <div className="mx-auto max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
-          <div className="h-16 animate-pulse rounded-2xl bg-white/80 shadow-sm" />
-          <div className="mt-6 h-[360px] animate-pulse rounded-[32px] bg-white shadow-[0_24px_70px_rgba(15,23,42,.06)]" />
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <div className="h-52 animate-pulse rounded-[28px] bg-white" />
-            <div className="h-52 animate-pulse rounded-[28px] bg-white" />
-            <div className="h-52 animate-pulse rounded-[28px] bg-white" />
-          </div>
-        </div>
-      </main>
-    );
+    return <main className="min-h-screen bg-[#F4F6FA] p-6"><div className="mx-auto max-w-7xl animate-pulse space-y-5"><div className="h-14 rounded-2xl bg-white" /><div className="h-64 rounded-3xl bg-white" /><div className="grid gap-4 md:grid-cols-4"><div className="h-28 rounded-2xl bg-white" /><div className="h-28 rounded-2xl bg-white" /><div className="h-28 rounded-2xl bg-white" /><div className="h-28 rounded-2xl bg-white" /></div></div></main>;
   }
 
   if (!event) {
-    return (
-      <main className="min-h-screen bg-slate-50 px-4 py-10">
-        <div className="mx-auto max-w-xl rounded-[28px] border border-slate-200 bg-white p-8 text-center shadow-xl">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-2xl">!</div>
-          <h1 className="mt-5 text-2xl font-black text-slate-950">Événement indisponible</h1>
-          <p className="mt-2 text-sm leading-6 text-slate-500">{errorMessage || "Impossible de charger cet événement."}</p>
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="mt-6 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
-          >
-            ← Retour au Dashboard
-          </button>
-        </div>
-      </main>
-    );
+    return <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6"><div className="max-w-lg rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-2xl font-black text-rose-600">!</div><h1 className="mt-5 text-2xl font-black text-slate-950">Événement indisponible</h1><p className="mt-2 text-sm leading-6 text-slate-500">{errorMessage || "Impossible de charger cet événement."}</p><button onClick={() => router.push("/dashboard")} className="mt-6 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white">Retour au Dashboard</button></div></main>;
   }
 
-  const eventDetails = details(event);
-  const eventInitials =
-    event.name
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((word) => word[0]?.toUpperCase())
-      .join("") || "ES";
+  const navItems = [
+    { label: "Vue d’ensemble", href: "/events/" + event.id, icon: "calendar", tone: "blue", exact: true },
+    { label: "Invitation", href: "/events/" + event.id + "/invitation", icon: "file", tone: "violet" },
+    { label: "Invités", href: "/events/" + event.id + "/guests", icon: "users", tone: "green" },
+    { label: "Event Control", href: "/events/" + event.id + "/control", icon: "scan", tone: "orange" },
+  ];
 
   return (
-    <main className="event-page-motion min-h-screen overflow-hidden bg-[radial-gradient(circle_at_8%_5%,rgba(14,165,233,.15),transparent_27%),radial-gradient(circle_at_92%_10%,rgba(99,102,241,.14),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#f7f8fc_48%,#f8fafc_100%)]">
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="overview-orb overview-orb-one" />
-        <div className="overview-orb overview-orb-two" />
-        <div className="overview-grid" />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-8">
-        <EventNavigation eventId={event.id} eventName={event.name} />
-
-        <section className="overview-hero event-motion-card relative mt-6 overflow-hidden rounded-[32px] border border-white/80 bg-slate-950 text-white shadow-[0_30px_90px_rgba(15,23,42,.20)]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(56,189,248,.24),transparent_26%),radial-gradient(circle_at_72%_100%,rgba(99,102,241,.28),transparent_34%),linear-gradient(115deg,#020617,#0f172a_48%,#111827)]" />
-          <div className="overview-sheen pointer-events-none absolute -inset-y-20 -left-1/3 w-1/3 rotate-12 bg-white/10 blur-2xl" />
-          <div className="relative grid gap-10 p-6 sm:p-9 lg:grid-cols-[1fr_300px] lg:p-11">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className="rounded-full border border-sky-300/20 bg-sky-400/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[.2em] text-sky-200">
-                  {event.type || "Événement"}
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3.5 py-1.5 text-[10px] font-black text-emerald-200">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,.9)]" />
-                  Espace actif
-                </span>
-              </div>
-
-              <p className="mt-8 text-[10px] font-black uppercase tracking-[.24em] text-slate-400">Centre de pilotage</p>
-              <h1 className="mt-2 max-w-4xl text-4xl font-black tracking-[-.045em] sm:text-6xl">
-                {event.name}
-              </h1>
-              <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-                Tout votre événement, au même endroit. Préparez l'expérience, organisez vos invités et gardez le contrôle jusqu'à l'entrée.
-              </p>
-
-              <div className="overview-event-meta mt-8 grid gap-3 sm:grid-cols-3">
-                {[
-                  { label: "Date", value: event.date || "À définir", icon: pageIcons.date, tone: "sky" },
-                  { label: "Heure", value: event.time || "À définir", icon: pageIcons.time, tone: "violet" },
-                  { label: "Lieu", value: event.location || "À définir", icon: pageIcons.location, tone: "amber" },
-                ].map((item) => (
-                  <div key={item.label} className={"overview-meta-card overview-meta-" + item.tone + " event-motion-interactive"}>
-                    <div className="overview-meta-icon">{item.icon}</div>
-                    <div className="min-w-0">
-                      <p className="overview-meta-label">{item.label}</p>
-                      <p className="overview-meta-value" title={item.value}>{item.value}</p>
-                    </div>
-                    <span className="overview-meta-shine" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="overview-command-panel flex flex-col justify-between gap-6 rounded-[28px] border border-white/10 bg-white/[.06] p-5 backdrop-blur-xl">
-              <div>
-                <div className="overview-command-visual">
-                  <div className="overview-command-ring overview-command-ring-one" />
-                  <div className="overview-command-ring overview-command-ring-two" />
-                  <span>{eventInitials}</span>
-                </div>
-                <div className="mt-5 flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,.9)]" />
-                  <p className="text-[9px] font-black uppercase tracking-[.2em] text-slate-400">Espace événement</p>
-                </div>
-                <h2 className="mt-3 text-xl font-black">Votre événement prend forme</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-400">
-                  Construisez l'expérience de vos invités, de la première invitation jusqu'au contrôle d'accès.
-                </p>
-              </div>
-              <button
-                onClick={() => router.push("/events/" + event.id + "/edit")}
-                className="event-motion-interactive group inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-sm font-black text-slate-950 shadow-xl transition hover:bg-sky-50"
-              >
-                Modifier l'événement
-                <span className="transition-transform group-hover:translate-x-1">→</span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <section className="overview-focus-strip event-motion-card mt-7 overflow-hidden rounded-[26px] border border-slate-200/80 bg-white/85 shadow-[0_16px_45px_rgba(15,23,42,.055)] backdrop-blur">
-          <div className="px-5 py-5 sm:px-7">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex items-center gap-3">
-                <div className="overview-focus-mark">✦</div>
-                <div>
-                  <p className="text-[9px] font-black uppercase tracking-[.2em] text-sky-600">Fil conducteur</p>
-                  <p className="mt-0.5 text-sm font-black text-slate-800">Un parcours pensé pour avancer sans friction</p>
-                </div>
-              </div>
-              <div className="overview-steps" aria-label="Parcours Event Studio">
-                <div className="overview-step overview-step-active"><span>01</span><b>Créez</b></div>
-                <i />
-                <div className="overview-step"><span>02</span><b>Organisez</b></div>
-                <i />
-                <div className="overview-step"><span>03</span><b>Contrôlez</b></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-7">
-          <div className="mb-4 flex items-end justify-between gap-4 px-1">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[.22em] text-sky-600">Parcours Event Studio</p>
-              <h2 className="mt-1 text-2xl font-black tracking-[-.025em] text-slate-950">Pilotez votre événement</h2>
-            </div>
-            <span className="hidden text-xs font-semibold text-slate-400 sm:block">3 espaces · 1 événement</span>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-3">
-            <button onClick={() => router.push("/events/" + event.id + "/invitation")} className="overview-action event-motion-card event-motion-interactive group text-left">
-              <div className="overview-action-top">
-                <span className="overview-icon overview-icon-sky">{pageIcons.invitation}</span>
-                <span className="overview-number">01</span>
-              </div>
-              <div className="mt-8">
-                <p className="text-[10px] font-black uppercase tracking-[.18em] text-sky-600">Création</p>
-                <h3 className="mt-1.5 text-2xl font-black text-slate-950">Invitation</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">Créez l'univers visuel de votre événement et préparez l'expérience RSVP.</p>
-              </div>
-              <div className="mt-7 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-black text-slate-400">
-                <span>Ouvrir l'espace</span>
-                <span className="text-lg transition-transform group-hover:translate-x-1 group-hover:text-sky-600">→</span>
-              </div>
-            </button>
-
-            <button onClick={() => router.push("/events/" + event.id + "/guests")} className="overview-action event-motion-card event-motion-interactive group text-left">
-              <div className="overview-action-top">
-                <span className="overview-icon overview-icon-violet">{pageIcons.guests}</span>
-                <span className="overview-number">02</span>
-              </div>
-              <div className="mt-8">
-                <p className="text-[10px] font-black uppercase tracking-[.18em] text-violet-600">Organisation</p>
-                <h3 className="mt-1.5 text-2xl font-black text-slate-950">Invités</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">Centralisez les invités, les couples, les confirmations et les réponses RSVP.</p>
-              </div>
-              <div className="mt-7 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-black text-slate-400">
-                <span>Gérer les invités</span>
-                <span className="text-lg transition-transform group-hover:translate-x-1 group-hover:text-violet-600">→</span>
-              </div>
-            </button>
-
-            <button onClick={() => router.push("/events/" + event.id + "/control")} className="overview-action event-motion-card event-motion-interactive group text-left">
-              <div className="overview-action-top">
-                <span className="overview-icon overview-icon-emerald">{pageIcons.control}</span>
-                <span className="overview-number">03</span>
-              </div>
-              <div className="mt-8">
-                <p className="text-[10px] font-black uppercase tracking-[.18em] text-emerald-600">Contrôle</p>
-                <h3 className="mt-1.5 text-2xl font-black text-slate-950">Event Control</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">Scannez les QR codes, validez les entrées et gardez une vision en temps réel.</p>
-              </div>
-              <div className="mt-7 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-black text-slate-400">
-                <span>Accéder au contrôle</span>
-                <span className="text-lg transition-transform group-hover:translate-x-1 group-hover:text-emerald-600">→</span>
-              </div>
-            </button>
-          </div>
-        </section>
-
-        <section className="event-motion-card mt-8 overflow-hidden rounded-[28px] border border-slate-200/80 bg-white/90 shadow-[0_20px_55px_rgba(15,23,42,.07)] backdrop-blur">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-6 py-6 sm:px-8">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[.2em] text-sky-600">Vue d'ensemble</p>
-              <h2 className="mt-1 text-2xl font-black tracking-[-.025em] text-slate-950">Les informations essentielles</h2>
-            </div>
-            <button
-              onClick={() => router.push("/events/" + event.id + "/edit")}
-              className="event-motion-interactive rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-black text-slate-600 hover:border-slate-300 hover:text-slate-950"
-            >
-              Modifier
-            </button>
-          </div>
-
-          <div className="grid gap-3 p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-4">
-            {eventDetails.map((item) => (
-              <div key={item.label} className="overview-detail event-motion-interactive rounded-2xl border border-slate-100 bg-slate-50/70 p-5">
-                <div className="flex items-center justify-between">
-                  <span className="overview-detail-icon">{item.icon}</span>
-                  <span className="h-2 w-2 rounded-full bg-slate-300" />
-                </div>
-                <p className="mt-6 text-[9px] font-black uppercase tracking-[.18em] text-slate-400">{item.label}</p>
-                <p className="mt-1.5 truncate text-sm font-black text-slate-800">{item.value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mx-5 mb-5 rounded-2xl border border-slate-100 bg-[linear-gradient(135deg,#f8fafc,#f0f9ff)] p-5 sm:mx-6 sm:mb-6 sm:p-6">
-            <div className="flex items-start gap-4">
-              <div className="description-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-100">{pageIcons.edit}</div>
-              <div className="min-w-0">
-                <p className="text-[9px] font-black uppercase tracking-[.18em] text-slate-400">Description</p>
-                <p className="mt-2 max-w-4xl text-sm leading-7 text-slate-600">
-                  {event.description || "Aucune description n'a encore été ajoutée à cet événement."}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <footer className="mt-8 flex flex-wrap items-center justify-between gap-3 px-1">
-          <p className="text-xs font-medium text-slate-400">
-            Event Studio <span className="mx-1.5 text-slate-300">•</span> Centre de pilotage
-          </p>
-          <button onClick={() => router.push("/dashboard")} className="text-xs font-black text-slate-500 transition hover:text-sky-700">
-            ← Retour au Dashboard
-          </button>
-        </footer>
-      </div>
-
+    <main className="es-overview min-h-screen bg-[#F4F6FA] text-[#12213A]">
       <style jsx>{`
-        .overview-orb {
-          position: absolute;
-          border-radius: 9999px;
-          filter: blur(60px);
-          opacity: .42;
-        }
-        .overview-orb-one {
-          top: 18%;
-          left: -90px;
-          width: 240px;
-          height: 240px;
-          background: rgba(14,165,233,.14);
-          animation: overviewFloat 10s ease-in-out infinite;
-        }
-        .overview-orb-two {
-          top: 52%;
-          right: -110px;
-          width: 280px;
-          height: 280px;
-          background: rgba(99,102,241,.12);
-          animation: overviewFloat 13s ease-in-out infinite reverse;
-        }
-        .overview-grid {
-          position: absolute;
-          inset: 0;
-          opacity: .18;
-          background-image: linear-gradient(rgba(148,163,184,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.12) 1px, transparent 1px);
-          background-size: 48px 48px;
-          mask-image: linear-gradient(to bottom, black, transparent 65%);
-        }
-        .overview-sheen {
-          animation: overviewSheen 8s ease-in-out infinite;
-        }
-        .overview-event-meta { position: relative; }
-        .overview-meta-card {
-          position: relative; display: flex; min-height: 82px; align-items: center; gap: 13px;
-          overflow: hidden; padding: 13px 15px; border: 1px solid rgba(255,255,255,.10);
-          border-radius: 21px; background: linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 28px rgba(0,0,0,.10);
-          backdrop-filter: blur(16px);
-          transition: transform .32s cubic-bezier(.22,1,.36,1), border-color .3s ease, box-shadow .3s ease, background .3s ease;
-        }
-        .overview-meta-card::before {
-          content: ""; position: absolute; left: 0; top: 15px; bottom: 15px; width: 2px;
-          border-radius: 999px; background: currentColor; opacity: .8;
-        }
-        .overview-meta-card:hover {
-          transform: translateY(-4px); border-color: rgba(255,255,255,.20);
-          background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055));
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 36px rgba(0,0,0,.16);
-        }
-        .overview-meta-icon {
-          position: relative; z-index: 2; display: flex; width: 46px; height: 46px; flex: 0 0 auto;
-          align-items: center; justify-content: center; border-radius: 15px; isolation:isolate; overflow:hidden;
-          color: currentColor; background: linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.045));
-          border:1px solid rgba(255,255,255,.22); transform:perspective(520px) rotateX(7deg) rotateY(-5deg) translateZ(0);
-          box-shadow: inset 0 2px 0 rgba(255,255,255,.28), inset 0 -4px 0 rgba(0,0,0,.12), 0 5px 0 rgba(0,0,0,.12), 0 12px 22px rgba(0,0,0,.22);
-          transition: transform .32s cubic-bezier(.22,1,.36,1), background .3s ease, box-shadow .3s ease;
-        }
-        .overview-meta-icon::after{content:"";position:absolute;z-index:-1;inset:0 0 auto;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent);pointer-events:none}
-        .overview-meta-icon svg{transform:translateZ(12px);filter:drop-shadow(0 3px 1px rgba(0,0,0,.28))}
-        .overview-meta-sky .overview-meta-icon {
-          color: #38bdf8; background: linear-gradient(145deg,rgba(56,189,248,.22),rgba(14,165,233,.08));
-          border: 1px solid rgba(56,189,248,.28); box-shadow: inset 0 1px 0 rgba(186,230,253,.16), 0 9px 22px rgba(14,165,233,.16);
-        }
-        .overview-meta-violet .overview-meta-icon {
-          color: #a78bfa; background: linear-gradient(145deg,rgba(167,139,250,.22),rgba(124,58,237,.08));
-          border: 1px solid rgba(167,139,250,.28); box-shadow: inset 0 1px 0 rgba(221,214,254,.16), 0 9px 22px rgba(124,58,237,.16);
-        }
-        .overview-meta-amber .overview-meta-icon {
-          color: #fbbf24; background: linear-gradient(145deg,rgba(251,191,36,.22),rgba(245,158,11,.08));
-          border: 1px solid rgba(251,191,36,.28); box-shadow: inset 0 1px 0 rgba(254,243,199,.16), 0 9px 22px rgba(245,158,11,.16);
-        }
-        .overview-meta-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 6px currentColor); }
-        .overview-meta-card:hover .overview-meta-icon { transform: translateY(-2px) rotate(-3deg) scale(1.06); background: rgba(255,255,255,.11); }
-        .overview-meta-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .19em; color: #94a3b8; }
-        .overview-meta-value {
-          margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-          font-size: 14px; line-height: 1.2; font-weight: 850; letter-spacing: -.01em; color: #fff;
-        }
-        .overview-meta-shine {
-          position: absolute; right: -28px; bottom: -46px; width: 110px; height: 110px;
-          border-radius: 999px; background: currentColor; opacity: .10; filter: blur(24px);
-          transition: transform .45s ease, opacity .3s ease;
-        }
-        .overview-meta-card:hover .overview-meta-shine { transform: translate(-16px,-14px) scale(1.15); opacity: .15; }
-        .overview-meta-sky { color: #38bdf8; }
-        .overview-meta-violet { color: #a78bfa; }
-        .overview-meta-amber { color: #fbbf24; }
-        @media (max-width: 767px) {
-          .overview-meta-card { min-height: 76px; }
-          .overview-meta-value { font-size: 13px; }
-        }
-.overview-command-panel {
-          position: relative;
-        }
-        .overview-command-visual {
-          position: relative;
-          display: flex;
-          width: 132px;
-          height: 132px;
-          align-items: center;
-          justify-content: center;
-          margin: 2px auto 0;
-          overflow: hidden;
-          border-radius: 38px;
-          border: 1px solid rgba(125,211,252,.18);
-          background: radial-gradient(circle at 50% 35%,rgba(56,189,248,.22),transparent 42%),rgba(2,6,23,.34);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 45px rgba(0,0,0,.16);
-        }
-        .overview-command-visual span {
-          position: relative;
-          z-index: 2;
-          font-size: 31px;
-          font-weight: 950;
-          letter-spacing: -.06em;
-          color: #fff;
-          text-shadow: 0 0 28px rgba(56,189,248,.35);
-        }
-        .overview-command-ring {
-          position: absolute;
-          border: 1px solid rgba(125,211,252,.18);
-          border-radius: 9999px;
-        }
-        .overview-command-ring-one {
-          inset: 14px;
-          animation: overviewRing 8s linear infinite;
-        }
-        .overview-command-ring-two {
-          inset: 30px;
-          border-color: rgba(129,140,248,.22);
-          animation: overviewRing 6s linear infinite reverse;
-        }
-        .overview-focus-strip {
-          transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
-        }
-        .overview-focus-mark {
-          display:flex;
-          width:42px;
-          height:42px;
-          flex:0 0 auto;
-          align-items:center;
-          justify-content:center;
-          border-radius:14px;
-          color:#fff;
-          background:linear-gradient(135deg,#0f172a,#334155);
-          box-shadow:0 10px 22px rgba(15,23,42,.16);
-          animation:focusMarkPulse 3.5s ease-in-out infinite;
-        }
-        .overview-steps {
-          display:flex;
-          align-items:center;
-          gap:.55rem;
-        }
-        .overview-steps i {
-          width:34px;
-          height:1px;
-          background:linear-gradient(90deg,#bae6fd,#cbd5e1);
-        }
-        .overview-step {
-          display:flex;
-          align-items:center;
-          gap:.5rem;
-          padding:.45rem .65rem;
-          border-radius:999px;
-          color:#94a3b8;
-          background:#f8fafc;
-          border:1px solid #e2e8f0;
-          transition:transform .25s ease,border-color .25s ease,background .25s ease;
-        }
-        .overview-step span {
-          display:flex;
-          width:22px;
-          height:22px;
-          align-items:center;
-          justify-content:center;
-          border-radius:999px;
-          font-size:8px;
-          font-weight:900;
-          background:#e2e8f0;
-          color:#64748b;
-        }
-        .overview-step b {
-          font-size:9px;
-          text-transform:uppercase;
-          letter-spacing:.12em;
-        }
-        .overview-step-active {
-          color:#1d4ed8;
-          background:#eff8ff;
-          border-color:#bae6fd;
-          box-shadow:0 8px 20px rgba(37,99,235,.08);
-        }
-        .overview-step-active span {
-          color:#fff;
-          background:linear-gradient(135deg,#0ea5e9,#2563eb);
-        }
-        .overview-step:hover { transform:translateY(-2px); border-color:#93c5fd; }
-        .overview-focus-strip:hover {
-          transform: translateY(-2px);
-          border-color: rgba(125,211,252,.45);
-          box-shadow: 0 18px 45px rgba(15,23,42,.08);
-        }
-        .overview-glass {
-          transition: transform .25s ease, background .25s ease, border-color .25s ease;
-        }
-        .overview-glass:hover {
-          transform: translateY(-3px);
-          background: rgba(255,255,255,.10);
-          border-color: rgba(255,255,255,.18);
-        }
-        .overview-action {
-          position: relative;
-          overflow: hidden;
-          border-radius: 28px;
-          border: 1px solid rgba(226,232,240,.9);
-          background: rgba(255,255,255,.94);
-          padding: 26px;
-          box-shadow: 0 14px 40px rgba(15,23,42,.06);
-          transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease;
-        }
-        .overview-action::after {
-          content: "";
-          position: absolute;
-          inset: auto -30% -70% 30%;
-          height: 170px;
-          border-radius: 9999px;
-          background: rgba(14,165,233,.06);
-          filter: blur(35px);
-          transition: transform .4s ease;
-        }
-        .overview-action:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 24px 55px rgba(15,23,42,.11);
-          border-color: rgba(148,163,184,.8);
-        }
-        .overview-action:hover::after {
-          transform: translate(-18px,-18px);
-        }
-        .overview-action-top {
-          position: relative;
-          z-index: 1;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .overview-icon {
-          position:relative; isolation:isolate; overflow:hidden; display: flex; width: 52px; height: 52px;
-          align-items: center; justify-content: center; border-radius: 17px;
-          border:1px solid rgba(255,255,255,.75); transform:perspective(600px) rotateX(8deg) rotateY(-7deg) translateZ(0);
-          box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -4px 0 rgba(15,23,42,.09),0 5px 0 rgba(15,23,42,.08),0 13px 23px rgba(15,23,42,.13);
-          transition: transform .32s cubic-bezier(.22,1,.36,1), box-shadow .32s ease;
-        }
-        .overview-icon::after{content:"";position:absolute;inset:0 0 auto;height:47%;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));pointer-events:none;z-index:0}
-        /* 3D enamel icons across event actions and metadata */
-        .overview-icon{transform:perspective(700px) rotateX(10deg) rotateY(-9deg) translateZ(0);box-shadow:inset 0 2px 0 rgba(255,255,255,.96),inset 0 -5px 0 rgba(15,23,42,.13),0 5px 0 rgba(15,23,42,.12),0 15px 25px rgba(15,23,42,.17);filter:drop-shadow(0 4px 4px rgba(15,23,42,.08))}
-        .overview-icon::before{content:"";position:absolute;inset:3px;border-radius:12px;border:1px solid rgba(255,255,255,.34);box-shadow:inset 0 1px 3px rgba(255,255,255,.55),inset 0 -3px 5px rgba(15,23,42,.08);pointer-events:none}
-        .overview-icon::after{background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.18) 48%,transparent 76%);height:48%;opacity:.9}
-        /* Premium dimensional icon finish */
-        .overview-icon{transform:perspective(700px) rotateX(10deg) rotateY(-9deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.96),inset 0 -5px 0 rgba(15,23,42,.13),0 5px 0 rgba(15,23,42,.12),0 15px 25px rgba(15,23,42,.17)}
-        .overview-icon::before{content:"";position:absolute;inset:3px;border-radius:12px;border:1px solid rgba(255,255,255,.34);pointer-events:none}
-        .overview-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(15,23,42,.28));transform:translateZ(8px)}
-        .overview-action:hover .overview-icon{transform:perspective(700px) translateY(-4px) rotateX(12deg) rotateY(-10deg) scale(1.07)}
-        .overview-meta-icon{transform:perspective(650px) rotateX(9deg) rotateY(-8deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),inset 0 -5px 0 rgba(0,0,0,.15),0 5px 0 rgba(0,0,0,.13),0 14px 24px rgba(0,0,0,.22)}
-        .overview-meta-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(0,0,0,.32));transform:translateZ(8px)}
-        .overview-detail-icon{transform:perspective(600px) rotateX(8deg) rotateY(-7deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -4px 0 rgba(15,23,42,.12),0 4px 0 rgba(15,23,42,.07),0 10px 18px rgba(15,23,42,.12)}
-        .overview-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(15,23,42,.28)) drop-shadow(0 4px 3px rgba(15,23,42,.12));transform:translateZ(10px)}
-        .overview-action:hover .overview-icon{transform:perspective(700px) translateY(-5px) rotateX(14deg) rotateY(-12deg) scale(1.08);box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -4px 0 rgba(15,23,42,.1),0 5px 0 rgba(15,23,42,.1),0 19px 30px rgba(15,23,42,.2)}
-        .overview-meta-icon{transform:perspective(650px) rotateX(9deg) rotateY(-8deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),inset 0 -5px 0 rgba(0,0,0,.15),0 5px 0 rgba(0,0,0,.13),0 14px 24px rgba(0,0,0,.22)}
-        .overview-meta-icon::before{content:"";position:absolute;inset:3px;border-radius:11px;border:1px solid rgba(255,255,255,.24);pointer-events:none}
-        .overview-meta-icon svg{position:relative;z-index:2;filter:drop-shadow(0 2px 1px rgba(0,0,0,.32)) drop-shadow(0 4px 3px rgba(0,0,0,.16));transform:translateZ(10px)}
-        .overview-detail-icon{transform:perspective(600px) rotateX(8deg) rotateY(-7deg);box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -4px 0 rgba(15,23,42,.12),0 4px 0 rgba(15,23,42,.07),0 10px 18px rgba(15,23,42,.12)}
-        @media (prefers-reduced-motion:reduce){.overview-icon,.overview-meta-icon,.overview-detail-icon{transition:none!important}}
-        .overview-icon svg { position:relative;z-index:1;width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 3px 1px rgba(15,23,42,.2));transform:translateZ(12px); }
-        .overview-icon-sky { color:#0284c7; background:linear-gradient(145deg,#eff6ff,#e0f2fe); box-shadow:inset 0 0 0 1px rgba(125,211,252,.55),0 10px 22px rgba(14,165,233,.12); }
-        .overview-icon-violet { color:#7c3aed; background:linear-gradient(145deg,#f5f3ff,#ede9fe); box-shadow:inset 0 0 0 1px rgba(196,181,253,.6),0 10px 22px rgba(124,58,237,.11); }
-        .overview-icon-emerald { color:#059669; background:linear-gradient(145deg,#ecfdf5,#d1fae5); box-shadow:inset 0 0 0 1px rgba(110,231,183,.6),0 10px 22px rgba(5,150,105,.11); }
-        .overview-action:hover .overview-icon {
-          transform:perspective(600px) translateY(-6px) rotateX(12deg) rotateY(-10deg) scale(1.1);
-          box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -3px 0 rgba(15,23,42,.08),0 7px 0 rgba(15,23,42,.08),0 19px 30px rgba(15,23,42,.2);
-        }
-        .overview-number {
-          font-size: 10px;
-          font-weight: 900;
-          letter-spacing: .2em;
-          color: #cbd5e1;
-        }
-        .overview-detail {
-          position:relative;
-          overflow:hidden;
-          transition: transform .28s cubic-bezier(.22,1,.36,1), border-color .25s ease, background .25s ease, box-shadow .28s ease;
-        }
-        .overview-detail::after{content:"";position:absolute;inset:auto -25% -65% 35%;height:110px;border-radius:999px;background:rgba(56,189,248,.06);filter:blur(24px);transition:transform .4s ease}
-        .overview-detail-icon{position:relative;isolation:isolate;overflow:hidden;z-index:1;display:flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:11px;background:linear-gradient(145deg,#fff,#e2e8f0);color:#475569;border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #fff,inset 0 -3px 0 rgba(15,23,42,.08),0 4px 0 rgba(15,23,42,.04),0 8px 13px rgba(15,23,42,.1);transform:perspective(420px) rotateX(7deg) rotateY(-5deg)}
-        .overview-detail-icon::after{content:"";position:absolute;inset:0 0 auto;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.8),transparent);pointer-events:none;z-index:0}
-        .overview-detail-icon svg{position:relative;z-index:1;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px rgba(15,23,42,.2));transform:translateZ(8px)}
-        .description-icon{color:#2563eb}
-        .description-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-        .overview-detail:hover {
-          transform: translateY(-4px);
-          border-color: #cbd5e1;
-          background: white;
-          box-shadow:0 14px 28px rgba(15,23,42,.07);
-        }
-        .overview-detail:hover::after{transform:translate(-16px,-10px)}
-        @keyframes overviewFloat {
-          0%, 100% { transform: translate3d(0,0,0) scale(1); }
-          50% { transform: translate3d(0,-18px,0) scale(1.04); }
-        }
-        @keyframes overviewSheen {
-          0%, 45% { transform: translateX(-120%) rotate(12deg); opacity: 0; }
-          55% { opacity: .75; }
-          75%, 100% { transform: translateX(520%) rotate(12deg); opacity: 0; }
-        }
-        @keyframes overviewRing {
-          from { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(180deg) scale(1.05); }
-          to { transform: rotate(360deg) scale(1); }
-        }
-        @keyframes focusMarkPulse {
-          0%,100% { box-shadow:0 10px 22px rgba(15,23,42,.16); transform:translateY(0); }
-          50% { box-shadow:0 14px 28px rgba(37,99,235,.18); transform:translateY(-2px); }
-        }
-        @media (max-width: 767px) {
-          .overview-steps { width:100%; justify-content:space-between; gap:.35rem; }
-          .overview-steps i { flex:1; min-width:10px; }
-          .overview-step { padding:.4rem .5rem; }
-          .overview-step b { font-size:8px; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .overview-orb, .overview-sheen, .overview-command-ring-one, .overview-command-ring-two, .overview-focus-mark { animation:none; }
-          .overview-action, .overview-icon, .overview-detail, .overview-glass, .overview-focus-strip, .overview-step { transition:none; }
-        }
+        .es-overview{--navy:#101d33;--blue:#2563eb;--muted:#64748b}
+        .es-overview *{box-sizing:border-box}
+        .es-sidebar{background:linear-gradient(180deg,#101d33 0%,#111f37 100%);color:#e2e8f0}
+        .es-navlink{display:flex;align-items:center;gap:11px;border:1px solid transparent;border-radius:12px;padding:11px 12px;color:#cbd5e1;font-size:13px;font-weight:600;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+        .es-navlink:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);transform:translateX(2px)}
+        .es-navlink-active{background:linear-gradient(100deg,rgba(37,99,235,.34),rgba(59,130,246,.12));border-color:rgba(96,165,250,.28);color:white;box-shadow:inset 3px 0 #60a5fa}
+        .es-navicon{display:flex;width:31px;height:31px;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0}
+        .tone-blue .es-navicon{background:rgba(96,165,250,.15);color:#93c5fd}.tone-violet .es-navicon{background:rgba(167,139,250,.15);color:#c4b5fd}.tone-green .es-navicon{background:rgba(52,211,153,.15);color:#6ee7b7}.tone-orange .es-navicon{background:rgba(251,146,60,.15);color:#fdba74}
+        .es-stat{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.es-stat:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,23,42,.07);border-color:#cbd5e1}
+        .es-quick{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.es-quick:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(15,23,42,.07)}
+        @media(prefers-reduced-motion:reduce){.es-navlink,.es-stat,.es-quick{transition:none}.es-navlink:hover,.es-stat:hover,.es-quick:hover{transform:none}}
       `}</style>
+
+      <div className="mx-auto min-h-screen max-w-[1600px] lg:grid lg:grid-cols-[238px_minmax(0,1fr)]">
+        <aside className="es-sidebar flex flex-col gap-7 px-4 py-5 lg:sticky lg:top-0 lg:h-screen">
+          <Link href="/dashboard" className="flex items-center gap-3 px-2 py-1">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-lg shadow-blue-950/30"><Icon name="calendar" size={22} /></span>
+            <span><span className="block text-[15px] font-extrabold tracking-tight text-white">Event Studio</span><span className="mt-0.5 block text-[9px] font-bold uppercase tracking-[.18em] text-slate-400">Workspace</span></span>
+          </Link>
+
+          <div className="hidden h-px bg-white/10 lg:block" />
+          <div className="hidden lg:block">
+            <p className="mb-3 px-3 text-[9px] font-extrabold uppercase tracking-[.18em] text-slate-500">Espace principal</p>
+            <Link href="/dashboard" className="es-navlink"><span className="es-navicon text-blue-300"><Icon name="grid" size={18} /></span>Dashboard</Link>
+          </div>
+
+          <div className="min-w-0">
+            <p className="mb-3 hidden px-3 text-[9px] font-extrabold uppercase tracking-[.18em] text-slate-500 lg:block">Votre événement</p>
+            <nav aria-label="Navigation de l’événement" className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-1">
+              {navItems.map((item) => {
+                const active = item.exact ? true : false;
+                return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={`es-navlink tone-${item.tone} ${active ? "es-navlink-active" : ""}`}><span className="es-navicon"><Icon name={item.icon} size={18} /></span><span>{item.label}</span>{active && <span className="ml-auto hidden h-1.5 w-1.5 rounded-full bg-sky-300 lg:block" />}</Link>;
+              })}
+            </nav>
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/[.035] p-3">
+              <p className="text-[9px] font-bold uppercase tracking-[.15em] text-slate-500">Événement actif</p>
+              <p className="mt-1 truncate text-xs font-semibold text-slate-200" title={event.name}>{event.name}</p>
+            </div>
+          </div>
+
+          <div className="mt-auto hidden rounded-2xl border border-white/10 bg-white/[.04] p-3 lg:block">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-400/10 text-sky-200"><Icon name="help" size={17} /></span>
+            <p className="mt-3 text-xs font-bold text-white">Besoin d’aide ?</p>
+            <p className="mt-1 text-[11px] leading-5 text-slate-400">Retrouvez les conseils pour organiser votre événement.</p>
+          </div>
+          <div className="hidden items-center gap-3 border-t border-white/10 px-2 pt-4 lg:flex">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-xs font-extrabold text-slate-700">{initials}</span>
+            <span className="min-w-0"><span className="block text-xs font-bold text-white">Espace organisateur</span><span className="block text-[10px] text-slate-400">Compte connecté</span></span>
+          </div>
+        </aside>
+
+        <section className="min-w-0 px-4 pb-10 pt-5 sm:px-6 lg:px-9 lg:pt-7">
+          <header className="mb-7 flex items-center justify-between gap-4">
+            <div className="min-w-0"><p className="text-xs text-slate-500"><Link href="/dashboard" className="hover:text-blue-700">Mes événements</Link><span className="mx-2 text-slate-300">/</span><span className="font-semibold text-slate-700">Vue d’ensemble</span></p><p className="mt-1 hidden text-[10px] font-bold uppercase tracking-[.16em] text-slate-400 sm:block">Centre de pilotage événementiel</p></div>
+            <div className="flex items-center gap-3"><button type="button" aria-label="Notifications" className="hidden h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 sm:flex"><Icon name="bell" size={18} /></button><span className="flex h-10 w-10 items-center justify-center rounded-full border border-white bg-white text-xs font-extrabold text-slate-700 shadow-sm">{initials}</span></div>
+          </header>
+
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0"><div className="mb-2 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[9px] font-extrabold uppercase tracking-[.17em] text-blue-700"><span className="h-1.5 w-1.5 rounded-full bg-blue-500" />{event.type || "Événement"}</div><h1 className="break-words text-3xl font-extrabold tracking-[-.04em] text-[#12213A] sm:text-4xl">{event.name}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Préparez chaque détail, de la première invitation jusqu’au contrôle des entrées.</p></div>
+            <Link href={"/events/" + event.id + "/edit"} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-xs font-bold text-white shadow-lg shadow-blue-600/15 transition hover:-translate-y-0.5 hover:bg-blue-700"><Icon name="edit" size={16} />Modifier l’événement</Link>
+          </div>
+
+          <section className="relative mb-6 overflow-hidden rounded-[25px] bg-[#102544] p-5 text-white shadow-[0_22px_50px_rgba(15,35,65,.14)] sm:p-7">
+            <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full border border-sky-200/10" /><div className="pointer-events-none absolute -right-4 -top-12 h-44 w-44 rounded-full border border-sky-200/10" /><div className="pointer-events-none absolute bottom-0 right-0 h-48 w-48 bg-gradient-to-tl from-blue-500/20 to-transparent" />
+            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
+              <div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-sky-300">Votre espace événementiel</p><h2 className="mt-3 max-w-2xl text-2xl font-extrabold tracking-[-.03em] sm:text-3xl">Le grand jour se prépare ici.</h2><p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">Retrouvez les informations essentielles, organisez vos invités et préparez un accueil fluide.</p>
+                <div className="mt-5 grid gap-2 sm:grid-cols-3"><Detail icon="calendar" label="Date" value={formatDate(event.date)} /><Detail icon="clock" label="Heure" value={event.time || "À définir"} /><Detail icon="pin" label="Lieu" value={event.location || "À définir"} /></div>
+              </div>
+              <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[.055] p-4 lg:flex-col lg:items-start"><span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-sky-200/20 bg-gradient-to-br from-sky-300/20 to-indigo-400/10 text-xl font-black tracking-wider text-sky-100">{initials}</span><div><p className="text-[9px] font-bold uppercase tracking-[.16em] text-slate-400">Votre événement</p><p className="mt-1 text-sm font-bold text-white">Un espace, tout votre événement.</p><p className="mt-1 text-xs leading-5 text-slate-400">Créez. Organisez. Contrôlez.</p></div></div>
+            </div>
+          </section>
+
+          <section className="mb-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Statistiques des invités">
+            {[
+              { label: "Invités", value: guestsLoaded ? stats.total : "—", note: "Total enregistré", icon: "users", color: "blue" },
+              { label: "Confirmés", value: guestsLoaded ? stats.confirmed : "—", note: "Présence confirmée", icon: "check", color: "green" },
+              { label: "En attente", value: guestsLoaded ? stats.pending : "—", note: "Réponses attendues", icon: "clock", color: "amber" },
+              { label: "Entrées", value: guestsLoaded ? stats.checkedIn : "—", note: "Accès enregistrés", icon: "scan", color: "orange" },
+            ].map((stat) => <article key={stat.label} className="es-stat rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_3px_12px_rgba(15,23,42,.025)] sm:p-5"><div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold text-slate-500">{stat.label}</span><span className={`flex h-9 w-9 items-center justify-center rounded-xl ${stat.color === "blue" ? "bg-blue-50 text-blue-600" : stat.color === "green" ? "bg-emerald-50 text-emerald-600" : stat.color === "amber" ? "bg-amber-50 text-amber-600" : "bg-orange-50 text-orange-600"}`}><Icon name={stat.icon} size={18} /></span></div><p className="mt-4 text-3xl font-extrabold tracking-tight text-[#12213A]">{stat.value}</p><p className="mt-1 text-[11px] text-slate-400">{stat.note}</p></article>)}
+          </section>
+
+          <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)]">
+            <article className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,.025)] sm:p-6">
+              <div className="flex items-start justify-between gap-4"><div><h2 className="text-base font-extrabold text-[#12213A]">Préparation de l’événement</h2><p className="mt-1 text-xs text-slate-500">Les étapes essentielles avant le jour J.</p></div><span className="rounded-xl bg-blue-50 px-3 py-2 text-sm font-extrabold text-blue-700">{progress}%</span></div>
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400 transition-[width] duration-500" style={{ width: progress + "%" }} /></div>
+              <div className="mt-5 space-y-1">{setupTasks.map((task) => <div key={task.label} className="flex items-center gap-3 rounded-xl px-2 py-3 transition hover:bg-slate-50"><span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${task.done ? "bg-emerald-50 text-emerald-600" : "border border-slate-200 text-slate-300"}`}><Icon name={task.done ? "check" : "calendar"} size={14} /></span><span className={`flex-1 text-xs font-semibold ${task.done ? "text-slate-500" : "text-slate-700"}`}>{task.label}</span>{task.done ? <span className="text-[10px] font-bold text-emerald-600">Terminé</span> : task.href ? <Link href={task.href} className="text-[11px] font-bold text-blue-600 hover:text-blue-800">Configurer →</Link> : <span className="text-[10px] text-slate-400">À compléter</span>}</div>)}</div>
+              <Link href={"/events/" + event.id + "/edit"} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-xs font-bold text-white transition hover:bg-blue-700">Continuer la préparation <Icon name="arrow" size={15} /></Link>
+            </article>
+
+            <article className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,.025)] sm:p-6">
+              <div className="flex items-start justify-between gap-3"><div><h2 className="text-base font-extrabold text-[#12213A]">Prochaines actions</h2><p className="mt-1 text-xs text-slate-500">Les raccourcis pour avancer maintenant.</p></div><span className="rounded-xl bg-slate-50 p-2 text-slate-500"><Icon name="arrow" size={17} /></span></div>
+              <div className="mt-4 space-y-3">
+                <Link href={"/events/" + event.id + "/invitation"} className="es-quick flex items-center gap-3 rounded-xl border border-slate-100 p-3.5"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600"><Icon name="file" size={19} /></span><span className="min-w-0 flex-1"><span className="block text-xs font-bold text-slate-800">Personnaliser l’invitation</span><span className="mt-1 block text-[11px] text-slate-500">Donnez un style unique à votre événement.</span></span><Icon name="arrow" size={16} /></Link>
+                <Link href={"/events/" + event.id + "/guests"} className="es-quick flex items-center gap-3 rounded-xl border border-slate-100 p-3.5"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"><Icon name="users" size={19} /></span><span className="min-w-0 flex-1"><span className="block text-xs font-bold text-slate-800">Gérer les invités</span><span className="mt-1 block text-[11px] text-slate-500">Ajoutez des personnes et suivez les réponses.</span></span><Icon name="arrow" size={16} /></Link>
+                <Link href={"/events/" + event.id + "/control"} className="es-quick flex items-center gap-3 rounded-xl border border-slate-100 p-3.5"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-orange-600"><Icon name="scan" size={19} /></span><span className="min-w-0 flex-1"><span className="block text-xs font-bold text-slate-800">Ouvrir Event Control</span><span className="mt-1 block text-[11px] text-slate-500">Préparez le contrôle des entrées par QR.</span></span><Icon name="arrow" size={16} /></Link>
+              </div>
+              {event.description && <div className="mt-4 rounded-xl bg-slate-50 p-4"><p className="text-[9px] font-bold uppercase tracking-[.15em] text-slate-400">À propos de l’événement</p><p className="mt-2 text-xs leading-5 text-slate-600">{event.description}</p></div>}
+            </article>
+          </section>
+
+          <footer className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-5"><p className="text-[11px] font-medium text-slate-400">Event Studio <span className="mx-1.5">·</span> Organisez des moments inoubliables.</p><Link href="/dashboard" className="text-xs font-bold text-slate-500 transition hover:text-blue-700">← Retour au Dashboard</Link></footer>
+        </section>
+      </div>
     </main>
   );
 }
