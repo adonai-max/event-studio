@@ -197,6 +197,24 @@ export default function EventNavigation({ eventId, eventName, backHref = "/dashb
         @keyframes pageEnter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
         @keyframes contentRise{from{opacity:0;transform:translateY(12px) scale(.995)}to{opacity:1;transform:translateY(0) scale(1)}}
         @keyframes cardEnter{from{opacity:0;transform:translateY(10px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
+        /* WONDER × BOSS: premium jewel icons, sculpted depth and controlled glow */
+        .nav-icon{width:2.55rem;height:2.55rem;border-radius:.92rem;border-width:1px;transform-style:preserve-3d;isolation:isolate;box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -5px 0 rgba(15,23,42,.10),0 5px 0 rgba(15,23,42,.10),0 12px 20px rgba(15,23,42,.16)}
+        .nav-icon::before{inset:3px;border-radius:.72rem;opacity:.3;background:linear-gradient(145deg,rgba(255,255,255,.65),rgba(255,255,255,0) 50%,rgba(15,23,42,.13));box-shadow:inset 0 1px 2px rgba(255,255,255,.85),inset 0 -3px 5px rgba(15,23,42,.12)}
+        .nav-icon::after{inset:1px 1px auto;height:48%;border-radius:.82rem .82rem .5rem .5rem;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.28) 54%,transparent);border:1px solid rgba(255,255,255,.46);box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+        .nav-icon svg{width:1.48rem;height:1.48rem;overflow:visible;filter:drop-shadow(0 2px 0 rgba(15,23,42,.20)) drop-shadow(0 4px 3px rgba(15,23,42,.18));stroke-width:2.1}
+        .nav-icon-halo{inset:-7px;border-width:1.5px;filter:blur(.25px)}
+        .nav-item:nth-child(1) .nav-icon{background:linear-gradient(145deg,#eff8ff 0%,#bfdbfe 48%,#60a5fa 100%);border-color:#93c5fd;box-shadow:inset 0 2px 0 #fff,inset 0 -5px 0 rgba(29,78,216,.18),0 5px 0 #60a5fa,0 13px 21px rgba(37,99,235,.26)}
+        .nav-item:nth-child(2) .nav-icon{background:linear-gradient(145deg,#fdf4ff 0%,#e9d5ff 48%,#a78bfa 100%);border-color:#d8b4fe;box-shadow:inset 0 2px 0 #fff,inset 0 -5px 0 rgba(109,40,217,.18),0 5px 0 #a78bfa,0 13px 21px rgba(124,58,237,.25)}
+        .nav-item:nth-child(3) .nav-icon{background:linear-gradient(145deg,#ecfdf5 0%,#a7f3d0 48%,#34d399 100%);border-color:#6ee7b7;box-shadow:inset 0 2px 0 #fff,inset 0 -5px 0 rgba(4,120,87,.18),0 5px 0 #34d399,0 13px 21px rgba(5,150,105,.24)}
+        .nav-item:nth-child(4) .nav-icon{background:linear-gradient(145deg,#fff7ed 0%,#fed7aa 48%,#fb923c 100%);border-color:#fdba74;box-shadow:inset 0 2px 0 #fff,inset 0 -5px 0 rgba(154,52,18,.18),0 5px 0 #fb923c,0 13px 21px rgba(234,88,12,.25)}
+        .nav-item:hover .nav-icon{transform:perspective(600px) translateY(-4px) rotateX(12deg) rotateY(-8deg) scale(1.08);filter:drop-shadow(0 10px 7px rgba(15,23,42,.18))}
+        .nav-item-active .nav-icon{animation:iconFloat 2.8s ease-in-out infinite}
+        .nav-item-active:nth-child(1) .nav-icon{background:linear-gradient(145deg,#93c5fd,#2563eb 65%,#1e40af);border-color:#dbeafe;box-shadow:inset 0 2px 0 rgba(255,255,255,.82),inset 0 -5px 0 rgba(30,64,175,.35),0 5px 0 #1d4ed8,0 14px 24px rgba(37,99,235,.38)}
+        .nav-item-active:nth-child(2) .nav-icon{background:linear-gradient(145deg,#e9d5ff,#8b5cf6 65%,#5b21b6);border-color:#f3e8ff;box-shadow:inset 0 2px 0 rgba(255,255,255,.82),inset 0 -5px 0 rgba(76,29,149,.35),0 5px 0 #6d28d9,0 14px 24px rgba(124,58,237,.38)}
+        .nav-item-active:nth-child(3) .nav-icon{background:linear-gradient(145deg,#a7f3d0,#10b981 65%,#047857);border-color:#d1fae5;box-shadow:inset 0 2px 0 rgba(255,255,255,.82),inset 0 -5px 0 rgba(6,78,59,.35),0 5px 0 #047857,0 14px 24px rgba(5,150,105,.38)}
+        .nav-item-active:nth-child(4) .nav-icon{background:linear-gradient(145deg,#fed7aa,#f97316 65%,#9a3412);border-color:#ffedd5;box-shadow:inset 0 2px 0 rgba(255,255,255,.82),inset 0 -5px 0 rgba(124,45,18,.35),0 5px 0 #c2410c,0 14px 24px rgba(234,88,12,.38)}
+        .nav-item-active .nav-icon svg{filter:drop-shadow(0 2px 1px rgba(15,23,42,.26)) drop-shadow(0 4px 3px rgba(15,23,42,.2))}
+        .nav-item-active .nav-icon-halo{opacity:.24;transform:scale(1.08)}
         @media (max-width:767px){
           .nav-scroll{grid-template-columns:repeat(4,minmax(148px,1fr));overflow-x:auto}
           .nav-item{min-height:3.35rem;justify-content:flex-start;padding-left:.75rem!important}
