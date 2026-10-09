@@ -54,6 +54,8 @@ export default function EventStudioBar() {
     };
   }, [pathname]);
 
+  if (pathname.startsWith("/i/") || pathname === "/login" || pathname === "/register") return null;
+
   return (
     <header className="sticky top-0 z-[90] overflow-visible border-b border-white/10 bg-[#101A2E] text-white shadow-[0_4px_18px_rgba(16,26,46,0.12)]">
       <style jsx>{`
