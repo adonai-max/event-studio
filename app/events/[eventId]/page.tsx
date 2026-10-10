@@ -203,7 +203,7 @@ export default function EventPage() {
 
           <section className="mb-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Statistiques des invités">
             {[
-              { label: "Invités", value: guestsLoaded ? stats.total : "—", note: "Total enregistré", icon: "users", color: "blue" },
+              { label: "Invitations", value: guestsLoaded ? stats.total : "—", note: "Fiches enregistrées", icon: "users", color: "blue" },
               { label: "Confirmés", value: guestsLoaded ? stats.confirmed : "—", note: "Présence confirmée", icon: "check", color: "green" },
               { label: "En attente", value: guestsLoaded ? stats.pending : "—", note: "Réponses attendues", icon: "clock", color: "amber" },
               { label: "Entrées", value: guestsLoaded ? stats.checkedIn : "—", note: "Accès enregistrés", icon: "scan", color: "orange" },
