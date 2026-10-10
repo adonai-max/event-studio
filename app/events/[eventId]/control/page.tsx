@@ -266,29 +266,23 @@ export default function EventControlPage() {
 
     try {
       const scannedUrl = new URL(decodedText);
-
       const pathParts = scannedUrl.pathname
         .split("/")
         .filter(Boolean);
+      const invitationIndex = pathParts.indexOf("i");
 
-      const invitationIndex =
-        pathParts.indexOf("i");
-
-      if (
-        invitationIndex !== -1 &&
-        pathParts[invitationIndex + 1]
-      ) {
-        guestIdentifier =
-          pathParts[invitationIndex + 1];
+      if (invitationIndex !== -1 && pathParts[invitationIndex + 1]) {
+        guestIdentifier = decodeURIComponent(pathParts[invitationIndex + 1]);
       }
     } catch {
-      // Le QR peut contenir directement le slug.
+      // Le QR peut contenir directement le slug ou l'identifiant.
     }
 
-    return guests.find(
-      (guest) =>
-        guest.slug === guestIdentifier ||
-        guest.id === guestIdentifier,
+    const normalizedIdentifier = guestIdentifier.trim().toLowerCase();
+
+    return guests.find((guest) =>
+      guest.id === guestIdentifier ||
+      guest.slug.trim().toLowerCase() === normalizedIdentifier
     );
   };
 
