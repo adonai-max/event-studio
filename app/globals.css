@@ -27,6 +27,15 @@
   --es-shadow-md: 0 8px 24px rgb(16 26 46 / 0.07);
   --es-shadow-lg: 0 20px 48px rgb(16 26 46 / 0.12);
   --es-transition: 180ms cubic-bezier(.2,.7,.2,1);
+  /* Design tokens — use these values for new Event Studio components. */
+  --es-primary-soft: #eef2ff;
+  --es-primary-border: #c7d2fe;
+  --es-focus: rgb(66 99 235 / 0.42);
+  --es-overlay: rgb(16 26 46 / 0.56);
+  --es-radius-xl: 28px;
+  --es-control-height: 44px;
+  --es-content-max: 1280px;
+
 }
 
 @theme inline {
@@ -40,6 +49,17 @@
   color-scheme: dark;
   --background: #0b1220;
   --foreground: #edf2fb;
+  --es-primary-soft: #17233f;
+  --es-primary-border: #33477b;
+  --es-focus: rgb(129 155 255 / 0.6);
+  --es-overlay: rgb(0 0 0 / 0.72);
+  --es-surface: #111c2e;
+  --es-text: #edf2fb;
+  --es-muted: #9aa9bf;
+  --es-border: #29364b;
+  --es-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.18);
+  --es-shadow-md: 0 8px 24px rgb(0 0 0 / 0.22);
+  --es-shadow-lg: 0 20px 48px rgb(0 0 0 / 0.3);
 }
 
 html, body {
@@ -60,7 +80,7 @@ button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { text-decoration: none; }
 button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-  outline: 3px solid rgb(66 99 235 / .45);
+  outline: 3px solid var(--es-focus);
   outline-offset: 3px;
 }
 ::selection { color: #fff; background: #4263eb; }
@@ -118,3 +138,98 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* Preserve native scroll affordance where a user needs to know a panel can scroll. */
 
+
+/* Event Studio shared component primitives.
+   Prefer these classes for new/reworked pages to keep spacing, focus and color consistent. */
+.es-page {
+  width: min(100% - 32px, var(--es-content-max));
+  margin-inline: auto;
+  padding-block: clamp(24px, 4vw, 48px);
+}
+.es-card {
+  min-width: 0;
+  border: 1px solid var(--es-border);
+  border-radius: var(--es-radius-lg);
+  background: var(--es-surface);
+  box-shadow: var(--es-shadow-sm);
+}
+.es-card--interactive {
+  transition: transform var(--es-transition), border-color var(--es-transition), box-shadow var(--es-transition);
+}
+.es-card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--es-shadow-md);
+}
+.es-eyebrow {
+  color: var(--es-primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.es-section-title {
+  color: var(--foreground);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+.es-muted { color: var(--es-muted); }
+.es-control {
+  width: 100%;
+  min-height: var(--es-control-height);
+  border: 1px solid var(--es-border);
+  border-radius: var(--es-radius-sm);
+  background: var(--es-surface);
+  color: var(--es-text);
+  padding: 10px 12px;
+  transition: border-color var(--es-transition), box-shadow var(--es-transition);
+}
+.es-control::placeholder { color: var(--es-muted); opacity: 0.85; }
+.es-control:focus-visible {
+  outline: none;
+  border-color: var(--es-primary);
+  box-shadow: 0 0 0 4px var(--es-focus);
+}
+.es-button-primary {
+  display: inline-flex;
+  min-height: var(--es-control-height);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--es-radius-sm);
+  background: var(--es-primary);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 750;
+  transition: background var(--es-transition), transform var(--es-transition), box-shadow var(--es-transition);
+}
+.es-button-primary:hover { background: var(--es-primary-hover); box-shadow: var(--es-shadow-sm); }
+.es-button-primary:active { transform: translateY(1px); }
+.es-button-primary:disabled { cursor: not-allowed; opacity: 0.58; }
+.es-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+.es-status--success { color: #166534; background: #dcfce7; }
+.es-status--warning { color: #92400e; background: #fef3c7; }
+.es-status--danger { color: #991b1b; background: #fee2e2; }
+.dark .es-status--success { color: #bbf7d0; background: #14532d; }
+.dark .es-status--warning { color: #fde68a; background: #78350f; }
+.dark .es-status--danger { color: #fecaca; background: #7f1d1d; }
+@media (max-width: 520px) {
+  .es-page { width: min(100% - 24px, var(--es-content-max)); }
+  .es-card { border-radius: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .es-card--interactive:hover, .es-button-primary:active { transform: none; }
+}
