@@ -37,7 +37,7 @@ export default function EventPage() {
 
         <header className="flex flex-col gap-6 border-b border-zinc-200 pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-indigo-600">
+            <p className="text-sm font-semibold text-blue-600">
               EVENT STUDIO
             </p>
 
@@ -53,7 +53,7 @@ export default function EventPage() {
           <button
             type="button"
             onClick={() => router.push("/events/new")}
-            className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
+            className="rounded-full bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
           >
             Modifier l&apos;événement
           </button>
