@@ -587,7 +587,7 @@ export default function GuestsPage() {
       <main className="min-h-screen bg-[#f8fafc] event-page-motion">
         <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-6">
           <div className="text-center">
-            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-indigo-600" />
+            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-blue-600" />
             <p className="mt-4 text-sm font-medium text-zinc-500">
               Chargement de vos invités...
             </p>
@@ -643,13 +643,13 @@ export default function GuestsPage() {
 
         <header className="mt-5 overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(24,24,27,0.04)]">
           <div className="relative p-6 sm:p-8 lg:p-10">
-            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-indigo-100/50 blur-3xl" />
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-blue-100/50 blur-3xl" />
 
             <div className="relative flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700">
+                <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-blue-700">
                   <span>Event Studio</span>
-                  <span className="h-1 w-1 rounded-full bg-indigo-400" />
+                  <span className="h-1 w-1 rounded-full bg-blue-400" />
                   <span>Invités</span>
                 </div>
 
@@ -673,7 +673,7 @@ export default function GuestsPage() {
                   resetForm();
                   setShowForm(true);
                 }}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
               >
                 <span className="text-lg">+</span>
                 Ajouter un invité
@@ -728,7 +728,7 @@ export default function GuestsPage() {
           <div className="p-5 sm:p-6 lg:p-7">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
                   Vue RSVP
                 </p>
 
@@ -741,11 +741,11 @@ export default function GuestsPage() {
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-indigo-50 px-4 py-3 text-right ring-1 ring-indigo-100">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600">
+              <div className="rounded-2xl bg-blue-50 px-4 py-3 text-right ring-1 ring-blue-100">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-blue-600">
                   Taux de confirmation
                 </p>
-                <p className="mt-1 text-2xl font-black text-indigo-700">
+                <p className="mt-1 text-2xl font-black text-blue-700">
                   {confirmedRate}%
                 </p>
               </div>
@@ -803,7 +803,7 @@ export default function GuestsPage() {
             <div className="border-b border-zinc-100 bg-zinc-50/70 px-6 py-5 sm:px-8">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
                     {editingGuestId !== null
                       ? "Modification"
                       : "Nouvelle invitation"}
@@ -933,7 +933,7 @@ export default function GuestsPage() {
                   disabled={saving}
                   aria-busy={saving}
                   onClick={handleSaveGuest}
-                  className="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving
                     ? "Enregistrement..."
@@ -951,7 +951,7 @@ export default function GuestsPage() {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
                     Annuaire événement
                   </p>
 
@@ -989,7 +989,7 @@ export default function GuestsPage() {
                       setSearchQuery(e.target.value)
                     }
                     placeholder="Rechercher un nom, WhatsApp ou lien..."
-                    className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-3 pl-11 pr-4 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+                    className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-3 pl-11 pr-4 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
                     aria-label="Rechercher un invité"
                   />
 
@@ -1089,7 +1089,7 @@ export default function GuestsPage() {
                   🔎
                 </div>
 
-                <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+                <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
                   Recherche
                 </p>
 
@@ -1171,7 +1171,7 @@ function GuestRow({
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 items-start gap-4">
           <div className="relative shrink-0">
-            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-indigo-50 via-white to-violet-50 text-sm font-black text-indigo-700 ring-1 ring-indigo-100 transition duration-300 group-hover:scale-[1.03] group-hover:shadow-sm sm:h-16 sm:w-16">
+            <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-blue-50 via-white to-violet-50 text-sm font-black text-blue-700 ring-1 ring-blue-100 transition duration-300 group-hover:scale-[1.03] group-hover:shadow-sm sm:h-16 sm:w-16">
               {getInitials(guest)}
             </div>
 
@@ -1181,7 +1181,7 @@ function GuestRow({
                 guest.checkedIn
                   ? "bg-emerald-500"
                   : guest.status === "confirmed"
-                    ? "bg-indigo-500"
+                    ? "bg-blue-500"
                     : guest.status === "declined"
                       ? "bg-red-500"
                       : "bg-amber-400",
@@ -1261,7 +1261,7 @@ function GuestRow({
           <button
             type="button"
             onClick={onQr}
-            className="order-first inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
+            className="order-first inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-black text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
           >
             <span aria-hidden="true">▣</span>
             QR Code
@@ -1283,7 +1283,7 @@ function GuestRow({
               "inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-black transition duration-200",
               copied
                 ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                : "border-zinc-200 bg-white text-zinc-700 shadow-sm hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700",
+                : "border-zinc-200 bg-white text-zinc-700 shadow-sm hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700",
             ].join(" ")}
           >
             <span aria-hidden="true">{copied ? "✓" : "⧉"}</span>
@@ -1334,13 +1334,13 @@ function GuestTypeButton({
       className={[
         "group relative overflow-hidden rounded-[24px] border p-5 text-left transition duration-300 sm:p-6",
         active
-          ? "border-indigo-300 bg-indigo-50/60 shadow-[0_10px_30px_rgba(79,70,229,0.10)] ring-4 ring-indigo-50"
+          ? "border-blue-300 bg-blue-50/60 shadow-[0_10px_30px_rgba(79,70,229,0.10)] ring-4 ring-blue-50"
           : "border-zinc-200 bg-white hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md",
       ].join(" ")}
     >
       {active && (
         <span
-          className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-black text-white shadow-sm"
+          className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-black text-white shadow-sm"
           aria-hidden="true"
         >
           ✓
@@ -1352,7 +1352,7 @@ function GuestTypeButton({
           className={[
             "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl transition duration-300",
             active
-              ? "bg-indigo-600 text-white shadow-sm"
+              ? "bg-blue-600 text-white shadow-sm"
               : "bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200 group-hover:text-zinc-800",
           ].join(" ")}
           aria-hidden="true"
@@ -1374,7 +1374,7 @@ function GuestTypeButton({
           <p
             className={[
               "mt-3 text-xs font-black uppercase tracking-[0.16em]",
-              active ? "text-indigo-600" : "text-zinc-400",
+              active ? "text-blue-600" : "text-zinc-400",
             ].join(" ")}
           >
             {active ? "Sélectionné" : "Choisir ce format"}
@@ -1417,7 +1417,7 @@ function InputField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className="mt-2 w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+        className="mt-2 w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
       />
     </div>
   );
@@ -1439,7 +1439,7 @@ function FilterSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       aria-label={ariaLabel}
-      className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-semibold text-zinc-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
+      className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-semibold text-zinc-700 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
     >
       {options.map(([optionValue, label]) => (
         <option key={optionValue} value={optionValue}>
@@ -1563,7 +1563,7 @@ function Stat({
     success: "bg-emerald-50 text-emerald-700",
     warning: "bg-amber-50 text-amber-700",
     danger: "bg-red-50 text-red-700",
-    indigo: "bg-indigo-50 text-indigo-700",
+    indigo: "bg-blue-50 text-blue-700",
   };
 
   return (
@@ -1595,7 +1595,7 @@ function EmptyGuests({
   return (
     <div className="relative flex min-h-80 items-center justify-center overflow-hidden px-6 py-12 sm:px-8">
       <div
-        className="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-indigo-100/60 blur-3xl"
+        className="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-blue-100/60 blur-3xl"
         aria-hidden="true"
       />
       <div
@@ -1604,11 +1604,11 @@ function EmptyGuests({
       />
 
       <div className="relative w-full max-w-lg text-center">
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[32px] border border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50 text-4xl shadow-sm">
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[32px] border border-blue-100 bg-gradient-to-br from-blue-50 to-violet-50 text-4xl shadow-sm">
           👥
         </div>
 
-        <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
+        <p className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
           Votre espace invités
         </p>
 
@@ -1624,7 +1624,7 @@ function EmptyGuests({
         <button
           type="button"
           onClick={onAdd}
-          className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-md"
+          className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
         >
           <span className="text-base" aria-hidden="true">
             +
