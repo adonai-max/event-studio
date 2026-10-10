@@ -233,7 +233,7 @@ export default function PublicInvitationPage({
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#09090b] px-5 py-10">
         <section className="w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/10 bg-white shadow-2xl">
-          <div className="h-2" style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}99, #d4af37)` }} />
+          <div className="h-2 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-amber-400" />
 
           <div className="px-7 py-12 text-center sm:px-10">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-violet-50 text-4xl">
