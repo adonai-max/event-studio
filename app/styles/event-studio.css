@@ -516,3 +516,79 @@ html.dark .event-navigation .border-t {
 @media (prefers-reduced-motion:reduce) {
   .es-topbar *, .es-event-nav * { animation:none !important; transition:none !important; }
 }
+
+/* Dashboard and profile share the same accessible dark surfaces as event pages. */
+html.dark .dashboard-page .bg-white,
+html.dark .dashboard-page .bg-white\/90,
+html.dark .dashboard-page .bg-white\/95,
+html.dark .profile-page .bg-white,
+html.dark .profile-page .bg-white\/90,
+html.dark .profile-page .bg-white\/95 {
+  background-color: #0f172a !important;
+}
+html.dark .dashboard-page .bg-zinc-50,
+html.dark .dashboard-page .bg-slate-50,
+html.dark .dashboard-page .bg-zinc-100,
+html.dark .dashboard-page .bg-slate-100,
+html.dark .profile-page .bg-zinc-50,
+html.dark .profile-page .bg-slate-50,
+html.dark .profile-page .bg-zinc-100,
+html.dark .profile-page .bg-slate-100 {
+  background-color: #111827 !important;
+}
+html.dark .dashboard-page .border-zinc-100,
+html.dark .dashboard-page .border-zinc-200,
+html.dark .dashboard-page .border-slate-100,
+html.dark .dashboard-page .border-slate-200,
+html.dark .profile-page .border-zinc-100,
+html.dark .profile-page .border-zinc-200,
+html.dark .profile-page .border-slate-100,
+html.dark .profile-page .border-slate-200 {
+  border-color: rgba(148, 163, 184, .18) !important;
+}
+html.dark .dashboard-page .text-zinc-950,
+html.dark .dashboard-page .text-zinc-900,
+html.dark .dashboard-page .text-slate-950,
+html.dark .dashboard-page .text-slate-900,
+html.dark .profile-page .text-zinc-950,
+html.dark .profile-page .text-zinc-900,
+html.dark .profile-page .text-slate-950,
+html.dark .profile-page .text-slate-900 {
+  color: #f8fafc !important;
+}
+html.dark .dashboard-page .text-zinc-800,
+html.dark .dashboard-page .text-zinc-700,
+html.dark .dashboard-page .text-slate-800,
+html.dark .dashboard-page .text-slate-700,
+html.dark .profile-page .text-zinc-800,
+html.dark .profile-page .text-zinc-700,
+html.dark .profile-page .text-slate-800,
+html.dark .profile-page .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+html.dark .dashboard-page .text-zinc-600,
+html.dark .dashboard-page .text-zinc-500,
+html.dark .dashboard-page .text-slate-600,
+html.dark .dashboard-page .text-slate-500,
+html.dark .profile-page .text-zinc-600,
+html.dark .profile-page .text-zinc-500,
+html.dark .profile-page .text-slate-600,
+html.dark .profile-page .text-slate-500 {
+  color: #94a3b8 !important;
+}
+html.dark .dashboard-page input,
+html.dark .dashboard-page textarea,
+html.dark .dashboard-page select,
+html.dark .profile-page input,
+html.dark .profile-page textarea,
+html.dark .profile-page select {
+  color: #f8fafc;
+  background-color: #0f172a;
+  border-color: rgba(148, 163, 184, .24);
+}
+html.dark .dashboard-page input::placeholder,
+html.dark .dashboard-page textarea::placeholder,
+html.dark .profile-page input::placeholder,
+html.dark .profile-page textarea::placeholder {
+  color: #64748b;
+}
