@@ -61,10 +61,10 @@ export default function SettingsPage() {
     setSaving(true);
     setMessage("");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
+    // La langue et les notifications sont déjà persistées dans localStorage ;
+    // le thème est géré par ThemeContext. On confirme sans simuler une sauvegarde serveur.
     setSaving(false);
-    setMessage("Vos préférences ont été enregistrées.");
+    setMessage("Vos préférences sont enregistrées sur cet appareil.");
   }
 
   const themeOptions: {
@@ -107,8 +107,8 @@ export default function SettingsPage() {
               ← Retour au tableau de bord
             </Link>
 
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.16em] text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950/50 dark:text-indigo-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.16em] text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/50 dark:text-blue-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
               Event Studio
             </div>
 
@@ -123,7 +123,7 @@ export default function SettingsPage() {
 
           <Link
             href="/profile"
-            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/40 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-indigo-800 dark:hover:bg-indigo-950/40"
+            className="group inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-blue-800 dark:hover:bg-blue-950/40"
           >
             <span className="transition-transform duration-300 group-hover:scale-110">
               👤
@@ -148,7 +148,7 @@ export default function SettingsPage() {
             <nav className="grid gap-1 sm:grid-cols-2 lg:grid-cols-1">
               <a
                 href="#compte"
-                className="group flex items-center gap-3 rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-300 dark:hover:bg-indigo-950"
+                className="group flex items-center gap-3 rounded-2xl bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-300 dark:hover:bg-blue-950"
               >
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-base shadow-sm dark:bg-zinc-900">
                   👤
@@ -197,7 +197,7 @@ export default function SettingsPage() {
               className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8"
             >
               <div className="mb-6">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
                   Compte
                 </p>
 
@@ -213,7 +213,7 @@ export default function SettingsPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <Link
                   href="/profile"
-                  className="rounded-2xl border border-zinc-200 p-5 transition hover:border-indigo-300 hover:bg-indigo-50/40 dark:border-zinc-800 dark:hover:border-indigo-700 dark:hover:bg-indigo-950/30"
+                  className="rounded-2xl border border-zinc-200 p-5 transition hover:border-blue-300 hover:bg-blue-50/40 dark:border-zinc-800 dark:hover:border-blue-700 dark:hover:bg-blue-950/30"
                 >
                   <div className="text-2xl">👤</div>
 
@@ -246,7 +246,7 @@ export default function SettingsPage() {
               className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8"
             >
               <div className="mb-6">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
                   Préférences
                 </p>
 
@@ -272,7 +272,7 @@ export default function SettingsPage() {
                     onChange={(event) =>
                       changeLanguage(event.target.value)
                     }
-                    className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 outline-none focus:border-indigo-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                    id="language-setting" aria-label="Langue de l’interface" className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-semibold text-zinc-900 outline-none transition focus-visible:ring-4 focus-visible:ring-blue-500/20 focus-visible:border-blue-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                   >
                     <option value="fr">Français</option>
                     <option value="en">English</option>
@@ -297,10 +297,11 @@ export default function SettingsPage() {
                     className={[
                       "relative h-7 w-12 rounded-full transition",
                       notifications
-                        ? "bg-indigo-600"
+                        ? "bg-blue-600"
                         : "bg-zinc-300 dark:bg-zinc-700",
                     ].join(" ")}
                     aria-label="Activer ou désactiver les notifications"
+                    aria-pressed={notifications}
                   >
                     <span
                       className={[
@@ -321,7 +322,7 @@ export default function SettingsPage() {
               className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8"
             >
               <div className="mb-6">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
                   Apparence
                 </p>
 
@@ -347,13 +348,13 @@ export default function SettingsPage() {
                       className={[
                         "group relative overflow-hidden rounded-[24px] border p-5 text-left transition-all duration-300",
                         active
-                          ? "border-indigo-400 bg-indigo-50 shadow-[0_12px_30px_rgba(79,70,229,0.10)] ring-4 ring-indigo-50 dark:border-indigo-600 dark:bg-indigo-950/50 dark:ring-indigo-950"
-                          : "border-zinc-200 bg-white hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/30 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-indigo-800 dark:hover:bg-indigo-950/30",
+                          ? "border-blue-400 bg-blue-50 shadow-[0_12px_30px_rgba(79,70,229,0.10)] ring-4 ring-blue-50 dark:border-blue-600 dark:bg-blue-950/50 dark:ring-blue-950"
+                          : "border-zinc-200 bg-white hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-800 dark:hover:bg-blue-950/30",
                       ].join(" ")}
                     >
                       {active && (
                         <span
-                          className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-black text-white shadow-sm"
+                          className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-black text-white shadow-sm"
                           aria-hidden="true"
                         >
                           ✓
@@ -364,8 +365,8 @@ export default function SettingsPage() {
                         className={[
                           "flex h-12 w-12 items-center justify-center rounded-2xl text-2xl transition-all duration-300",
                           active
-                            ? "bg-indigo-600 text-white shadow-sm"
-                            : "bg-zinc-100 text-zinc-500 group-hover:scale-105 group-hover:bg-indigo-100 group-hover:text-indigo-700 dark:bg-zinc-800 dark:text-zinc-400 dark:group-hover:bg-indigo-950 dark:group-hover:text-indigo-300",
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "bg-zinc-100 text-zinc-500 group-hover:scale-105 group-hover:bg-blue-100 group-hover:text-blue-700 dark:bg-zinc-800 dark:text-zinc-400 dark:group-hover:bg-blue-950 dark:group-hover:text-blue-300",
                         ].join(" ")}
                       >
                         {item.icon}
@@ -383,8 +384,8 @@ export default function SettingsPage() {
                         className={[
                           "mt-4 text-[10px] font-black uppercase tracking-[0.16em]",
                           active
-                            ? "text-indigo-600 dark:text-indigo-400"
-                            : "text-zinc-400 group-hover:text-indigo-600 dark:text-zinc-500 dark:group-hover:text-indigo-400",
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-zinc-400 group-hover:text-blue-600 dark:text-zinc-500 dark:group-hover:text-blue-400",
                         ].join(" ")}
                       >
                         {active ? "Sélectionné" : "Choisir ce thème"}
@@ -401,7 +402,7 @@ export default function SettingsPage() {
               className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8"
             >
               <div className="mb-6">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
                   Sécurité
                 </p>
 
@@ -413,7 +414,7 @@ export default function SettingsPage() {
               <div className="space-y-4">
 
                 {/* Password */}
-                <div className="group flex flex-col gap-5 rounded-[24px] border border-zinc-200 bg-zinc-50/70 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/30 hover:shadow-md sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800 dark:bg-zinc-950/40 dark:hover:border-indigo-800 dark:hover:bg-indigo-950/20">
+                <div className="group flex flex-col gap-5 rounded-[24px] border border-zinc-200 bg-zinc-50/70 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800 dark:bg-zinc-950/40 dark:hover:border-blue-800 dark:hover:bg-blue-950/20">
                   <div className="flex items-start gap-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-lg shadow-sm dark:bg-zinc-900">
                       🔑
@@ -497,7 +498,7 @@ export default function SettingsPage() {
 
                 <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
                   {message && (
-                    <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs font-bold text-indigo-200">
+                    <span role="status" aria-live="polite" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs font-bold text-blue-200">
                       <span aria-hidden="true">✓</span>
                       {message}
                     </span>
@@ -507,7 +508,8 @@ export default function SettingsPage() {
                     type="button"
                     onClick={handleSave}
                     disabled={saving}
-                    className="w-full rounded-xl bg-indigo-600 px-5 py-3 text-sm font-black shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-indigo-500 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                    aria-busy={saving}
+                    className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-black shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                   >
                     {saving
                       ? "Enregistrement..."
