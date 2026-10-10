@@ -261,6 +261,7 @@ export default function GuestsPage() {
   };
 
   const handleSaveGuest = async () => {
+    if (saving) return;
     setErrorMessage("");
 
     if (
@@ -286,109 +287,100 @@ export default function GuestsPage() {
 
     setSaving(true);
 
-    const slug = createUniqueGuestSlug(
-      firstName1.trim(),
-      lastName1.trim(),
-      firstName2.trim(),
-      lastName2.trim(),
-      guestType,
-      guests,
-      editingGuestId ?? undefined,
-    );
-
-    if (editingGuestId !== null) {
-      const { data, error } = await supabase
-        .from("guests")
-        .update({
-          type: guestType,
-          first_name_1: firstName1.trim(),
-          last_name_1: lastName1.trim(),
-          first_name_2:
-            guestType === "couple"
-              ? firstName2.trim()
-              : "",
-          last_name_2:
-            guestType === "couple"
-              ? lastName2.trim()
-              : "",
-          whatsapp: whatsapp.trim(),
-          slug,
-        })
-        .eq("id", editingGuestId)
-        .eq("event_id", eventId)
-        .select("*")
-        .single();
-
-      if (error || !data) {
-        console.error(
-          "❌ Erreur modification invité :",
-          error,
-        );
-
-        setErrorMessage(
-          "Impossible de modifier cet invité.",
-        );
-
-        setSaving(false);
-        return;
-      }
-
-      const updatedGuest = mapGuest(data);
-
-      setGuests((current) =>
-        current.map((guest) =>
-          guest.id === updatedGuest.id
-            ? updatedGuest
-            : guest,
-        ),
+    try {
+      const slug = createUniqueGuestSlug(
+        firstName1.trim(),
+        lastName1.trim(),
+        firstName2.trim(),
+        lastName2.trim(),
+        guestType,
+        guests,
+        editingGuestId ?? undefined,
       );
-    } else {
-      const { data, error } = await supabase
-        .from("guests")
-        .insert({
-          event_id: eventId,
-          type: guestType,
-          first_name_1: firstName1.trim(),
-          last_name_1: lastName1.trim(),
-          first_name_2:
-            guestType === "couple"
-              ? firstName2.trim()
-              : "",
-          last_name_2:
-            guestType === "couple"
-              ? lastName2.trim()
-              : "",
-          whatsapp: whatsapp.trim(),
-          status: "pending",
-          slug,
-          checked_in: false,
-          checked_in_at: null,
-        })
-        .select("*")
-        .single();
 
-      if (error || !data) {
-        console.error("❌ Erreur ajout invité :", error);
+      if (editingGuestId !== null) {
+        const { data, error } = await supabase
+          .from("guests")
+          .update({
+            type: guestType,
+            first_name_1: firstName1.trim(),
+            last_name_1: lastName1.trim(),
+            first_name_2:
+              guestType === "couple"
+                ? firstName2.trim()
+                : "",
+            last_name_2:
+              guestType === "couple"
+                ? lastName2.trim()
+                : "",
+            whatsapp: whatsapp.trim(),
+            slug,
+          })
+          .eq("id", editingGuestId)
+          .eq("event_id", eventId)
+          .select("*")
+          .single();
 
-        setErrorMessage(
-          "Impossible d'ajouter cet invité.",
+        if (error || !data) {
+          setErrorMessage("Impossible de modifier cet invité. Réessayez.");
+          return;
+        }
+
+        const updatedGuest = mapGuest(data);
+
+        setGuests((current) =>
+          current.map((guest) =>
+            guest.id === updatedGuest.id
+              ? updatedGuest
+              : guest,
+          ),
         );
+      } else {
+        const { data, error } = await supabase
+          .from("guests")
+          .insert({
+            event_id: eventId,
+            type: guestType,
+            first_name_1: firstName1.trim(),
+            last_name_1: lastName1.trim(),
+            first_name_2:
+              guestType === "couple"
+                ? firstName2.trim()
+                : "",
+            last_name_2:
+              guestType === "couple"
+                ? lastName2.trim()
+                : "",
+            whatsapp: whatsapp.trim(),
+            status: "pending",
+            slug,
+            checked_in: false,
+            checked_in_at: null,
+          })
+          .select("*")
+          .single();
 
-        setSaving(false);
-        return;
+        if (error || !data) {
+          setErrorMessage("Impossible d'ajouter cet invité. Réessayez.");
+          return;
+        }
+
+        setGuests((current) => [
+          ...current,
+          mapGuest(data),
+        ]);
       }
 
-      setGuests((current) => [
-        ...current,
-        mapGuest(data),
-      ]);
+      resetForm();
+      setShowForm(false);
+    } catch {
+      setErrorMessage(
+        "Une erreur inattendue est survenue. Vérifiez votre connexion puis réessayez.",
+      );
+    } finally {
+      setSaving(false);
     }
-
-    resetForm();
-    setShowForm(false);
-    setSaving(false);
   };
-
   const handleEditGuest = (guest: Guest) => {
     setEditingGuestId(guest.id);
     setGuestType(guest.type);
@@ -473,9 +465,14 @@ export default function GuestsPage() {
     const link =
       window.location.origin + "/i/" + guest.slug;
 
+    const recipientName =
+      guest.type === "couple"
+        ? getGuestName(guest)
+        : guest.firstName1;
+
     const message =
       "Bonjour " +
-      guest.firstName1 +
+      recipientName +
       ", voici votre invitation : " +
       link;
 
@@ -525,22 +522,22 @@ export default function GuestsPage() {
       ? Math.round((declinedGuests / totalGuests) * 100)
       : 0;
 
-  const normalizedSearch = searchQuery
-    .trim()
-    .toLowerCase();
+  const normalizedSearch = normalizeSearchText(searchQuery);
 
   const filteredGuests = useMemo(() => {
     return guests.filter((guest) => {
       const guestName = getGuestName(guest);
 
-      const searchableText = [
+      const searchableText = normalizeSearchText([
         guestName,
+        guest.firstName1,
+        guest.lastName1,
+        guest.firstName2,
+        guest.lastName2,
         guest.whatsapp,
         guest.slug,
         guest.id,
-      ]
-        .join(" ")
-        .toLowerCase();
+      ].join(" "));
 
       const matchesSearch =
         !normalizedSearch ||
@@ -677,7 +674,7 @@ export default function GuestsPage() {
         </header>
 
         {errorMessage && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
+          <div role="alert" aria-live="assertive" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
             {errorMessage}
           </div>
         )}
@@ -900,6 +897,7 @@ export default function GuestsPage() {
                     onChange={setWhatsapp}
                     placeholder="+243 9XX XXX XXX"
                     type="tel"
+                    maxLength={30}
                   />
 
                   <p className="mt-2 text-xs text-zinc-500">
@@ -924,6 +922,7 @@ export default function GuestsPage() {
                 <button
                   type="button"
                   disabled={saving}
+                  aria-busy={saving}
                   onClick={handleSaveGuest}
                   className="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -1383,6 +1382,7 @@ function InputField({
   onChange,
   placeholder,
   type = "text",
+  maxLength = 120,
 }: {
   id: string;
   label: string;
@@ -1390,6 +1390,7 @@ function InputField({
   onChange: (value: string) => void;
   placeholder: string;
   type?: string;
+  maxLength?: number;
 }) {
   return (
     <div>
@@ -1406,6 +1407,7 @@ function InputField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        maxLength={maxLength}
         className="mt-2 w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-50"
       />
     </div>
