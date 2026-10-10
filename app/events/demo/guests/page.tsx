@@ -212,7 +212,7 @@ export default function GuestsPage() {
 
         <header className="flex flex-col gap-6 border-b border-zinc-200 pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-indigo-600">
+            <p className="text-sm font-semibold text-blue-600">
               EVENT STUDIO
             </p>
 
@@ -228,7 +228,7 @@ export default function GuestsPage() {
           <button
             type="button"
             onClick={() => setShowForm(true)}
-            className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
+            className="rounded-full bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
           >
             + Ajouter un invité
           </button>
@@ -267,7 +267,7 @@ export default function GuestsPage() {
                 onClick={() => setGuestType("individual")}
                 className={`rounded-2xl border p-5 text-left transition ${
                   guestType === "individual"
-                    ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
+                    ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
                     : "border-zinc-200 bg-white hover:bg-zinc-50"
                 }`}
               >
@@ -287,7 +287,7 @@ export default function GuestsPage() {
                 onClick={() => setGuestType("couple")}
                 className={`rounded-2xl border p-5 text-left transition ${
                   guestType === "couple"
-                    ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
+                    ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
                     : "border-zinc-200 bg-white hover:bg-zinc-50"
                 }`}
               >
@@ -320,7 +320,7 @@ export default function GuestsPage() {
                   id="first-name-1"
                   type="text"
                   placeholder="Ex. Jean"
-                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
@@ -340,7 +340,7 @@ export default function GuestsPage() {
                   id="last-name-1"
                   type="text"
                   placeholder="Ex. Kabongo"
-                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
@@ -360,7 +360,7 @@ export default function GuestsPage() {
                       id="first-name-2"
                       type="text"
                       placeholder="Ex. Marie"
-                      className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                      className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
 
@@ -378,7 +378,7 @@ export default function GuestsPage() {
                       id="last-name-2"
                       type="text"
                       placeholder="Ex. Mulamba"
-                      className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                      className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
                 </>
@@ -398,7 +398,7 @@ export default function GuestsPage() {
                   id="whatsapp"
                   type="tel"
                   placeholder="+243 9XX XXX XXX"
-                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                  className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
                 <p className="mt-2 text-xs text-zinc-500">
@@ -412,7 +412,7 @@ export default function GuestsPage() {
                 Type sélectionné
               </p>
 
-              <p className="mt-1 text-lg font-semibold text-indigo-600">
+              <p className="mt-1 text-lg font-semibold text-blue-600">
                 {guestType === "individual"
                   ? "Invité individuel"
                   : "Couple"}
@@ -423,7 +423,7 @@ export default function GuestsPage() {
               <button
                 type="button"
                 onClick={handleSaveGuest}
-                className="rounded-full bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
+                className="rounded-full bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
               >
                 {editingGuestId !== null
                   ? "Enregistrer les modifications"
@@ -463,7 +463,7 @@ export default function GuestsPage() {
                 <button
                   type="button"
                   onClick={() => setShowForm(true)}
-                  className="mt-5 rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                  className="mt-5 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
                   Ajouter le premier invité
                 </button>
@@ -494,7 +494,7 @@ export default function GuestsPage() {
                           Lien personnalisé
                         </p>
 
-                        <p className="mt-1 break-all font-mono text-sm text-indigo-600">
+                        <p className="mt-1 break-all font-mono text-sm text-blue-600">
                           /i/{guest.slug}
                         </p>
                       </div>
@@ -506,7 +506,7 @@ export default function GuestsPage() {
                       <button
                         type="button"
                         onClick={() => handleViewQrCode(guest.id)}
-                        className="rounded-full bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                        className="rounded-full bg-blue-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700"
                       >
                         📱 QR Code
                       </button>
