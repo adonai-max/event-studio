@@ -249,7 +249,7 @@ export default function ProfilePage() {
 
         <section className="overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-white shadow-[0_18px_55px_rgba(16,26,46,0.08)]">
           <div className="relative overflow-hidden bg-[linear-gradient(115deg,#101a2e,#172b4d,#234c86)] px-5 py-8 text-white sm:px-8 sm:py-9">
-            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-sky-500/15 blur-3xl" />
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/15 blur-3xl" />
             <div className="absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-blue-400/15 blur-3xl" />
 
             <div className="relative flex flex-col gap-7 sm:flex-row sm:items-center">
@@ -281,7 +281,7 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-sky-200">
+                <p className="text-sm font-semibold text-blue-200">
                   Votre espace personnel
                 </p>
 
