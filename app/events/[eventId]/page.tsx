@@ -14,9 +14,11 @@ type EventItem = {
   time: string | null;
   location: string | null;
   description: string | null;
+  design: unknown;
 };
 
 type GuestSummary = {
+  slug: string | null;
   status: "pending" | "confirmed" | "declined" | null;
   checked_in: boolean | null;
 };
@@ -102,7 +104,7 @@ export default function EventPage() {
 
       const { data, error } = await supabase
         .from("events")
-        .select("id, name, type, date, time, location, description")
+        .select("id, name, type, date, time, location, description, design")
         .eq("id", eventId)
         .eq("owner_id", user.id)
         .single();
@@ -119,7 +121,7 @@ export default function EventPage() {
 
       const { data: guestRows, error: guestError } = await supabase
         .from("guests")
-        .select("status, checked_in")
+        .select("status, checked_in, slug")
         .eq("event_id", eventId);
 
       if (!active) return;
@@ -146,10 +148,10 @@ export default function EventPage() {
     if (!event) return [];
     return [
       { label: "Informations de l’événement", done: Boolean(event.name && event.date && event.time && event.location) },
-      { label: "Design de l’invitation", done: false, href: "/events/" + event.id + "/invitation" },
+      { label: "Design de l’invitation", done: Boolean(event.design && typeof event.design === "object"), href: "/events/" + event.id + "/invitation" },
       { label: "Liste des invités", done: guestsLoaded && stats.total > 0, href: "/events/" + event.id + "/guests" },
       { label: "Confirmations des invités", done: guestsLoaded && stats.total > 0 && stats.pending === 0, href: "/events/" + event.id + "/guests" },
-      { label: "Préparer le contrôle d’accès", done: false, href: "/events/" + event.id + "/control" },
+      { label: "Préparer le contrôle d’accès", done: guestsLoaded && stats.total > 0 && guests.every((guest) => Boolean(guest.slug)), href: "/events/" + event.id + "/control" },
     ];
   }, [event, guestsLoaded, stats.pending, stats.total]);
 
