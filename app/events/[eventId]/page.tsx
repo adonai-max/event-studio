@@ -206,7 +206,7 @@ export default function EventPage() {
               { label: "Invitations", value: guestsLoaded ? stats.total : "—", note: "Fiches enregistrées", icon: "users", color: "blue" },
               { label: "Réponses positives", value: guestsLoaded ? stats.confirmed : "—", note: "Invitations confirmées", icon: "check", color: "green" },
               { label: "En attente", value: guestsLoaded ? stats.pending : "—", note: "Réponses attendues", icon: "clock", color: "amber" },
-              { label: "Entrées", value: guestsLoaded ? stats.checkedIn : "—", note: "Accès enregistrés", icon: "scan", color: "orange" },
+              { label: "Entrées enregistrées", value: guestsLoaded ? stats.checkedIn : "—", note: "Invitations contrôlées", icon: "scan", color: "orange" },
             ].map((stat) => <article key={stat.label} className="es-stat rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_3px_12px_rgba(15,23,42,.025)] sm:p-5"><div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold text-slate-500">{stat.label}</span><span className={`flex h-9 w-9 items-center justify-center rounded-xl ${stat.color === "blue" ? "bg-blue-50 text-blue-600" : stat.color === "green" ? "bg-emerald-50 text-emerald-600" : stat.color === "amber" ? "bg-amber-50 text-amber-600" : "bg-orange-50 text-orange-600"}`}><Icon name={stat.icon} size={18} /></span></div><p className="mt-4 text-3xl font-extrabold tracking-tight text-[#12213A]">{stat.value}</p><p className="mt-1 text-xs text-slate-400">{stat.note}</p></article>)}
           </section>
 
