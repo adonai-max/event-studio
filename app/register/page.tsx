@@ -63,7 +63,7 @@ export default function RegisterPage() {
       <div className="auth-orb-two" aria-hidden="true" />
       <div className="auth-card w-full max-w-md rounded-3xl p-8">
         <div className="mb-8">
-          <p className="auth-brand rounded-full px-3 py-1 text-sm font-black uppercase tracking-widest text-sky-600">
+          <p className="auth-brand rounded-full px-3 py-1 text-sm font-black uppercase tracking-widest text-blue-600">
             Event Studio
           </p>
 
@@ -92,13 +92,13 @@ export default function RegisterPage() {
               onChange={(event) => setFirstName(event.target.value)}
               placeholder="Votre prénom"
               required
-              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <div>
             <label htmlFor="lastName" className="mb-2 block text-sm font-medium text-zinc-700">Nom</label>
-            <input id="lastName" type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} placeholder="Votre nom" required className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" />
+            <input id="lastName" type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} placeholder="Votre nom" required className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100" />
           </div>
 
           <div>
@@ -116,7 +116,7 @@ export default function RegisterPage() {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="vous@exemple.com"
               required
-              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -136,7 +136,7 @@ export default function RegisterPage() {
               placeholder="Minimum 6 caractères"
               minLength={6}
               required
-              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -147,7 +147,7 @@ export default function RegisterPage() {
           )}
 
           {message && (
-            <div className="rounded-xl bg-sky-50 p-4 text-sm text-sky-700">
+            <div className="rounded-xl bg-blue-50 p-4 text-sm text-blue-700">
               {message}
             </div>
           )}
@@ -155,7 +155,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 px-5 py-3 font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-sky-400 hover:via-blue-500 hover:to-indigo-500 hover:shadow-xl hover:shadow-blue-600/30 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl bg-gradient-to-r from-blue-500 via-blue-600 to-blue-600 px-5 py-3 font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-blue-400 hover:via-blue-500 hover:to-blue-500 hover:shadow-xl hover:shadow-blue-600/30 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Création..." : "Créer mon compte"}
           </button>
@@ -166,7 +166,7 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => router.push("/login")}
-            className="ml-1 font-semibold text-sky-600 hover:text-blue-700"
+            className="ml-1 font-semibold text-blue-600 hover:text-blue-700"
           >
             Se connecter
           </button>
