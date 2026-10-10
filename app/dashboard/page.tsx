@@ -77,6 +77,8 @@ export default function DashboardPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [motionReady, setMotionReady] = useState(false);
   const [eventMenuOpen, setEventMenuOpen] = useState<string | null>(null);
+  const [eventSearch, setEventSearch] = useState("");
+  const [eventFilter, setEventFilter] = useState<"all" | "upcoming" | "drafts" | "completed">("all");
 
   useEffect(() => { const frame = requestAnimationFrame(() => setMotionReady(true)); return () => cancelAnimationFrame(frame); }, []);
   useEffect(() => {
@@ -140,6 +142,20 @@ export default function DashboardPage() {
     return { total, confirmed, checkedIn, confirmationRate: total ? Math.round(confirmed / total * 100) : 0, checkInRate: confirmed ? Math.round(checkedIn / confirmed * 100) : 0 };
   }, [guests]);
   const nextEvent = useMemo(() => events.filter(e => !e.date || new Date(e.date + "T23:59:59") >= new Date()).sort((a,b) => !a.date ? 1 : !b.date ? -1 : a.date.localeCompare(b.date))[0] ?? null, [events]);
+  const visibleEvents = useMemo(() => {
+    const query = eventSearch.trim().toLocaleLowerCase("fr");
+    return events.filter(event => {
+      const matchesQuery = !query || [event.name, event.location, event.type]
+        .some(value => value?.toLocaleLowerCase("fr").includes(query));
+      const status = getEventStatus(event).label;
+      const matchesFilter = eventFilter === "all"
+        || (eventFilter === "upcoming" && !!event.date && status !== "Terminé")
+        || (eventFilter === "drafts" && !event.date)
+        || (eventFilter === "completed" && status === "Terminé");
+      return matchesQuery && matchesFilter;
+    });
+  }, [events, eventSearch, eventFilter]);
+
   const recentActivity = useMemo(() => guests.filter(g => g.updated_at || g.created_at).slice(0, 5).map(g => {
     const event = events.find(e => e.id === g.event_id); const date = g.updated_at || g.created_at;
     const checked = g.checked_in, confirmed = g.status === "confirmed", declined = g.status === "declined";
@@ -370,10 +386,15 @@ export default function DashboardPage() {
       </section>}
 
       <section className={`mt-6 transition-all duration-500 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
-        <div className="mb-3 flex items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-sky-700">Gestion</p><h2 className="mt-1 text-lg font-extrabold">Mes événements</h2><p className="mt-0.5 text-xs text-zinc-400">Retrouvez et pilotez vos événements.</p></div>{!loading&&events.length>0&&<Link href="/events/new" className="hidden rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-bold text-zinc-700 shadow-sm transition hover:border-sky-200 hover:text-sky-700 sm:inline-flex">+ Nouvel événement</Link>}</div>
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-sky-700">Gestion</p><h2 className="mt-1 text-lg font-extrabold">Mes événements <span className="ml-1 text-sm font-semibold text-zinc-400">{!loading ? events.length : ""}</span></h2><p className="mt-0.5 text-xs text-zinc-400">Retrouvez et pilotez vos événements.</p></div>{!loading&&events.length>0&&<Link href="/events/new" className="inline-flex rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-bold text-zinc-700 shadow-sm transition hover:border-sky-200 hover:text-sky-700">+ Nouvel événement</Link>}</div>
+        {!loading && events.length > 0 && <div className="mb-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_190px]">
+          <label className="relative block"><span className="sr-only">Rechercher un événement</span><svg viewBox="0 0 24 24" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg><input value={eventSearch} onChange={event => setEventSearch(event.target.value)} placeholder="Rechercher par nom, lieu ou type…" className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10" /></label>
+          <label className="relative block"><span className="sr-only">Filtrer les événements</span><select value={eventFilter} onChange={event => setEventFilter(event.target.value as typeof eventFilter)} className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10"><option value="all">Tous les événements</option><option value="upcoming">À venir</option><option value="drafts">Brouillons</option><option value="completed">Terminés</option></select></label>
+        </div>
         {loading ? <div className="grid gap-3 xl:grid-cols-2">{[1,2].map(i=><div key={i} className="h-56 animate-pulse rounded-[20px] bg-white" />)}</div> :
         !events.length ? <div className="rounded-[20px] border border-dashed border-zinc-300 bg-white px-5 py-12 text-center shadow-sm"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-xl text-sky-700">+</div><h3 className="mt-3 text-base font-black">Votre espace est prêt</h3><p className="mx-auto mt-1.5 max-w-md text-xs leading-5 text-zinc-500">Créez votre premier événement et commencez à gérer vos invités.</p><Link href="/events/new" className="mt-4 inline-flex rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-800">Créer mon premier événement</Link></div> :
-        <div className="grid min-w-0 gap-2.5 xl:grid-cols-2">{events.map((event,index) => {
+        !visibleEvents.length ? <div className="rounded-[20px] border border-dashed border-zinc-300 bg-white px-5 py-10 text-center"><div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500"><svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2M8 10.8h5.6"/></svg></div><h3 className="mt-3 text-sm font-black text-slate-800">Aucun résultat</h3><p className="mt-1 text-xs text-zinc-500">Essayez un autre mot-clé ou modifiez le filtre.</p><button type="button" onClick={() => { setEventSearch(""); setEventFilter("all"); }} className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-200 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">Réinitialiser les filtres</button></div> :
+        <div className="grid min-w-0 gap-2.5 xl:grid-cols-2">{visibleEvents.map((event,index) => {
           const eventGuests=guests.filter(g=>g.event_id===event.id), total=eventGuests.length, confirmed=eventGuests.filter(g=>g.status==="confirmed").length, pending=eventGuests.filter(g=>g.status==="pending").length, checkedIn=eventGuests.filter(g=>g.checked_in).length, declined=eventGuests.filter(g=>g.status==="declined").length;
           const confirmationRate=total?Math.round(confirmed/total*100):0, checkInRate=confirmed?Math.round(checkedIn/confirmed*100):0, eventDays=getDaysUntil(event.date);
           return <article key={event.id} style={{transitionDelay:`${Math.min(index,5)*60}ms`}} className={`group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_4px_16px_rgba(16,26,46,0.04)] transition duration-500 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-500/5 ${motionReady?"translate-y-0 opacity-100":"translate-y-3 opacity-0"}`}>
