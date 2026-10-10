@@ -312,7 +312,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-zinc-800">
+                  <label className="mb-2 block text-sm font-bold text-slate-700">
                     Adresse e-mail
                   </label>
 
@@ -462,7 +462,7 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+        className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
       />
     </div>
   );
