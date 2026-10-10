@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./styles/event-studio.css";
 import { ThemeProvider } from "./context/ThemeContext";
 import EventStudioBar from "./components/EventStudioBar";
 
