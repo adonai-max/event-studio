@@ -43,6 +43,16 @@ type PublicInvitation = {
   event: PublicEvent;
 };
 
+function getInvitationAccentColor(design: unknown): string {
+  if (!design || typeof design !== "object") return "#4f46e5";
+  const palette = (design as { palette?: unknown }).palette;
+  if (!palette || typeof palette !== "object") return "#4f46e5";
+  const primary = (palette as { primary?: unknown }).primary;
+  return typeof primary === "string" && /^#[0-9a-fA-F]{6}$/.test(primary)
+    ? primary
+    : "#4f46e5";
+}
+
 function normalizeSlug(value: string) {
   return value
     .toLowerCase()
@@ -223,7 +233,7 @@ export default function PublicInvitationPage({
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#09090b] px-5 py-10">
         <section className="w-full max-w-lg overflow-hidden rounded-[2rem] border border-white/10 bg-white shadow-2xl">
-          <div className="h-2 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-amber-400" />
+          <div className="h-2" style={{ background: `linear-gradient(90deg, ${accentColor}, ${accentColor}99, #d4af37)` }} />
 
           <div className="px-7 py-12 text-center sm:px-10">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-violet-50 text-4xl">
@@ -292,6 +302,7 @@ export default function PublicInvitationPage({
   const eventDate = event.date || "Date à définir";
   const eventTime = event.time || "Heure à définir";
   const eventLocation = event.location || "Lieu à définir";
+  const accentColor = getInvitationAccentColor(event.design);
 
   const guestName =
     guest.type === "couple"
@@ -313,9 +324,9 @@ export default function PublicInvitationPage({
 
           <div className="relative px-5 py-10 sm:px-12 sm:py-14">
             <header className="text-center">
-              <div className="mx-auto inline-flex items-center rounded-full border border-violet-100 bg-violet-50 px-4 py-2">
-                <span className="mr-2 h-2 w-2 rounded-full bg-violet-600" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-violet-700 sm:text-xs">
+              <div className="mx-auto inline-flex items-center rounded-full border px-4 py-2" style={{ borderColor: `${accentColor}33`, backgroundColor: `${accentColor}12` }}>
+                <span className="mr-2 h-2 w-2 rounded-full" style={{ backgroundColor: accentColor }} />
+                <span className="text-[10px] font-bold uppercase tracking-[0.22em] sm:text-xs" style={{ color: accentColor }}>
                   Invitation personnelle
                 </span>
               </div>
@@ -340,7 +351,7 @@ export default function PublicInvitationPage({
               <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-fuchsia-600/10 blur-3xl" />
 
               <div className="relative">
-                <p className="text-center text-[10px] font-bold uppercase tracking-[0.3em] text-violet-300 sm:text-xs">
+                <p className="text-center text-[10px] font-bold uppercase tracking-[0.3em] sm:text-xs" style={{ color: accentColor }}>
                   Vous êtes invité(e) à
                 </p>
 
