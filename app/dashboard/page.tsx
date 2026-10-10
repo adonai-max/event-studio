@@ -65,7 +65,8 @@ function StatCard({ icon, label, value, detail }: { icon: "events" | "invitation
   </div>;
 }
 function ProgressBar({ label, value }: { label: string; value: number }) {
-  return <div><div className="flex justify-between text-xs"><span className="font-medium text-zinc-500">{label}</span><span className="font-bold text-zinc-800">{value}%</span></div><div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-1000" style={{ width: value + "%" }} /></div></div>;
+  const safeValue = Math.max(0, Math.min(100, value));
+  return <div><div className="flex justify-between text-xs"><span className="font-medium text-zinc-500">{label}</span><span className="font-bold tabular-nums text-zinc-800">{safeValue}%</span></div><div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-zinc-100" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={safeValue}><div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-700 ease-out" style={{ width: safeValue + "%" }} /></div></div>;
 }
 
 export default function DashboardPage() {
@@ -190,7 +191,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {errorMessage && <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">{errorMessage}</div>}
+      {errorMessage && <div role="alert" aria-live="polite" className="mt-4 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold leading-5 text-red-700"><svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/></svg><span>{errorMessage}</span></div>}
 
       <section className={`mt-5 transition-all duration-500 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
         <div className="mb-4 flex items-end justify-between"><div><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700">Vue générale</p><h2 className="mt-1 text-xl font-extrabold tracking-tight text-slate-900">Vos indicateurs</h2></div><span className="text-xs font-semibold text-zinc-400">En temps réel</span></div>
@@ -284,8 +285,8 @@ export default function DashboardPage() {
                   <span className={`text-xs font-black ${readiness >= 80 ? "text-emerald-600" : readiness >= 50 ? "text-amber-600" : "text-zinc-500"}`}>{readiness}%</span>
                 </div>
 
-                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200">
-                  <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600" style={{width: readiness + "%"}} />
+                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200" role="progressbar" aria-label="Préparation de l’événement" aria-valuemin={0} aria-valuemax={100} aria-valuenow={readiness}>
+                  <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-blue-600 transition-all duration-700 ease-out" style={{width: readiness + "%"}} />
                 </div>
 
                 <div className="mt-2 grid grid-cols-3 gap-1.5">
