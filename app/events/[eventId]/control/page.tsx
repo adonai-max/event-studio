@@ -358,14 +358,16 @@ export default function EventControlPage() {
       })
       .eq("id", guest.id)
       .eq("event_id", eventId)
+      .eq("checked_in", false)
+      .eq("status", "confirmed")
       .select("*")
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       setLoadingAction(false);
       setErrorMessage(
         error?.message ||
-          "Impossible d'enregistrer l'entrée.",
+          "L'entrée n'a pas été enregistrée. Vérifiez si cette invitation a déjà été contrôlée ou si la confirmation a changé.",
       );
       return;
     }
