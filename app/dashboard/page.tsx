@@ -143,13 +143,17 @@ export default function DashboardPage() {
       .filter(e => e.date && new Date(e.date + "T23:59:59") >= new Date())
       .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
     const pendingCount = guests.filter(g => g.status === "pending").length;
+    const pendingEvent = events
+      .map(event => ({ event, count: guests.filter(g => g.event_id === event.id && g.status === "pending").length }))
+      .filter(item => item.count > 0)
+      .sort((a, b) => b.count - a.count)[0]?.event;
     const zeroGuestEvent = upcoming.find(e => guests.filter(g => g.event_id === e.id).length === 0);
 
     if (pendingCount > 0) {
       items.push({
         title: pendingCount + " invitation" + (pendingCount > 1 ? "s" : "") + " en attente",
-        detail: "Relancez vos invités pour accélérer les confirmations.",
-        href: nextEvent ? "/events/" + nextEvent.id + "/guests" : "/dashboard",
+        detail: pendingEvent ? "À relancer : " + pendingEvent.name : "Relancez vos invités pour accélérer les confirmations.",
+        href: pendingEvent ? "/events/" + pendingEvent.id + "/guests" : "/dashboard",
         tone: "amber",
       });
     }
