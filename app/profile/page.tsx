@@ -211,7 +211,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-50 px-4 py-8">
+      <main className="profile-page min-h-screen bg-zinc-50 px-4 py-8 transition-colors">
         <div className="mx-auto max-w-6xl">
           <div className="h-8 w-40 animate-pulse rounded-xl bg-zinc-200" />
           <div className="mt-8 h-72 animate-pulse rounded-3xl bg-white shadow-sm" />
