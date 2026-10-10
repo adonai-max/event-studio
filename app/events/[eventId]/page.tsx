@@ -147,7 +147,7 @@ export default function EventPage() {
   const setupTasks = useMemo(() => {
     if (!event) return [];
     return [
-      { label: "Informations de l’événement", done: Boolean(event.name && event.date && event.time && event.location) },
+      { label: "Informations de l’événement", done: Boolean(event.name && event.date && event.time && event.location), href: undefined },
       { label: "Design de l’invitation", done: Boolean(event.design && typeof event.design === "object"), href: "/events/" + event.id + "/invitation" },
       { label: "Liste des invités", done: guestsLoaded && stats.total > 0, href: "/events/" + event.id + "/guests" },
       { label: "Confirmations des invités", done: guestsLoaded && stats.total > 0 && stats.pending === 0, href: "/events/" + event.id + "/guests" },
