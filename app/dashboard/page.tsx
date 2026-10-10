@@ -117,8 +117,9 @@ export default function DashboardPage() {
     if (guestsError) { setEvents(c => [duplicatedEvent, ...c]); setErrorMessage("Événement dupliqué, mais les invités n’ont pas pu être copiés."); return; }
     if (originalGuests?.length) {
       const duplicatedGuests = originalGuests.map(guest => ({ event_id: duplicatedEvent.id, type: guest.type, first_name_1: guest.first_name_1, last_name_1: guest.last_name_1, first_name_2: guest.first_name_2, last_name_2: guest.last_name_2, whatsapp: guest.whatsapp, status: "pending", slug: guest.slug + "-copy-" + Math.random().toString(36).slice(2, 8), checked_in: false, checked_in_at: null }));
-      const { error } = await supabase.from("guests").insert(duplicatedGuests);
+      const { data: copiedGuests, error } = await supabase.from("guests").insert(duplicatedGuests).select("id, event_id, status, checked_in, created_at, updated_at");
       if (error) { setEvents(c => [duplicatedEvent, ...c]); setErrorMessage("Événement dupliqué, mais les invités n’ont pas pu être copiés."); return; }
+      setGuests(c => [...(copiedGuests ?? []), ...c]);
     }
     setEvents(c => [duplicatedEvent, ...c]);
   }
@@ -130,6 +131,8 @@ export default function DashboardPage() {
     const { error } = await supabase.from("events").delete().eq("id", eventId).eq("owner_id", user.id);
     if (error) { setErrorMessage("Impossible de supprimer cet événement. Veuillez réessayer."); return; }
     setEvents(c => c.filter(item => item.id !== eventId));
+    // Keep the dashboard metrics and activity feed in sync with the deleted event.
+    setGuests(c => c.filter(guest => guest.event_id !== eventId));
   }
 
   const globalStats = useMemo(() => {
