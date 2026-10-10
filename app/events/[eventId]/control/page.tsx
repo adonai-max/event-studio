@@ -571,9 +571,9 @@ export default function EventControlPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
-            <p className="text-sm text-indigo-700">Check-in</p>
-            <p className="mt-2 text-3xl font-bold text-indigo-700">
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 transition hover:-translate-y-0.5 hover:shadow-md">
+            <p className="text-sm text-blue-700">Check-in</p>
+            <p className="mt-2 text-3xl font-bold text-blue-700">
               {checkInRate}%
             </p>
           </div>
@@ -729,7 +729,7 @@ export default function EventControlPage() {
         <section className="mb-5 overflow-hidden rounded-[24px] border border-zinc-200 bg-white shadow-sm sm:mb-8 sm:rounded-[28px]">
           <div className="flex flex-col gap-3 border-b border-zinc-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
                 Activité récente
               </p>
 
