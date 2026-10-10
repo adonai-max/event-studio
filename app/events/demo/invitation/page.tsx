@@ -91,7 +91,7 @@ export default function InvitationBuilderPage() {
         <EventNavigation eventId="demo" />
 
         <header className="mb-8">
-          <p className="text-sm font-semibold text-indigo-600">
+          <p className="text-sm font-semibold text-blue-600">
             EVENT STUDIO
           </p>
 
@@ -192,7 +192,7 @@ export default function InvitationBuilderPage() {
                   rows={5}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="mt-2 w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                  className="mt-2 w-full resize-none rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
@@ -209,7 +209,7 @@ export default function InvitationBuilderPage() {
                       onClick={() => setInvitationStyle(style.value)}
                       className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
                         invitationStyle === style.value
-                          ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                          ? "border-blue-500 bg-blue-50 text-blue-700"
                           : "border-zinc-200 text-zinc-700 hover:bg-zinc-50"
                       }`}
                     >
@@ -279,7 +279,7 @@ export default function InvitationBuilderPage() {
           <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-indigo-600">
+                <p className="text-sm font-semibold text-blue-600">
                   APERÇU
                 </p>
 
