@@ -89,14 +89,14 @@ type EventData = {
 
 const palettes: InvitationPalette[] = [
   {
-    name: "Royal",
-    primary: "#4f46e5",
-    secondary: "#7c3aed",
-    background: "#eef2ff",
+    name: "Bleu Royal",
+    primary: "#4263eb",
+    secondary: "#234c86",
+    background: "#eef4ff",
     surface: "#ffffff",
-    text: "#18181b",
-    muted: "#71717a",
-    border: "#c7d2fe",
+    text: "#101a2e",
+    muted: "#58677f",
+    border: "#c8d8ff",
   },
   {
     name: "Émeraude",
@@ -695,67 +695,64 @@ export default function InvitationBuilderPage() {
     setMessageStatus("");
     setErrorMessage("");
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-    if (userError || !user) {
+      if (userError || !user) {
+        setErrorMessage(
+          "Votre session a expiré. Veuillez vous reconnecter.",
+        );
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("events")
+        .update({
+          description: message,
+          design,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", event.id)
+        .eq("owner_id", user.id)
+        .select(
+          "id, name, type, date, time, location, description, design",
+        )
+        .single();
+
+      if (error || !data) {
+        console.error("Erreur sauvegarde invitation:", error);
+        setErrorMessage(
+          "Impossible de sauvegarder les modifications. Réessayez.",
+        );
+        return;
+      }
+
+      const normalizedDesign = normalizeDesign(data.design);
+
+      setEvent({
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        date: data.date,
+        time: data.time,
+        location: data.location,
+        description: data.description,
+        design: normalizedDesign,
+      });
+
+      setDesign(normalizedDesign);
+      setMessage(data.description || message);
+      setMessageStatus("Invitation et design sauvegardés.");
+    } catch {
       setErrorMessage(
-        "Votre session a expiré. Veuillez vous reconnecter.",
+        "Une erreur inattendue est survenue. Vérifiez votre connexion puis réessayez.",
       );
+    } finally {
       setSaving(false);
-      return;
     }
-
-    const { data, error } = await supabase
-      .from("events")
-      .update({
-        description: message,
-        design,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", event.id)
-      .eq("owner_id", user.id)
-      .select(
-        "id, name, type, date, time, location, description, design",
-      )
-      .single();
-
-    if (error || !data) {
-      console.error(
-        "Erreur sauvegarde invitation:",
-        error,
-      );
-
-      setErrorMessage(
-        "Impossible de sauvegarder les modifications.",
-      );
-      setSaving(false);
-      return;
-    }
-
-    const normalizedDesign =
-      normalizeDesign(data.design);
-
-    setEvent({
-      id: data.id,
-      name: data.name,
-      type: data.type,
-      date: data.date,
-      time: data.time,
-      location: data.location,
-      description: data.description,
-      design: normalizedDesign,
-    });
-
-    setDesign(normalizedDesign);
-    setMessage(data.description || message);
-    setMessageStatus(
-      "✓ Invitation et design sauvegardés.",
-    );
-
-    setSaving(false);
   }
 
   const backgroundStyle = useMemo(
@@ -842,12 +839,12 @@ export default function InvitationBuilderPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 text-zinc-900 event-page-motion">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900 transition-colors dark:bg-zinc-950 dark:text-zinc-100 event-page-motion">
       <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
         <EventNavigation eventId={event.id} eventName={event.name} />
 
         <div className="mb-8">
-          <p className="text-sm font-black uppercase tracking-[0.2em] text-indigo-600">
+          <p className="text-sm font-black uppercase tracking-[0.2em] text-blue-600">
             Invitation Builder
           </p>
 
@@ -864,27 +861,27 @@ export default function InvitationBuilderPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-700">
+            <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-700">
               ✨ Aperçu en temps réel
             </div>
           </div>
         </div>
 
         {errorMessage && (
-          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+          <div role="alert" aria-live="assertive" className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
             {errorMessage}
           </div>
         )}
 
         {messageStatus && (
-          <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+          <div role="status" aria-live="polite" className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
             {messageStatus}
           </div>
         )}
 
         <div className="grid gap-8 xl:grid-cols-[430px_minmax(0,1fr)]">
           <section className="space-y-5 xl:max-h-[calc(100vh-180px)] xl:overflow-y-auto xl:pr-2">
-            <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
+            <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
               <div>
                 <h2 className="text-xl font-black">
                   1. Contenu
@@ -904,12 +901,12 @@ export default function InvitationBuilderPage() {
                 ].map(([label, value]) => (
                   <div
                     key={label}
-                    className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4"
+                    className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-950"
                   >
                     <p className="text-xs font-black uppercase tracking-wide text-zinc-500">
                       {label}
                     </p>
-                    <p className="mt-1 text-sm font-bold text-zinc-900">
+                    <p className="mt-1 text-sm font-bold text-zinc-900 dark:text-zinc-100">
                       {value}
                     </p>
                   </div>
@@ -927,7 +924,7 @@ export default function InvitationBuilderPage() {
                   setMessageStatus("");
                 }}
                 rows={6}
-                className="mt-2 w-full resize-none rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                className="mt-2 w-full resize-y rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 placeholder="Votre message..."
               />
             </div>
@@ -958,8 +955,8 @@ export default function InvitationBuilderPage() {
                       className={[
                         "flex items-center gap-4 rounded-2xl border p-4 text-left transition-all",
                         active
-                          ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                          : "border-zinc-200 hover:border-indigo-300 hover:bg-zinc-50",
+                          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                          : "border-zinc-200 hover:border-blue-300 hover:bg-zinc-50",
                       ].join(" ")}
                     >
                       <span
@@ -982,7 +979,7 @@ export default function InvitationBuilderPage() {
                       </span>
 
                       {active && (
-                        <span className="ml-auto rounded-full bg-indigo-600 px-2 py-1 text-xs font-black text-white">
+                        <span className="ml-auto rounded-full bg-blue-600 px-2 py-1 text-xs font-black text-white">
                           ACTIF
                         </span>
                       )}
@@ -1018,8 +1015,8 @@ export default function InvitationBuilderPage() {
                       className={[
                         "rounded-2xl border p-4 text-left transition-all",
                         active
-                          ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                          : "border-zinc-200 hover:border-indigo-300",
+                          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                          : "border-zinc-200 hover:border-blue-300",
                       ].join(" ")}
                     >
                       <div className="mb-3 flex h-12 items-center justify-center rounded-xl border border-zinc-200 bg-white">
@@ -1088,7 +1085,7 @@ export default function InvitationBuilderPage() {
                       className={[
                         "overflow-hidden rounded-2xl border text-left transition-all",
                         active
-                          ? "border-indigo-500 ring-2 ring-indigo-500/20"
+                          ? "border-blue-500 ring-2 ring-blue-500/20"
                           : "border-zinc-200 hover:-translate-y-0.5",
                       ].join(" ")}
                     >
@@ -1122,7 +1119,7 @@ export default function InvitationBuilderPage() {
                         </span>
 
                         {active && (
-                          <span className="text-xs font-black text-indigo-600">
+                          <span className="text-xs font-black text-blue-600">
                             ✓
                           </span>
                         )}
@@ -1185,7 +1182,7 @@ export default function InvitationBuilderPage() {
                       className={[
                         "relative h-14 rounded-2xl border-2 transition-all hover:scale-105",
                         active
-                          ? "border-indigo-600 ring-4 ring-indigo-500/15"
+                          ? "border-blue-600 ring-4 ring-blue-500/15"
                           : "border-zinc-200",
                       ].join(" ")}
                       style={{
@@ -1259,8 +1256,8 @@ export default function InvitationBuilderPage() {
                         className={[
                           "rounded-2xl border p-3 transition-all",
                           active
-                            ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                            : "border-zinc-200 hover:border-indigo-300",
+                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                            : "border-zinc-200 hover:border-blue-300",
                         ].join(" ")}
                       >
                         <span
@@ -1305,8 +1302,8 @@ export default function InvitationBuilderPage() {
                           className={[
                             "rounded-2xl border p-3 text-left transition-all",
                             active
-                              ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                              : "border-zinc-200 hover:border-indigo-300",
+                              ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                              : "border-zinc-200 hover:border-blue-300",
                           ].join(" ")}
                         >
                           <span
@@ -1355,8 +1352,8 @@ export default function InvitationBuilderPage() {
                         "rounded-2xl border p-3 text-xs font-black transition-all",
                         design.density ===
                         value
-                          ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                          : "border-zinc-200 hover:border-indigo-300",
+                          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                          : "border-zinc-200 hover:border-blue-300",
                       ].join(" ")}
                     >
                       {label}
@@ -1394,8 +1391,8 @@ export default function InvitationBuilderPage() {
                             : "rounded-2xl",
                         design.radius ===
                         value
-                          ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                          : "border-zinc-200 hover:border-indigo-300",
+                          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                          : "border-zinc-200 hover:border-blue-300",
                       ].join(" ")}
                     >
                       {label}
@@ -1429,8 +1426,8 @@ export default function InvitationBuilderPage() {
                         className={[
                           "rounded-2xl border p-3 text-center transition-all",
                           active
-                            ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20"
-                            : "border-zinc-200 hover:border-indigo-300",
+                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500/20"
+                            : "border-zinc-200 hover:border-blue-300",
                         ].join(" ")}
                       >
                         <span className="text-lg">
@@ -1449,7 +1446,7 @@ export default function InvitationBuilderPage() {
                 void handleSave()
               }
               disabled={saving}
-              className="sticky bottom-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-xl shadow-indigo-600/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="sticky bottom-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-black text-white shadow-xl shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving
                 ? "Enregistrement..."
@@ -1461,7 +1458,7 @@ export default function InvitationBuilderPage() {
             <div className="rounded-[2rem] border border-zinc-200 bg-white p-4 shadow-sm sm:p-6">
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-indigo-600">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-600">
                     Live Preview
                   </p>
 
