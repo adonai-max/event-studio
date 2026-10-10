@@ -188,9 +188,9 @@ export default function DashboardPage() {
         {loading ? <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">{[1,2,3,4].map(i => <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200/60" />)}</div> :
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             <StatCard icon="◈" label="Événements" value={events.length} detail="Créés par vous" />
-            <StatCard icon="◎" label="Invités" value={globalStats.total} detail="Tous événements" />
-            <StatCard icon="✓" label="Confirmés" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
-            <StatCard icon="↗" label="Entrées" value={globalStats.checkedIn} detail={globalStats.checkInRate + "% des confirmés"} />
+            <StatCard icon="◎" label="Invitations" value={globalStats.total} detail="Tous événements" />
+            <StatCard icon="✓" label="Réponses positives" value={globalStats.confirmed} detail={globalStats.confirmationRate + "% de confirmation"} />
+            <StatCard icon="↗" label="Entrées enregistrées" value={globalStats.checkedIn} detail={globalStats.checkInRate + "% des réponses positives"} />
           </div>}
       </section>
 
