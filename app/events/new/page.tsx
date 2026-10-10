@@ -98,7 +98,7 @@ export default function NewEventPage() {
         );
 
         setError(
-          "Impossible d&apos;enregistrer l&apos;événement. Vérifiez la connexion à votre compte.",
+          "Impossible d’enregistrer l’événement. Vérifiez la connexion à votre compte.",
         );
 
         setLoading(false);
@@ -129,7 +129,7 @@ export default function NewEventPage() {
       );
 
       setError(
-        "Une erreur est survenue lors de la création de l&apos;événement.",
+        "Une erreur est survenue lors de la création de l’événement.",
       );
 
       setLoading(false);
@@ -141,23 +141,23 @@ export default function NewEventPage() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-50">
+    <main className="min-h-screen bg-zinc-50 text-zinc-950 transition-colors dark:bg-zinc-950 dark:text-zinc-100">
       <div className="mx-auto max-w-4xl px-6 py-10 lg:px-8">
         <div className="mb-8">
           <button
             type="button"
             onClick={handleCancel}
-            className="mb-6 text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
+            className="mb-6 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-blue-700 transition hover:text-blue-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25 dark:text-blue-300 dark:hover:text-blue-200"
           >
             ← Retour au Dashboard
           </button>
 
-          <div className="rounded-[28px] bg-gradient-to-br from-zinc-950 via-indigo-950 to-violet-900 p-8 text-white shadow-xl sm:p-10">
+          <div className="rounded-[28px] bg-gradient-to-br from-[#101a2e] via-[#172b4d] to-[#234c86] p-8 text-white shadow-xl sm:p-10">
             <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-lg font-bold ring-1 ring-white/15">
               ES
             </div>
 
-            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-indigo-200">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-blue-200">
               Event Studio
             </p>
 
@@ -174,7 +174,7 @@ export default function NewEventPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
+          className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8"
         >
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -188,10 +188,12 @@ export default function NewEventPage() {
               <input
                 id="name"
                 type="text"
+                required
+                maxLength={120}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex. Mariage Adonaï & Grâce"
-                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:ring-blue-950"
               />
             </div>
 
@@ -205,9 +207,10 @@ export default function NewEventPage() {
 
               <select
                 id="type"
+                required
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
               >
                 <option value="">Sélectionner</option>
                 <option value="Mariage">Mariage</option>
@@ -230,10 +233,12 @@ export default function NewEventPage() {
               <input
                 id="location"
                 type="text"
+                required
+                maxLength={200}
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Ex. Salle des fêtes"
-                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
               />
             </div>
 
@@ -248,9 +253,10 @@ export default function NewEventPage() {
               <input
                 id="date"
                 type="date"
+                required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
               />
             </div>
 
@@ -265,9 +271,10 @@ export default function NewEventPage() {
               <input
                 id="time"
                 type="time"
+                required
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
               />
             </div>
 
@@ -285,13 +292,14 @@ export default function NewEventPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Ajoutez quelques détails sur votre événement..."
                 rows={5}
-                className="w-full resize-none rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm leading-6 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+                maxLength={2000}
+                className="w-full resize-y rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm leading-6 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
               />
             </div>
           </div>
 
           {error && (
-            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <div role="alert" aria-live="assertive" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
               {error}
             </div>
           )}
@@ -301,7 +309,7 @@ export default function NewEventPage() {
               type="button"
               onClick={handleCancel}
               disabled={loading}
-              className="rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               Annuler
             </button>
@@ -309,7 +317,8 @@ export default function NewEventPage() {
             <button
               type="submit"
               disabled={loading}
-              className="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              aria-busy={loading}
+              className="rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/30 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading
                 ? "Création en cours..."
