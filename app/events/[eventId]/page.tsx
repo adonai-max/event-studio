@@ -68,7 +68,7 @@ function formatDate(value: string | null) {
 function Detail({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/[.055] p-3.5">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-sky-300/15 bg-sky-300/10 text-sky-200"><Icon name={icon} size={19} /></span>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-300/15 bg-blue-300/10 text-blue-200"><Icon name={icon} size={19} /></span>
       <span className="min-w-0">
         <span className="block text-xs font-bold uppercase tracking-[.16em] text-slate-400">{label}</span>
         <span className="mt-1 block truncate text-sm font-semibold text-white" title={value}>{value}</span>
@@ -194,12 +194,12 @@ export default function EventPage() {
           </div>
 
           <section className="relative mb-6 overflow-hidden rounded-[25px] bg-[#102544] p-5 text-white shadow-[0_22px_50px_rgba(15,35,65,.14)] sm:p-7">
-            <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full border border-sky-200/10" /><div className="pointer-events-none absolute -right-4 -top-12 h-44 w-44 rounded-full border border-sky-200/10" /><div className="pointer-events-none absolute bottom-0 right-0 h-48 w-48 bg-gradient-to-tl from-blue-500/20 to-transparent" />
+            <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full border border-blue-200/10" /><div className="pointer-events-none absolute -right-4 -top-12 h-44 w-44 rounded-full border border-blue-200/10" /><div className="pointer-events-none absolute bottom-0 right-0 h-48 w-48 bg-gradient-to-tl from-blue-500/20 to-transparent" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
-              <div><p className="text-xs font-bold uppercase tracking-[.2em] text-sky-300">Votre espace événementiel</p><h2 className="mt-3 max-w-2xl text-2xl font-extrabold tracking-[-.03em] sm:text-3xl">Le grand jour se prépare ici.</h2><p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">Retrouvez les informations essentielles, organisez vos invités et préparez un accueil fluide.</p>
+              <div><p className="text-xs font-bold uppercase tracking-[.2em] text-blue-300">Votre espace événementiel</p><h2 className="mt-3 max-w-2xl text-2xl font-extrabold tracking-[-.03em] sm:text-3xl">Le grand jour se prépare ici.</h2><p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">Retrouvez les informations essentielles, organisez vos invités et préparez un accueil fluide.</p>
                 <div className="mt-5 grid gap-2 sm:grid-cols-3"><Detail icon="calendar" label="Date" value={formatDate(event.date)} /><Detail icon="clock" label="Heure" value={event.time || "À définir"} /><Detail icon="pin" label="Lieu" value={event.location || "À définir"} /></div>
               </div>
-              <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[.055] p-4 lg:flex-col lg:items-start"><span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-sky-200/20 bg-gradient-to-br from-sky-300/20 to-blue-400/10 text-xl font-black tracking-wider text-sky-100">{initials}</span><div><p className="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Votre événement</p><p className="mt-1 text-sm font-bold text-white">Un espace, tout votre événement.</p><p className="mt-1 text-xs leading-5 text-slate-400">Créez. Organisez. Contrôlez.</p></div></div>
+              <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[.055] p-4 lg:flex-col lg:items-start"><span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-blue-200/20 bg-gradient-to-br from-blue-300/20 to-blue-400/10 text-xl font-black tracking-wider text-blue-100">{initials}</span><div><p className="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Votre événement</p><p className="mt-1 text-sm font-bold text-white">Un espace, tout votre événement.</p><p className="mt-1 text-xs leading-5 text-slate-400">Créez. Organisez. Contrôlez.</p></div></div>
             </div>
           </section>
 
@@ -215,7 +215,7 @@ export default function EventPage() {
           <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)]">
             <article className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,.025)] sm:p-6">
               <div className="flex items-start justify-between gap-4"><div><h2 className="text-base font-extrabold text-[#12213A]">Préparation de l’événement</h2><p className="mt-1 text-xs text-slate-500">Les étapes essentielles avant le jour J.</p></div><span className="rounded-xl bg-blue-50 px-3 py-2 text-sm font-extrabold text-blue-700">{progress}%</span></div>
-              <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400 transition-[width] duration-500" style={{ width: progress + "%" }} /></div>
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400 transition-[width] duration-500" style={{ width: progress + "%" }} /></div>
               <div className="mt-5 space-y-1">{setupTasks.map((task) => <div key={task.label} className="flex items-center gap-3 rounded-xl px-2 py-3 transition hover:bg-slate-50"><span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${task.done ? "bg-emerald-50 text-emerald-600" : "border border-slate-200 text-slate-300"}`}><Icon name={task.done ? "check" : "calendar"} size={14} /></span><span className={`flex-1 text-xs font-semibold ${task.done ? "text-slate-500" : "text-slate-700"}`}>{task.label}</span>{task.done ? <span className="text-xs font-bold text-emerald-600">Terminé</span> : task.href ? <Link href={task.href} className="text-xs font-bold text-blue-600 hover:text-blue-800">Configurer →</Link> : <span className="text-xs text-slate-400">À compléter</span>}</div>)}</div>
               <Link href={"/events/" + event.id + "/edit"} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-xs font-bold text-white transition hover:bg-blue-700">Continuer la préparation <Icon name="arrow" size={15} /></Link>
             </article>
