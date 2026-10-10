@@ -174,7 +174,7 @@ export default function EditEventPage() {
 
             <Link
               href="/dashboard"
-              className="mt-6 inline-flex rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700"
+              className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
             >
               Retour au tableau de bord
             </Link>
@@ -190,8 +190,8 @@ export default function EditEventPage() {
         <EventNavigation eventId={eventId} eventName={form.name || "Modifier l'événement"} />
 
         <section className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
-          <div className="border-b border-zinc-100 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 px-6 py-8 text-white sm:px-8">
-            <p className="text-sm font-semibold text-indigo-100">
+          <div className="border-b border-zinc-100 bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 px-6 py-8 text-white sm:px-8">
+            <p className="text-sm font-semibold text-blue-100">
               EVENT STUDIO
             </p>
 
@@ -199,7 +199,7 @@ export default function EditEventPage() {
               Modifier l&apos;événement
             </h1>
 
-            <p className="mt-2 max-w-2xl text-sm text-indigo-100">
+            <p className="mt-2 max-w-2xl text-sm text-blue-100">
               Modifiez les informations principales de votre événement.
             </p>
           </div>
@@ -227,7 +227,7 @@ export default function EditEventPage() {
                   value={form.name}
                   onChange={(e) => updateField("name", e.target.value)}
                   placeholder="Ex. Mariage Adonaï & Sarah"
-                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                   required
                 />
               </div>
@@ -241,7 +241,7 @@ export default function EditEventPage() {
                   value={form.type}
                   onChange={(e) => updateField("type", e.target.value)}
                   placeholder="Ex. Mariage, anniversaire..."
-                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
@@ -254,7 +254,7 @@ export default function EditEventPage() {
                   type="date"
                   value={form.date}
                   onChange={(e) => updateField("date", e.target.value)}
-                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
@@ -267,7 +267,7 @@ export default function EditEventPage() {
                   type="time"
                   value={form.time}
                   onChange={(e) => updateField("time", e.target.value)}
-                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
@@ -280,7 +280,7 @@ export default function EditEventPage() {
                   value={form.location}
                   onChange={(e) => updateField("location", e.target.value)}
                   placeholder="Ex. Likasi, RDC"
-                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
 
@@ -296,7 +296,7 @@ export default function EditEventPage() {
                   }
                   placeholder="Ajoutez une description de l'événement..."
                   rows={6}
-                  className="w-full resize-none rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                  className="w-full resize-none rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
             </div>
@@ -312,7 +312,7 @@ export default function EditEventPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving
                   ? "Enregistrement..."
