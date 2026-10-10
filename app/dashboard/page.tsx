@@ -32,7 +32,7 @@ function formatShortDate(date: string | null) {
 function getDaysUntil(date: string | null) {
   if (!date) return null;
   const diff = new Date(date + "T23:59:59").getTime() - Date.now();
-  return diff < 0 ? 0 : Math.ceil(diff / 86400000);
+  return diff < 0 ? null : Math.ceil(diff / 86400000);
 }
 function formatActivityDate(date: string | null) {
   if (!date) return "";
