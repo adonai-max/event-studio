@@ -21,15 +21,15 @@ export default function Home() {
     <main className="min-h-screen bg-white text-zinc-900">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-8">
         <div className="text-2xl font-bold tracking-tight">
-          Event<span className="text-indigo-600">Studio</span>
+          Event<span className="text-blue-600">Studio</span>
         </div>
 
         <div className="hidden items-center gap-8 text-sm font-medium md:flex">
-          <a href="#fonctionnalites" className="hover:text-indigo-600">
+          <a href="#fonctionnalites" className="hover:text-blue-600">
             Fonctionnalités
           </a>
 
-          <a href="#comment-ca-marche" className="hover:text-indigo-600">
+          <a href="#comment-ca-marche" className="hover:text-blue-600">
             Comment ça marche
           </a>
 
@@ -45,13 +45,13 @@ export default function Home() {
 
       <section className="mx-auto max-w-7xl px-6 pb-20 pt-16 lg:px-8 lg:pb-28 lg:pt-24">
         <div className="max-w-4xl">
-          <div className="mb-6 inline-flex rounded-full bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700">
+          <div className="mb-6 inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">
             ✨ Vos événements, votre style
           </div>
 
           <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
             Créez des invitations
-            <span className="block text-indigo-600">
+            <span className="block text-blue-600">
               qui marquent les esprits.
             </span>
           </h1>
@@ -65,7 +65,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handleCreateEvent}
-              className="rounded-full bg-indigo-600 px-7 py-3.5 font-semibold text-white shadow-lg transition hover:bg-indigo-700"
+              className="rounded-full bg-blue-600 px-7 py-3.5 font-semibold text-white shadow-lg transition hover:bg-blue-700"
             >
               Créer mon événement
             </button>
@@ -87,7 +87,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
           <div className="max-w-2xl">
-            <p className="font-semibold text-indigo-600">FONCTIONNALITÉS</p>
+            <p className="font-semibold text-blue-600">FONCTIONNALITÉS</p>
 
             <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
               Tout ce qu&apos;il faut pour gérer vos invitations.
@@ -140,7 +140,7 @@ function Feature({
 }) {
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm">
-      <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 font-bold text-indigo-600">
+      <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 font-bold text-blue-600">
         ✓
       </div>
 
@@ -154,7 +154,7 @@ function Feature({
 function Step({ number, title }: { number: string; title: string }) {
   return (
     <div>
-      <p className="text-sm font-bold text-indigo-600">{number}</p>
+      <p className="text-sm font-bold text-blue-600">{number}</p>
 
       <h3 className="mt-3 text-xl font-semibold">{title}</h3>
     </div>
