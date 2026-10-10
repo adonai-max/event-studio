@@ -264,7 +264,7 @@ export default function GuestDetailPage() {
         <EventNavigation eventId={eventId} />
 
         <header className="border-b border-zinc-200 pb-8">
-          <p className="text-sm font-semibold text-indigo-600">
+          <p className="text-sm font-semibold text-blue-600">
             EVENT STUDIO
           </p>
 
@@ -283,7 +283,7 @@ export default function GuestDetailPage() {
 
         <section className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.2fr]">
           <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">
               Invité
             </p>
 
@@ -331,7 +331,7 @@ export default function GuestDetailPage() {
                   Lien personnalisé
                 </p>
 
-                <p className="mt-2 break-all rounded-xl bg-zinc-50 px-4 py-3 font-mono text-sm text-indigo-600">
+                <p className="mt-2 break-all rounded-xl bg-zinc-50 px-4 py-3 font-mono text-sm text-blue-600">
                   {invitationUrl}
                 </p>
               </div>
@@ -357,7 +357,7 @@ export default function GuestDetailPage() {
           </div>
 
           <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">
               Accès invitation
             </p>
 
@@ -405,7 +405,7 @@ export default function GuestDetailPage() {
               type="button"
               onClick={handleDownloadQr}
               disabled={!qrCode}
-              className="mt-7 w-full rounded-2xl bg-indigo-600 px-5 py-4 font-semibold text-white shadow-lg transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-7 w-full rounded-2xl bg-blue-600 px-5 py-4 font-semibold text-white shadow-lg transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               ⬇ Télécharger le QR Code
             </button>
