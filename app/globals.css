@@ -4,8 +4,8 @@
 
 :root {
   color-scheme: light;
-  --background: #f5f6fa;
-  --foreground: #101a2e;
+  --background: #f8fafc;
+  --foreground: #18181b;
   --es-navy: #101a2e;
   --es-navy-soft: #18243b;
   --es-primary: #4263eb;
@@ -15,11 +15,11 @@
   --es-warning: #b45309;
   --es-danger: #b91c1c;
   --es-info: #1d4ed8;
-  --es-bg: #f5f6fa;
+  --es-bg: #f8fafc;
   --es-surface: #ffffff;
-  --es-text: #101a2e;
-  --es-muted: #64748b;
-  --es-border: #e2e8f0;
+  --es-text: #18181b;
+  --es-muted: #71717a;
+  --es-border: #e4e4e7;
   --es-radius-sm: 10px;
   --es-radius-md: 14px;
   --es-radius-lg: 20px;
@@ -28,8 +28,8 @@
   --es-shadow-lg: 0 20px 48px rgb(16 26 46 / 0.12);
   --es-transition: 180ms cubic-bezier(.2,.7,.2,1);
   /* Design tokens — use these values for new Event Studio components. */
-  --es-primary-soft: #eef2ff;
-  --es-primary-border: #c7d2fe;
+  --es-primary-soft: #eef4ff;
+  --es-primary-border: #c7d7fe;
   --es-focus: rgb(66 99 235 / 0.42);
   --es-overlay: rgb(16 26 46 / 0.56);
   --es-radius-xl: 28px;
