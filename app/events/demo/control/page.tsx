@@ -358,11 +358,11 @@ export default function EventControlPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5">
-            <p className="text-sm text-indigo-700">
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+            <p className="text-sm text-blue-700">
               Check-in
             </p>
-            <p className="mt-2 text-3xl font-bold text-indigo-700">
+            <p className="mt-2 text-3xl font-bold text-blue-700">
               {checkInRate}%
             </p>
           </div>
