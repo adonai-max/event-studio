@@ -176,14 +176,14 @@ export default function EventStudioBar() {
                 <Link
                   href="/profile"
                   onClick={() => setProfileMenuOpen(false)}
-                  className="block rounded-xl px-3 py-2.5 text-sm font-semibold transition hover:bg-sky-50 hover:text-sky-800 dark:hover:bg-slate-800"
+                  className="block rounded-xl px-3 py-2.5 text-sm font-semibold transition hover:bg-blue-50 hover:text-blue-800 dark:hover:bg-slate-800"
                 >
                   👤 Mon profil
                 </Link>
                 <Link
                   href="/settings"
                   onClick={() => setProfileMenuOpen(false)}
-                  className="block rounded-xl px-3 py-2.5 text-sm font-semibold transition hover:bg-sky-50 hover:text-sky-800 dark:hover:bg-slate-800"
+                  className="block rounded-xl px-3 py-2.5 text-sm font-semibold transition hover:bg-blue-50 hover:text-blue-800 dark:hover:bg-slate-800"
                 >
                   ⚙️ Paramètres
                 </Link>
