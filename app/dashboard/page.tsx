@@ -54,7 +54,7 @@ function StatCard({ icon, label, value, detail }: { icon: "events" | "invitation
     confirmed: <><path d="m5 12 4.5 4.5L19 7" /></>,
     checkin: <><path d="M4 12h4l2.5-7 4.5 14 2.5-7H21" /></>,
   };
-  const iconTone = { events: "bg-indigo-50 text-indigo-700 ring-indigo-100", invitations: "bg-blue-50 text-blue-700 ring-blue-100", confirmed: "bg-emerald-50 text-emerald-700 ring-emerald-100", checkin: "bg-violet-50 text-violet-700 ring-violet-100" };
+  const iconTone = { events: "bg-blue-50 text-blue-700 ring-blue-100", invitations: "bg-blue-50 text-blue-700 ring-blue-100", confirmed: "bg-emerald-50 text-emerald-700 ring-emerald-100", checkin: "bg-violet-50 text-violet-700 ring-violet-100" };
   return <div className="group min-w-0 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_3px_12px_rgba(15,23,42,0.035)] transition duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md sm:p-4">
     <div className="flex min-w-0 items-start gap-3">
       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 ${iconTone[icon]}`}>
