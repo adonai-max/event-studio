@@ -233,3 +233,32 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (prefers-reduced-motion: reduce) {
   .es-card--interactive:hover, .es-button-primary:active { transform: none; }
 }
+
+/* Shared event navigation follows the selected application theme. */
+html.dark .es-event-nav {
+  border-color: var(--es-border);
+  background: rgba(17, 28, 46, 0.96);
+  box-shadow: var(--es-shadow-sm);
+}
+html.dark .es-event-nav__back {
+  border-color: var(--es-border);
+  background: #172338;
+  color: #cbd5e1;
+}
+html.dark .es-event-nav__back:hover {
+  border-color: #4263eb;
+  background: #1c2d4b;
+  color: #dbeafe;
+}
+html.dark .es-event-nav__event { color: #9aa9bf; }
+html.dark .es-event-nav__tab { color: #b2bfd2; }
+html.dark .es-event-nav__tab:hover {
+  color: #e5edff;
+  background: #172338;
+}
+html.dark .es-event-nav__tab.is-active {
+  border-color: #33477b;
+  background: #1c2d4b;
+  color: #dbeafe;
+  box-shadow: inset 0 0 0 1px rgb(66 99 235 / .12);
+}
