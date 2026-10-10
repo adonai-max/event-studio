@@ -238,7 +238,7 @@ export default function DashboardPage() {
             <div className="flex min-w-0 items-center gap-2.5">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-xs font-black text-sky-700 ring-1 ring-sky-100">✦</div>
               <div className="min-w-0">
-                <p className="flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.16em] text-amber-600">
+                <p className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.16em] text-amber-600">
                   <span className="priority-pulse h-1.5 w-1.5 rounded-full bg-amber-500" />Priorité
                 </p>
                 <p className="truncate text-xs font-black text-amber-950 sm:text-xs">{action.label} <span className="font-medium text-amber-700/70">· {action.detail}</span></p>
@@ -281,23 +281,23 @@ export default function DashboardPage() {
 
                 <div className="mt-2 grid grid-cols-3 gap-1.5">
                   <div className="rounded-lg border border-zinc-100 bg-white px-2 py-1.5">
-                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400">Invités</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.1em] text-zinc-400">Invités</p>
                     <p className="mt-0.5 text-sm font-black text-zinc-800">{eventGuests.length}</p>
                   </div>
 
                   <div className="rounded-lg border border-zinc-100 bg-white px-2 py-1.5">
-                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400">Confirmés</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.1em] text-zinc-400">Confirmés</p>
                     <p className="mt-0.5 text-sm font-black text-emerald-600">{confirmed}</p>
                   </div>
 
                   <div className="rounded-lg border border-zinc-100 bg-white px-2 py-1.5">
-                    <p className="text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400">Entrées</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.1em] text-zinc-400">Entrées</p>
                     <p className="mt-0.5 text-sm font-black text-sky-600">{checked}</p>
                   </div>
                 </div>
 
                 <div className="mt-2 flex items-center justify-between rounded-lg border border-zinc-100 bg-white px-2.5 py-2">
-                  <span className="text-[8px] font-black uppercase tracking-[0.12em] text-zinc-400">État</span>
+                  <span className="text-[11px] font-black uppercase tracking-[0.12em] text-zinc-400">État</span>
                   <span className={`inline-flex items-center gap-1 text-xs font-black uppercase tracking-[0.1em] ${readiness >= 80 ? "text-emerald-600" : readiness >= 50 ? "text-amber-600" : "text-zinc-500"}`}>
                     <span>{readiness >= 80 ? "✓" : "○"}</span>
                     {readiness >= 80 ? "Prêt" : readiness >= 50 ? "À surveiller" : "En préparation"}
@@ -354,11 +354,11 @@ export default function DashboardPage() {
           return <article key={event.id} style={{transitionDelay:`${Math.min(index,5)*60}ms`}} className={`group overflow-hidden rounded-[18px] border border-zinc-200/70 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.035)] transition duration-500 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-500/5 ${motionReady?"translate-y-0 opacity-100":"translate-y-3 opacity-0"}`}>
             <div className="flex min-w-0 items-center gap-3 border-b border-zinc-100 px-3.5 py-3 sm:px-4">
               <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl bg-zinc-950 text-white"><span className="text-[7px] font-bold uppercase text-sky-300">{event.date?new Intl.DateTimeFormat("fr-FR",{month:"short"}).format(new Date(event.date+"T12:00:00")):"—"}</span><span className="text-sm font-black">{event.date?new Date(event.date+"T12:00:00").getDate():"—"}</span></div>
-              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(event)} />{event.type&&<span className="text-xs font-semibold text-zinc-400">{event.type}</span>}</div><h3 className="mt-1 truncate text-sm font-black text-zinc-900">{event.name}</h3><p className="mt-0.5 truncate text-xs text-zinc-400">{event.location ? event.location : formatDate(event.date)}</p>{eventDays !== null && <span className={`mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[8px] font-black ${eventDays <= 3 ? "bg-red-50 text-red-700" : eventDays <= 14 ? "bg-amber-50 text-amber-700" : "bg-blue-50 text-blue-700"}`}>{eventDays === 0 ? "AUJOURD’HUI" : "J-" + eventDays}</span>}</div>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><StatusBadge status={getEventStatus(event)} />{event.type&&<span className="text-xs font-semibold text-zinc-400">{event.type}</span>}</div><h3 className="mt-1 truncate text-sm font-black text-zinc-900">{event.name}</h3><p className="mt-0.5 truncate text-xs text-zinc-400">{event.location ? event.location : formatDate(event.date)}</p>{eventDays !== null && <span className={`mt-1 inline-flex rounded-full px-1.5 py-0.5 text-[11px] font-black ${eventDays <= 3 ? "bg-red-50 text-red-700" : eventDays <= 14 ? "bg-amber-50 text-amber-700" : "bg-blue-50 text-blue-700"}`}>{eventDays === 0 ? "AUJOURD’HUI" : "J-" + eventDays}</span>}</div>
               <Link href={"/events/"+event.id} className="hidden shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-bold text-sky-700 transition hover:bg-sky-50 sm:inline-flex">Ouvrir →</Link>
             </div>
             <div className="px-3.5 py-3 sm:px-4">
-              <div className="grid grid-cols-4 gap-1.5"><div className="rounded-xl bg-zinc-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-zinc-400">Invités</p><p className="mt-0.5 text-sm font-black">{total}</p></div><div className="rounded-xl bg-emerald-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-emerald-500">Confirmés</p><p className="mt-0.5 text-sm font-black text-emerald-700">{confirmed}</p></div><div className="rounded-xl bg-amber-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-amber-500">Attente</p><p className="mt-0.5 text-sm font-black text-amber-700">{pending}</p></div><div className="rounded-xl bg-sky-50 px-2 py-1.5"><p className="text-[8px] font-bold uppercase text-sky-500">Entrées</p><p className="mt-0.5 text-sm font-black text-sky-700">{checkedIn}</p></div></div>
+              <div className="grid grid-cols-4 gap-1.5"><div className="rounded-xl bg-zinc-50 px-2 py-1.5"><p className="text-[11px] font-bold uppercase text-zinc-400">Invités</p><p className="mt-0.5 text-sm font-black">{total}</p></div><div className="rounded-xl bg-emerald-50 px-2 py-1.5"><p className="text-[11px] font-bold uppercase text-emerald-500">Confirmés</p><p className="mt-0.5 text-sm font-black text-emerald-700">{confirmed}</p></div><div className="rounded-xl bg-amber-50 px-2 py-1.5"><p className="text-[11px] font-bold uppercase text-amber-500">Attente</p><p className="mt-0.5 text-sm font-black text-amber-700">{pending}</p></div><div className="rounded-xl bg-sky-50 px-2 py-1.5"><p className="text-[11px] font-bold uppercase text-sky-500">Entrées</p><p className="mt-0.5 text-sm font-black text-sky-700">{checkedIn}</p></div></div>
               <div className="mt-3 grid gap-2 sm:grid-cols-2"><ProgressBar label="Confirmation" value={confirmationRate}/><ProgressBar label="Entrée" value={checkInRate}/></div>
               <div className="mt-3 flex items-center justify-between border-t border-zinc-100 pt-2.5"><span className="text-xs text-zinc-400">{declined} refusée{declined>1?"s":""}</span><div className="flex items-center gap-1.5"><Link href={"/events/"+event.id+"/edit"} className="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs font-bold text-zinc-600 transition hover:border-sky-200 hover:text-sky-700">Modifier</Link><button type="button" onClick={()=>setEventMenuOpen(eventMenuOpen===event.id?null:event.id)} className="rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs font-bold text-zinc-600 transition hover:bg-zinc-50" aria-expanded={eventMenuOpen===event.id}>•••</button></div></div>
               {eventMenuOpen===event.id&&<div className="mt-2 grid grid-cols-3 gap-1.5 border-t border-zinc-100 pt-2"><Link onClick={()=>setEventMenuOpen(null)} href={"/events/"+event.id+"/guests"} className="rounded-lg bg-zinc-50 px-2 py-2 text-center text-xs font-bold text-zinc-600 hover:bg-sky-50 hover:text-sky-700">Invités</Link><button type="button" onClick={()=>{setEventMenuOpen(null);void handleDuplicateEvent(event.id)}} className="rounded-lg bg-zinc-50 px-2 py-2 text-xs font-bold text-zinc-600 hover:bg-sky-50 hover:text-sky-700">Dupliquer</button><Link onClick={()=>setEventMenuOpen(null)} href={"/events/"+event.id+"/control"} className="rounded-lg bg-sky-50 px-2 py-2 text-center text-xs font-bold text-sky-700 hover:bg-sky-100">Event Control</Link><button type="button" onClick={()=>{setEventMenuOpen(null);void handleDeleteEvent(event.id,event.name)}} className="col-span-3 rounded-lg bg-red-50 px-2 py-2 text-xs font-bold text-red-600 hover:bg-red-100">Supprimer</button></div>}
