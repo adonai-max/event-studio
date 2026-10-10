@@ -913,11 +913,13 @@ export default function InvitationBuilderPage() {
                 ))}
               </div>
 
-              <label className="mt-5 block text-sm font-bold">
+              <label htmlFor="invitation-message" className="mt-5 block text-sm font-bold">
                 Message
               </label>
 
               <textarea
+                id="invitation-message"
+                maxLength={1500}
                 value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);
@@ -1446,6 +1448,7 @@ export default function InvitationBuilderPage() {
                 void handleSave()
               }
               disabled={saving}
+              aria-busy={saving}
               className="sticky bottom-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-black text-white shadow-xl shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving
