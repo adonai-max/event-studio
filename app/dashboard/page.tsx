@@ -206,19 +206,19 @@ export default function DashboardPage() {
     return items.slice(0, 3);
   }, [events, guests, nextEvent]);
 
-  return <main className="dashboard-page min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(15,23,42,0.06),_transparent_28%),radial-gradient(circle_at_90%_15%,_rgba(66,99,235,0.07),_transparent_25%),var(--background)] text-zinc-950 transition-colors">
+  return <main data-event-studio-dashboard className="dashboard-page min-h-screen overflow-x-hidden bg-[#f8fafc] text-[#101a2e] transition-colors">
     <style jsx>{`@keyframes eventStudioShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.event-studio-shift{background-size:200% 200%;animation:eventStudioShift 16s ease-in-out infinite}@keyframes countdownAlert{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(239,68,68,.16),0 4px 14px rgba(239,68,68,.08)}50%{transform:scale(1.035);box-shadow:0 0 0 4px rgba(239,68,68,.05),0 7px 20px rgba(239,68,68,.14)}}.countdown-alert{animation:countdownAlert 2.2s ease-in-out infinite}.countdown-dot{animation:countdownDot 1.15s ease-in-out infinite}@keyframes countdownDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}@media(prefers-reduced-motion:reduce){.event-studio-shift,.countdown-alert,.countdown-dot,.priority-card,.priority-pulse,.watch-pulse{animation:none!important;transition:none!important}}`}</style>
-    <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
+    <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
 
-      <section className={`event-studio-shift relative overflow-hidden rounded-3xl bg-[linear-gradient(115deg,#101a2e,#172b4d,#234c86)] px-5 py-6 shadow-[0_16px_38px_rgba(16,26,46,0.14)] transition-all duration-500 sm:px-6 sm:py-6 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+      <section className={`event-studio-shift relative overflow-hidden rounded-3xl border border-white/10 bg-[linear-gradient(115deg,#101a2e,#1e3a8a,#4263eb)] px-5 py-6 shadow-[0_18px_42px_rgba(16,26,46,0.16)] transition-all duration-500 sm:px-7 sm:py-7 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
         <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-200">Centre de pilotage</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-100">Votre espace événementiel</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Bonjour {userName} <span className="text-blue-300">👋</span></h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Tout ce qui mérite votre attention, en un seul regard.</p>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-blue-50/85 sm:text-base">Tout ce qui mérite votre attention, en un seul regard.</p>
           </div>
-          <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-blue-50 sm:w-auto"><svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Créer un événement</Link>
+          <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#4263eb] px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(66,99,235,0.32)] ring-1 ring-white/20 transition duration-200 hover:-translate-y-0.5 hover:bg-[#3451d1] hover:shadow-[0_14px_30px_rgba(66,99,235,0.38)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto"><svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Créer un événement</Link>
         </div>
       </section>
 
