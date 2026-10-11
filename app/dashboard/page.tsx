@@ -210,22 +210,22 @@ export default function DashboardPage() {
     <style jsx>{`@keyframes eventStudioShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}.event-studio-shift{background-size:200% 200%;animation:eventStudioShift 16s ease-in-out infinite}@keyframes countdownAlert{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(239,68,68,.16),0 4px 14px rgba(239,68,68,.08)}50%{transform:scale(1.035);box-shadow:0 0 0 4px rgba(239,68,68,.05),0 7px 20px rgba(239,68,68,.14)}}.countdown-alert{animation:countdownAlert 2.2s ease-in-out infinite}.countdown-dot{animation:countdownDot 1.15s ease-in-out infinite}@keyframes countdownDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}@media(prefers-reduced-motion:reduce){.event-studio-shift,.countdown-alert,.countdown-dot,.priority-card,.priority-pulse,.watch-pulse{animation:none!important;transition:none!important}}`}</style>
     <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
 
-      <section className={`event-studio-shift relative overflow-hidden rounded-3xl border border-white/10 bg-[linear-gradient(115deg,#101a2e,#1e3a8a,#4263eb)] px-5 py-6 shadow-[0_18px_42px_rgba(16,26,46,0.16)] transition-all duration-500 sm:px-7 sm:py-7 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <section className={`relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white px-5 py-6 shadow-[0_8px_28px_rgba(16,26,46,0.055)] transition-all duration-500 sm:px-7 sm:py-7 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
+        <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-blue-100/70 blur-3xl" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-1.5 rounded-l-3xl bg-gradient-to-b from-[#4263eb] via-[#5c7cf0] to-[#101a2e]" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-100">Votre espace événementiel</p>
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Bonjour {userName} <span className="text-blue-300">👋</span></h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-blue-50/85 sm:text-base">Tout ce qui mérite votre attention, en un seul regard.</p>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#4263eb]">Bonjour {userName} <span aria-hidden="true">👋</span></p>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#101a2e] sm:text-4xl">Tout est sous contrôle.</h1>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">Vos événements, réunis au même endroit. Suivez vos invitations, les réponses de vos invités et les accès en un seul regard.</p>
           </div>
-          <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#4263eb] px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(66,99,235,0.32)] ring-1 ring-white/20 transition duration-200 hover:-translate-y-0.5 hover:bg-[#3451d1] hover:shadow-[0_14px_30px_rgba(66,99,235,0.38)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto"><svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Créer un événement</Link>
-        </div>
+          <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#4263eb] px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(66,99,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#3451d1] hover:shadow-[0_14px_30px_rgba(66,99,235,0.3)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4263eb] sm:w-auto"><svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Créer mon événement</Link>
       </section>
 
       {errorMessage && <div role="alert" aria-live="polite" className="mt-4 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold leading-5 text-red-700"><svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/></svg><span>{errorMessage}</span></div>}
 
       <section className={`mt-5 transition-all duration-500 ${motionReady ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}>
-        <div className="mb-4 flex items-end justify-between"><div><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700">Vue générale</p><h2 className="mt-1 text-xl font-extrabold tracking-tight text-slate-900">Vos indicateurs</h2></div><span className="text-xs font-semibold text-zinc-400">En temps réel</span></div>
+        <div className="mb-4 flex items-end justify-between"><div><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#4263eb]">Centre de pilotage</p><h2 className="mt-1 text-xl font-extrabold tracking-tight text-[#101a2e]">Vos indicateurs</h2></div><span className="text-xs font-semibold text-zinc-400">En temps réel</span></div>
         {loading ? <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">{[1,2,3,4].map(i => <div key={i} className="h-20 animate-pulse rounded-2xl bg-zinc-200/60" />)}</div> :
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             <StatCard icon="events" label="Événements" value={events.length} detail="Créés par vous" />
