@@ -220,6 +220,7 @@ export default function DashboardPage() {
             <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">Vos événements, réunis au même endroit. Suivez vos invitations, les réponses de vos invités et les accès en un seul regard.</p>
           </div>
           <Link href="/events/new" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#4263eb] px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(66,99,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#3451d1] hover:shadow-[0_14px_30px_rgba(66,99,235,0.3)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4263eb] sm:w-auto"><svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>Créer mon événement</Link>
+        </div>
       </section>
 
       {errorMessage && <div role="alert" aria-live="polite" className="mt-4 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold leading-5 text-red-700"><svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/></svg><span>{errorMessage}</span></div>}
